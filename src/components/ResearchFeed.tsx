@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import PremiumModal from "@/components/PremiumModal";
+import React from "react";
 
 // Category styling
 const categoryStyles: Record<string, string> = {
@@ -24,6 +25,13 @@ const categoryStyles: Record<string, string> = {
     "Sector Analysis": "bg-pm-purple/10 text-pm-purple border-pm-purple/30",
     "Risk Alert": "bg-pm-red/10 text-pm-red border-pm-red/30",
     "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
+};
+
+const categoryIcons: Record<string, React.ReactNode> = {
+    "Alpha Signal": <TrendingUp className="w-4 h-4" />,
+    "Sector Analysis": <LineChart className="w-4 h-4" />,
+    "Risk Alert": <AlertTriangle className="w-4 h-4" />,
+    "Deep Dive": <Search className="w-4 h-4" />,
 };
 
 
