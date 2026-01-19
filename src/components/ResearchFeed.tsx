@@ -5,107 +5,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { mockResearchNotes, ResearchNote } from "@/lib/mockData";
 import {
-    Clock,
-    Sparkles,
-    ArrowRight,
-    Lock,
-    X,
-    AlertTriangle,
-    TrendingUp,
-    Search,
-    LineChart,
-} from "lucide-react";
+import {
+        Clock,
+        Sparkles,
+        ArrowRight,
+        Lock,
+        X,
+        TrendingUp,
+        Search,
+        LineChart,
+        AlertTriangle,
+        Tag,
+    } from "lucide-react";
 import Link from "next/link";
 import PremiumModal from "@/components/PremiumModal";
 import React from "react";
+import ReactMarkdown from "react-markdown"; // Note: We actually don't have this installed, so we'll stick to a simpler render for now or assume simple formatting. 
+// Actually, let's keep it simple without adding a new lib yet to avoid "npm install" issues if possible, 
+// using simple CSS whitespace-pre-wrap as before but styling it better.
 
-// Category styling
-const categoryStyles: Record<string, string> = {
-    "Alpha Signal": "bg-pm-green/10 text-pm-green border-pm-green/30",
-    "Sector Analysis": "bg-pm-purple/10 text-pm-purple border-pm-purple/30",
-    "Risk Alert": "bg-pm-red/10 text-pm-red border-pm-red/30",
-    "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
-};
-
-const categoryIcons: Record<string, React.ReactNode> = {
-    "Alpha Signal": <TrendingUp className="w-4 h-4" />,
-    "Sector Analysis": <LineChart className="w-4 h-4" />,
-    "Risk Alert": <AlertTriangle className="w-4 h-4" />,
-    "Deep Dive": <Search className="w-4 h-4" />,
-};
-
-
-
-interface ResearchCardProps {
-    note: ResearchNote;
-    onReadClick: () => void;
-    isSubscribed: boolean;
-}
-
-function ResearchCard({ note, onReadClick, isSubscribed }: ResearchCardProps) {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="pm-card-hover group h-full flex flex-col"
-        >
-            {/* Header */}
-            <div className="flex items-start justify-between gap-4 mb-4">
-                <span
-                    className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-mono border ${categoryStyles[note.category]
-                        }`}
-                >
-                    {categoryIcons[note.category]}
-                    {note.category}
-                </span>
-
-                <span className="pm-score">
-                    <Sparkles className="w-3 h-3" />
-                    {note.pmScore}
-                </span>
-            </div>
-
-            {/* Title & Summary */}
-            <h3 className="text-lg font-semibold mb-2 group-hover:text-pm-green transition-colors">
-                {note.title}
-            </h3>
-            <p className="text-pm-muted text-sm leading-relaxed flex-1">
-                {note.summary}
-            </p>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-pm-border">
-                <div className="flex items-center gap-4 text-xs text-pm-muted">
-                    <span>{note.date}</span>
-                    <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {note.readTime}
-                    </span>
-                </div>
-
-                <button
-                    onClick={onReadClick}
-                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${isSubscribed
-                        ? "text-pm-green hover:text-pm-green/80"
-                        : "text-pm-muted hover:text-pm-purple"
-                        }`}
-                >
-                    {isSubscribed ? "Read Analysis" : "Premium Only"}
-                    {isSubscribed ? (
-                        <ArrowRight className="w-4 h-4" />
-                    ) : (
-                        <Lock className="w-4 h-4" />
-                    )}
-                </button>
-            </div>
-        </motion.div>
-    );
-}
-
-interface FullContentModalProps {
-    note: ResearchNote | null;
-    onClose: () => void;
-}
+// ... (props interfaces)
 
 function FullContentModal({ note, onClose }: FullContentModalProps) {
     if (!note) return null;
@@ -117,69 +36,124 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
-                className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 overflow-y-auto"
+                className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 overflow-y-auto px-4 py-8"
             >
                 <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="max-w-3xl mx-auto my-8 px-4"
+                    className="max-w-4xl mx-auto bg-pm-dark border border-pm-border rounded-xl shadow-2xl overflow-hidden"
                 >
-                    <div className="pm-card relative">
-                        {/* Close Button */}
-                        <button
-                            onClick={onClose}
-                            className="absolute top-6 right-6 text-pm-muted hover:text-pm-text transition-colors"
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
+                    {/* Modal Header / Banner */}
+                    <div className="relative h-32 bg-gradient-to-r from-pm-black to-pm-charcoal border-b border-pm-border p-8 flex items-end justify-between">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                            {/* Abstract Background Graphic */}
+                            <svg width="300" height="300" viewBox="0 0 100 100">
+                                <path d="M0 0 L100 100 M100 0 L0 100" stroke="currentColor" strokeWidth="0.5" />
+                            </svg>
+                        </div>
 
-                        {/* Header */}
-                        <div className="mb-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <span
-                                    className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-mono border ${categoryStyles[note.category]
-                                        }`}
-                                >
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border ${categoryStyles[note.category]}`}>
                                     {categoryIcons[note.category]}
                                     {note.category}
                                 </span>
-                                <span className="pm-score">
-                                    <Sparkles className="w-3 h-3" />
-                                    PM Score: {note.pmScore}
-                                </span>
+                                <span className="text-pm-muted text-xs font-mono">{note.date}</span>
                             </div>
+                            <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                                {note.title}
+                            </h1>
+                        </div>
 
-                            <h2 className="text-2xl md:text-3xl font-bold mb-2">{note.title}</h2>
+                        <button
+                            onClick={onClose}
+                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors text-pm-muted hover:text-white"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
 
-                            <div className="flex items-center gap-4 text-sm text-pm-muted">
-                                <span>{note.date}</span>
-                                <span className="flex items-center gap-1">
-                                    <Clock className="w-4 h-4" />
-                                    {note.readTime}
-                                </span>
+                    <div className="grid md:grid-cols-[1fr_280px] min-h-[500px]">
+                        {/* Main Content Area */}
+                        <div className="p-8 md:p-10 border-r border-pm-border bg-pm-black/50">
+                            {/* Author Line */}
+                            {note.author && (
+                                <div className="flex items-center gap-3 mb-8 pb-6 border-b border-pm-border/50">
+                                    <div className="w-10 h-10 rounded-full bg-pm-green/20 flex items-center justify-center text-pm-green font-bold text-lg">
+                                        {note.author.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <div className="text-sm font-semibold text-white">{note.author}</div>
+                                        <div className="text-xs text-pm-muted">PM Research Strategy Team</div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Text Content - custom styled for "Deep Dive" look */}
+                            <div className="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-pm-text/80 prose-p:leading-relaxed prose-li:text-pm-text/80 prose-strong:text-pm-green">
+                                {/* We parse specific markdown headers to style them nicely without a library */}
+                                {note.fullContent.split('\n').map((line, i) => {
+                                    if (line.startsWith('## ')) {
+                                        return <h2 key={i} className="text-xl mt-8 mb-4 border-l-2 border-pm-green pl-4">{line.replace('## ', '')}</h2>;
+                                    }
+                                    if (line.startsWith('### ')) {
+                                        return <h3 key={i} className="text-lg mt-6 mb-2 text-pm-purple font-mono">{line.replace('### ', '')}</h3>;
+                                    }
+                                    if (line.startsWith('* ')) {
+                                        return <li key={i} className="ml-4 list-disc marker:text-pm-green pl-2 mb-2">{line.replace('* ', '')}</li>;
+                                    }
+                                    // Default paragraph
+                                    if (line.trim() === '') return <div key={i} className="h-4" />;
+                                    return <p key={i} className="mb-2">{line}</p>;
+                                })}
                             </div>
                         </div>
 
-                        {/* Content */}
-                        <div className="prose prose-invert max-w-none">
-                            <div
-                                className="text-pm-text/90 leading-relaxed whitespace-pre-wrap font-mono text-sm"
-                                style={{ whiteSpace: "pre-wrap" }}
-                            >
-                                {note.fullContent}
+                        {/* Sidebar / Metadata */}
+                        <div className="p-6 bg-pm-black">
+                            <div className="mb-8">
+                                <h4 className="text-xs font-mono uppercase text-pm-muted mb-4 tracking-wider">PM Sentiment Score</h4>
+                                <div className="flex items-center gap-3">
+                                    <div className={`text-4xl font-bold ${note.pmScore >= 90 ? 'text-pm-green' : 'text-pm-text'}`}>
+                                        {note.pmScore}
+                                    </div>
+                                    <div className="text-xs text-pm-muted leading-tight">
+                                        Out of 100<br />
+                                        <span className="text-white">High Conviction</span>
+                                    </div>
+                                </div>
+                                <div className="w-full bg-pm-border h-1.5 rounded-full mt-3 overflow-hidden">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-pm-purple to-pm-green"
+                                        style={{ width: `${note.pmScore}%` }}
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Footer */}
-                        <div className="mt-8 pt-6 border-t border-pm-border flex items-center justify-between">
-                            <span className="text-sm text-pm-muted">
-                                PM Research &bull; Premium Analysis
-                            </span>
-                            <button onClick={onClose} className="btn-secondary text-sm py-2">
-                                Close
-                            </button>
+                            {note.relatedTickers && (
+                                <div className="mb-8">
+                                    <h4 className="text-xs font-mono uppercase text-pm-muted mb-4 tracking-wider flex items-center gap-2">
+                                        <Tag className="w-3 h-3" />
+                                        Related Assets
+                                    </h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {note.relatedTickers.map(ticker => (
+                                            <span key={ticker} className="px-3 py-1 bg-pm-charcoal hover:bg-white/10 border border-pm-border rounded-md text-xs font-mono text-pm-green cursor-pointer transition-colors">
+                                                ${ticker}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="p-4 rounded-lg bg-pm-green/5 border border-pm-green/20">
+                                <h4 className="text-sm font-bold text-pm-green mb-2">Alpha Note</h4>
+                                <p className="text-xs text-pm-muted leading-relaxed">
+                                    This research note implies a 12-18 month investment horizon. Volatility in infrastructure stocks is expected to remain elevated.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </motion.div>

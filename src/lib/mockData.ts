@@ -121,34 +121,41 @@ export interface ResearchNote {
     pmScore: number;
     category: "Alpha Signal" | "Sector Analysis" | "Risk Alert" | "Deep Dive";
     readTime: string;
+    relatedTickers?: string[];
+    author?: string;
 }
 
 export const mockResearchNotes: ResearchNote[] = [
     {
         id: "r1",
-        title: "AI Infrastructure: The Next Wave",
-        summary: "Analysis of compute infrastructure providers positioned to capture the AI buildout.",
+        title: "AI Infrastructure: The Next Wave of CAPEX",
+        summary: "Beyond the GPU: Why liquid cooling, custom silicon, and edge inference define the 2026 alpha generation landscape.",
         fullContent: `
-## Executive Summary
-The AI infrastructure sector is entering its second phase of growth. While the initial wave focused on training capabilities, we're now seeing a shift toward inference optimization and edge deployment.
+## The CAPEX Supercycle
+The market consensus underestimates the duration of the current infrastructure buildout. Hyperscaler CAPEX is projected to hit **$240B in 2026** (up 18% YoY), but the mix is shifting. The "Easy Money" phase of buying generic H100 clusters is over; the "Efficiency Phase" has begun.
 
-## Key Findings
-1. **Compute Demand**: Enterprise AI adoption is accelerating, with inference workloads expected to exceed training by 10x within 24 months.
-2. **Supply Chain**: Custom silicon development is becoming a competitive moat.
-3. **Power Requirements**: Data center energy consumption is the new bottleneck.
+### 1. The Power Bottleneck & Liquid Cooling
+Data center power density has tripled in 3 years. Air cooling hits a physical wall at 40kW/rack. The GB200 NVL72 rack requires ~120kW. This is a binary event for liquid cooling providers.
+*   **Bull Thesis**: Vertiv (VRT) and SMCI are not just "hardware" plays; they are critical path utilities for the AI economy.
+*   **The Alpha**: Look for component suppliers (connectors, CDUs) rather than just integrators.
 
-## PM Research Alpha Signals
-- SMCI showing 95th percentile momentum across all technical indicators
-- NVDA channel checks indicate sustained hyperscaler demand through Q4
-- New entrants (CRWV) gaining enterprise traction
+### 2. Custom Silicon vs. Merchant Silicon
+While NVIDIA remains King, the hyperscalers (Amazon Inferentia, Google Axion, Microsoft Maia) are aggressively vertically integrating.
+*   **Implication**: Pure-play foundry revenue (TSMC) is a safer long-term bet than single-chip designers if competition compresses margins.
+*   **Watch**: Broadcom (AVGO) as the "Arms Dealer" for custom ASICs.
 
-## Position Recommendations
-Maintain overweight exposure to AI infrastructure with focus on power-efficient compute solutions.
+### 3. Edge Inference: The Next Frontier
+Training models requires massive centralized clusters. *Running* them (inference) requires proximity to the user. We expect a massive re-rating of edge-compute providers and localized datacenters.
+
+## Thesis Conclusion
+We are rotating exposure from "Generic AI Beta" (indices) to "Infrastructure Alpha" (Thermal Management & Custom Silicon). The easy money is made; now we hunt for specific technical moats.
     `,
         date: "2026-01-15",
         pmScore: 96,
         category: "Deep Dive",
         readTime: "12 min",
+        relatedTickers: ["NVDA", "SMCI", "VRT", "AVGO"],
+        author: "S. Cohen, Chief Strat."
     },
     {
         id: "r2",
