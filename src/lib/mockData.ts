@@ -3,7 +3,7 @@ export interface PortfolioPosition {
     id: string;
     ticker: string;
     name: string;
-    assetClass: "AI" | "Orbital" | "Automation" | "Quantum" | "Energy";
+    assetClass: "AI Hardware" | "Cloud/AI" | "Consumer Tech" | "Search/AI" | "E-Commerce" | "Social/AI" | "Auto/Robotics" | "Digital Assets";
     entryPrice: number;
     currentPrice: number;
     returnPercent: number;
