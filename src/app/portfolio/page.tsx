@@ -24,21 +24,20 @@ export default function PortfolioPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-12"
                 >
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-lg bg-pm-green/10 flex items-center justify-center">
-                            <Briefcase className="w-6 h-6 text-pm-green" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl md:text-4xl font-bold">The Ledger</h1>
-                            <p className="text-pm-muted">PM Research Active Portfolio</p>
-                        </div>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-1 bg-pm-green" />
+                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            PM Research Portfolio
+                        </h1>
                     </div>
+                    <p className="text-pm-muted">PM Research Active Portfolio</p>
+
 
                     {/* Status Banner */}
                     <div
                         className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${isSubscribed
-                                ? "bg-pm-green/10 border-pm-green/30 text-pm-green"
-                                : "bg-pm-charcoal border-pm-border text-pm-muted"
+                            ? "bg-pm-green/10 border-pm-green/30 text-pm-green"
+                            : "bg-pm-charcoal border-pm-border text-pm-muted"
                             }`}
                     >
                         {isSubscribed ? (
