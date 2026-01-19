@@ -50,10 +50,19 @@ src/
 ### Subscription Toggle
 Use the navbar button to toggle between **Guest** and **Subscriber** views.
 
+### Live Market Data
+- **Real-Time Prices**: Integrated `yahoo-finance2` to fetch live data for portfolio assets every 60 seconds.
+- **Dynamic Returns**: Automatically calculates YTD return based on a fixed "2026 Open" entry price strategy.
+
 ### Pages
 1. **Landing**: Hero section, features, and CTAs
-2. **Portfolio (The Ledger)**: Data table with blur/reveal for guests
-3. **Research (The Feed)**: Note cards with premium modal
+2. **Portfolio (PM Research Portfolio)**: 
+   - **Assets**: Magnificent 7 (NVDA, MSFT, AAPL, GOOGL, AMZN, META, TSLA) + Bitcoin.
+   - **Metrics**: Track YTD Performance, Quarterly breakdowns, and PM Sentiment Scores.
+   - **Security**: Blurred view for non-subscribers.
+3. **Research (The Feed)**: 
+   - **Deep Dive UI**: Premium modal with clean typography, "Key Takeaways", and "Related Assets".
+   - **Content**: Institutional-grade analysis with Bull/Bear cases.
 4. **Pricing**: Observer ($25/mo) and Operator ($150/mo) tiers
 
 ## Design System
