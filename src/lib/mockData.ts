@@ -16,6 +16,7 @@ export interface PortfolioPosition {
 // Entry prices represent fictional "2026 Open" baseline
 export const mockPortfolio: PortfolioPosition[] = [
     {
+        id: "NVDA",
         ticker: "NVDA",
         name: "NVIDIA Corporation",
         assetClass: "AI Hardware",
@@ -26,6 +27,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         pmScore: 98,
     },
     {
+        id: "MSFT",
         ticker: "MSFT",
         name: "Microsoft Corp",
         assetClass: "Cloud/AI",
@@ -36,6 +38,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         pmScore: 94,
     },
     {
+        id: "AAPL",
         ticker: "AAPL",
         name: "Apple Inc.",
         assetClass: "Consumer Tech",
@@ -46,6 +49,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         pmScore: 89,
     },
     {
+        id: "GOOGL",
         ticker: "GOOGL",
         name: "Alphabet Inc.",
         assetClass: "Search/AI",
@@ -56,36 +60,40 @@ export const mockPortfolio: PortfolioPosition[] = [
         pmScore: 91,
     },
     {
+        id: "AMZN",
         ticker: "AMZN",
         name: "Amazon.com Inc.",
         assetClass: "E-Commerce",
-        entryPrice: 210.40,
-        currentPrice: 210.40,
+        entryPrice: 215.50,
+        currentPrice: 215.50,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 90,
+    },
+    {
+        id: "META",
+        ticker: "META",
+        name: "Meta Platforms",
+        assetClass: "Social/AI",
+        entryPrice: 580.20,
+        currentPrice: 580.20,
         returnPercent: 0,
         status: "Open",
         pmScore: 93,
     },
     {
-        ticker: "META",
-        name: "Meta Platforms",
-        assetClass: "Social/AI",
-        entryPrice: 590.10,
-        currentPrice: 590.10,
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 95,
-    },
-    {
+        id: "TSLA",
         ticker: "TSLA",
         name: "Tesla Inc.",
         assetClass: "Auto/Robotics",
-        entryPrice: 310.00,
-        currentPrice: 310.00,
+        entryPrice: 185.00,
+        currentPrice: 185.00,
         returnPercent: 0,
         status: "Open",
-        pmScore: 82,
+        pmScore: 87,
     },
     {
+        id: "BTC-USD",
         ticker: "BTC-USD",
         name: "Bitcoin",
         assetClass: "Digital Assets",
@@ -93,7 +101,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         currentPrice: 95000.00,
         returnPercent: 0,
         status: "Open",
-        pmScore: 88,
+        pmScore: 85,
     },
 ];
 
