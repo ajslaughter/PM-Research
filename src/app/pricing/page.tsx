@@ -42,7 +42,7 @@ export default function PricingPage() {
             highlighted: true,
             features: [
                 { text: "Everything in Observer", included: true },
-                { text: "Full Portfolio Access (The Ledger)", included: true },
+                { text: "Full Portfolio Access", included: true },
                 { text: "Real-time Position Updates", included: true },
                 { text: "Custom Research Requests", included: true },
                 { text: "Direct Analyst Access", included: true },
