@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { mockPortfolio, PortfolioPosition } from "@/lib/mockData";
@@ -53,6 +54,43 @@ const teaserPosition: PortfolioPosition = {
 export default function PortfolioTable() {
     const { isSubscribed } = useSubscription();
 
+    const [prices, setPrices] = useState<Record<string, number>>({});
+    const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+
+    // Fetch live prices on mount and every 60 seconds
+    useEffect(() => {
+        const fetchPrices = async () => {
+            try {
+                const res = await fetch("/api/prices");
+                if (res.ok) {
+                    const data = await res.json();
+                    setPrices(data);
+                    setIsLoadingPrices(false);
+                }
+            } catch (error) {
+                console.error("Error fetching prices:", error);
+                setIsLoadingPrices(false);
+            }
+        };
+
+        fetchPrices();
+        const interval = setInterval(fetchPrices, 60000); // Update every minute
+        return () => clearInterval(interval);
+    }, []);
+
+    // Merge mock data with live prices
+    const livePortfolio = mockPortfolio.map((position) => {
+        const livePrice = prices[position.ticker] || position.currentPrice; // Fallback to mock if fetch fails
+        // Calculate return based on ENTRY price vs LIVE price
+        const liveReturn = ((livePrice - position.entryPrice) / position.entryPrice) * 100;
+
+        return {
+            ...position,
+            currentPrice: livePrice,
+            returnPercent: liveReturn
+        };
+    });
+
     return (
         <div className="relative">
             {/* Table Container */}
@@ -62,7 +100,14 @@ export default function PortfolioTable() {
                     <div className="data-header">Ticker</div>
                     <div className="data-header">Asset Class</div>
                     <div className="data-header text-right">Entry Price</div>
-                    <div className="data-header text-right">Current Price</div>
+                    <div className="data-header text-right">
+                        Current Price
+                        {isSubscribed && (
+                            <span className="ml-1 text-[10px] text-pm-muted font-normal normal-case">
+                                {isLoadingPrices ? "(Loading...)" : "(Live)"}
+                            </span>
+                        )}
+                    </div>
                     <div className="data-header text-right">Return</div>
                     <div className="data-header text-center">PM Score</div>
                     <div className="data-header text-center">Status</div>
@@ -71,7 +116,7 @@ export default function PortfolioTable() {
                 {/* Subscriber View - Full Data */}
                 {isSubscribed ? (
                     <AnimatePresence>
-                        {mockPortfolio.map((position, index) => (
+                        {livePortfolio.map((position, index) => (
                             <motion.div
                                 key={position.id}
                                 initial={{ opacity: 0, x: -20 }}
@@ -109,15 +154,24 @@ export default function PortfolioTable() {
 
                                 {/* Current Price */}
                                 <div className="data-cell text-right font-mono text-pm-text">
-                                    {formatCurrency(position.currentPrice)}
+                                    <AnimatePresence mode="wait">
+                                        <motion.span
+                                            key={position.currentPrice}
+                                            initial={{ opacity: 0.5, color: "#fff" }}
+                                            animate={{ opacity: 1 }}
+                                            className={isLoadingPrices ? "animate-pulse" : ""}
+                                        >
+                                            {formatCurrency(position.currentPrice)}
+                                        </motion.span>
+                                    </AnimatePresence>
                                 </div>
 
                                 {/* Return */}
                                 <div className="data-cell text-right">
                                     <span
                                         className={`inline-flex items-center gap-1 font-mono font-medium ${position.returnPercent >= 0
-                                                ? "return-positive"
-                                                : "return-negative"
+                                            ? "return-positive"
+                                            : "return-negative"
                                             }`}
                                     >
                                         {position.returnPercent >= 0 ? (
@@ -133,10 +187,10 @@ export default function PortfolioTable() {
                                 <div className="data-cell text-center">
                                     <span
                                         className={`pm-score ${position.pmScore >= 90
-                                                ? "!bg-pm-green/20 !text-pm-green"
-                                                : position.pmScore >= 70
-                                                    ? "!bg-yellow-500/20 !text-yellow-400"
-                                                    : "!bg-pm-red/20 !text-pm-red"
+                                            ? "!bg-pm-green/20 !text-pm-green"
+                                            : position.pmScore >= 70
+                                                ? "!bg-yellow-500/20 !text-yellow-400"
+                                                : "!bg-pm-red/20 !text-pm-red"
                                             }`}
                                     >
                                         <Sparkles className="w-3 h-3" />
