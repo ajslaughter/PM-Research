@@ -5,18 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { mockResearchNotes, ResearchNote } from "@/lib/mockData";
 import {
-import {
-        Clock,
-        Sparkles,
-        ArrowRight,
-        Lock,
-        X,
-        TrendingUp,
-        Search,
-        LineChart,
-        AlertTriangle,
-        Tag,
-    } from "lucide-react";
+    Clock,
+    Sparkles,
+    ArrowRight,
+    Lock,
+    X,
+    TrendingUp,
+    Search,
+    LineChart,
+    AlertTriangle,
+    Tag,
+} from "lucide-react";
 import Link from "next/link";
 import PremiumModal from "@/components/PremiumModal";
 import React from "react";
