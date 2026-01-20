@@ -21,7 +21,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "NVIDIA Corporation",
         assetClass: "AI Hardware",
         entryPrice: 189.84, // Jan 2, 2026 Open
-        currentPrice: 189.84, // Will be overridden by live API
+        currentPrice: 186.23, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 98,
@@ -32,7 +32,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Microsoft Corp",
         assetClass: "Cloud/AI",
         entryPrice: 472.94, // Jan 2, 2026 Open
-        currentPrice: 472.94,
+        currentPrice: 459.86, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -43,7 +43,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Apple Inc.",
         assetClass: "Consumer Tech",
         entryPrice: 271.01, // Jan 2, 2026 Open
-        currentPrice: 271.01,
+        currentPrice: 255.53, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 89,
@@ -54,7 +54,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Alphabet Inc.",
         assetClass: "Search/AI",
         entryPrice: 315.15, // Jan 2, 2026 Open
-        currentPrice: 315.15,
+        currentPrice: 330.00, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -65,7 +65,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Amazon.com Inc.",
         assetClass: "E-Commerce",
         entryPrice: 226.50, // Jan 2, 2026 Open
-        currentPrice: 226.50,
+        currentPrice: 239.36, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 90,
@@ -76,7 +76,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Meta Platforms",
         assetClass: "Social/AI",
         entryPrice: 650.41, // Jan 2, 2026 Open
-        currentPrice: 650.41,
+        currentPrice: 620.16, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 93,
@@ -87,7 +87,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Tesla Inc.",
         assetClass: "Auto/Robotics",
         entryPrice: 438.07, // Jan 2, 2026 Open
-        currentPrice: 438.07,
+        currentPrice: 437.50, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 87,
@@ -98,7 +98,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Bitcoin",
         assetClass: "Digital Assets",
         entryPrice: 88733.07, // Jan 2, 2026 Open
-        currentPrice: 88733.07,
+        currentPrice: 92480.52, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
