@@ -69,11 +69,15 @@ export default function PortfolioTable() {
                 const res = await fetch("/api/prices");
                 if (res.ok) {
                     const data = await res.json();
-                    setPrices(data);
-                    setIsLoadingPrices(false);
+                    // Only set prices if we got valid data
+                    if (data && !data.error) {
+                        setPrices(data);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching prices:", error);
+            } finally {
+                // Always stop loading - will use fallback prices from mockData
                 setIsLoadingPrices(false);
             }
         };
