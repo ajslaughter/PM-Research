@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { mockResearchNotes, ResearchNote } from "@/lib/mockData";
+import { useAdmin } from "@/context/AdminContext";
+import { ResearchNote } from "@/lib/mockData";
 import {
     Clock,
     Sparkles,
@@ -19,11 +20,92 @@ import {
 import Link from "next/link";
 import PremiumModal from "@/components/PremiumModal";
 import React from "react";
-import ReactMarkdown from "react-markdown"; // Note: We actually don't have this installed, so we'll stick to a simpler render for now or assume simple formatting. 
-// Actually, let's keep it simple without adding a new lib yet to avoid "npm install" issues if possible, 
-// using simple CSS whitespace-pre-wrap as before but styling it better.
 
-// ... (props interfaces)
+// Props interfaces
+interface FullContentModalProps {
+    note: ResearchNote | null;
+    onClose: () => void;
+}
+
+interface ResearchCardProps {
+    note: ResearchNote;
+    onReadClick: () => void;
+    isSubscribed: boolean;
+}
+
+// Category styling maps
+const categoryStyles: Record<string, string> = {
+    "Alpha Signal": "bg-pm-green/10 text-pm-green border-pm-green/30",
+    "Sector Analysis": "bg-pm-purple/10 text-pm-purple border-pm-purple/30",
+    "Risk Alert": "bg-red-500/10 text-red-400 border-red-500/30",
+    "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
+};
+
+const categoryIcons: Record<string, React.ReactNode> = {
+    "Alpha Signal": <TrendingUp className="w-3 h-3" />,
+    "Sector Analysis": <LineChart className="w-3 h-3" />,
+    "Risk Alert": <AlertTriangle className="w-3 h-3" />,
+    "Deep Dive": <Search className="w-3 h-3" />,
+};
+
+// Research Card Component
+function ResearchCard({ note, onReadClick, isSubscribed }: ResearchCardProps) {
+    return (
+        <div className="pm-card group hover:border-pm-green/30 transition-all duration-300 flex flex-col h-full">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4 mb-4">
+                <span
+                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border ${categoryStyles[note.category]}`}
+                >
+                    {categoryIcons[note.category]}
+                    {note.category}
+                </span>
+                <div className="flex items-center gap-1 text-pm-muted text-xs">
+                    <Clock className="w-3 h-3" />
+                    <span>{note.readTime}</span>
+                </div>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-lg font-bold mb-2 group-hover:text-pm-green transition-colors line-clamp-2">
+                {note.title}
+            </h3>
+
+            {/* Summary */}
+            <p className="text-sm text-pm-muted mb-4 flex-grow line-clamp-3">
+                {note.summary}
+            </p>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between pt-4 border-t border-pm-border">
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 px-2 py-1 rounded bg-pm-green/10 text-pm-green border border-pm-green/30 text-xs font-mono">
+                        <Sparkles className="w-3 h-3" />
+                        {note.pmScore}
+                    </div>
+                    <span className="text-xs text-pm-muted">{note.date}</span>
+                </div>
+
+                <button
+                    onClick={onReadClick}
+                    className="flex items-center gap-1 text-sm text-pm-green hover:text-pm-text transition-colors group/btn"
+                >
+                    {isSubscribed ? (
+                        <>
+                            <span>Read</span>
+                            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </>
+                    ) : (
+                        <>
+                            <Lock className="w-3 h-3" />
+                            <span>Unlock</span>
+                        </>
+                    )}
+                </button>
+            </div>
+        </div>
+    );
+}
 
 function FullContentModal({ note, onClose }: FullContentModalProps) {
     if (!note) return null;
@@ -163,6 +245,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
 
 export default function ResearchFeed() {
     const { isSubscribed } = useSubscription();
+    const { researchNotes } = useAdmin();
     const [showPremiumModal, setShowPremiumModal] = useState(false);
     const [selectedNote, setSelectedNote] = useState<ResearchNote | null>(null);
 
@@ -178,7 +261,7 @@ export default function ResearchFeed() {
         <>
             {/* Research Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockResearchNotes.map((note, index) => (
+                {researchNotes.map((note, index) => (
                     <motion.div
                         key={note.id}
                         initial={{ opacity: 0, y: 20 }}

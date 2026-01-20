@@ -8,13 +8,13 @@ export async function GET() {
     try {
         const tickers = [
             "NVDA",
-            "PLTR",
-            "RKLB",
-            "IONQ",
-            "PATH",
-            "SMCI",
-            "ENPH",
-            // "ASTR" // Note: Astra Space went private/delisted, might fail. Excluding to adhere to live market data.
+            "MSFT",
+            "AAPL",
+            "GOOGL",
+            "AMZN",
+            "META",
+            "TSLA",
+            "BTC-USD",
         ];
 
         const results = await yahooFinance.quote(tickers);

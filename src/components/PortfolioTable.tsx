@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { mockPortfolio, PortfolioPosition } from "@/lib/mockData";
+import { useAdmin } from "@/context/AdminContext";
+import { PortfolioPosition } from "@/lib/mockData";
 import {
     Lock,
     TrendingUp,
@@ -53,6 +54,7 @@ const teaserPosition: PortfolioPosition = {
 
 export default function PortfolioTable() {
     const { isSubscribed } = useSubscription();
+    const { portfolio: adminPortfolio } = useAdmin();
 
     const [prices, setPrices] = useState<Record<string, number>>({});
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
@@ -78,8 +80,8 @@ export default function PortfolioTable() {
         return () => clearInterval(interval);
     }, []);
 
-    // Merge mock data with live prices
-    const livePortfolio = mockPortfolio.map((position) => {
+    // Merge admin-controlled data with live prices
+    const livePortfolio = adminPortfolio.map((position) => {
         const livePrice = prices[position.ticker] || position.currentPrice; // Fallback to mock if fetch fails
         // Calculate return based on ENTRY price vs LIVE price
         const liveReturn = ((livePrice - position.entryPrice) / position.entryPrice) * 100;
@@ -303,7 +305,7 @@ export default function PortfolioTable() {
                     >
                         <div className="pm-card text-center">
                             <div className="text-2xl font-mono font-bold text-pm-green">
-                                {mockPortfolio.filter((p) => p.status === "Open").length}
+                                {adminPortfolio.filter((p) => p.status === "Open").length}
                             </div>
                             <div className="text-sm text-pm-muted">Open Positions</div>
                         </div>
@@ -311,10 +313,10 @@ export default function PortfolioTable() {
                             <div className="text-2xl font-mono font-bold text-pm-green">
                                 +
                                 {(
-                                    mockPortfolio
+                                    adminPortfolio
                                         .filter((p) => p.status === "Open")
                                         .reduce((sum, p) => sum + p.returnPercent, 0) /
-                                    mockPortfolio.filter((p) => p.status === "Open").length
+                                    adminPortfolio.filter((p) => p.status === "Open").length
                                 ).toFixed(1)}
                                 %
                             </div>
@@ -323,16 +325,16 @@ export default function PortfolioTable() {
                         <div className="pm-card text-center">
                             <div className="text-2xl font-mono font-bold text-pm-purple">
                                 {Math.round(
-                                    mockPortfolio.reduce((sum, p) => sum + p.pmScore, 0) /
-                                    mockPortfolio.length
+                                    adminPortfolio.reduce((sum, p) => sum + p.pmScore, 0) /
+                                    adminPortfolio.length
                                 )}
                             </div>
                             <div className="text-sm text-pm-muted">Avg. PM Score</div>
                         </div>
                         <div className="pm-card text-center">
                             <div className="text-2xl font-mono font-bold text-pm-text">
-                                {mockPortfolio.filter((p) => p.returnPercent > 0).length}/
-                                {mockPortfolio.length}
+                                {adminPortfolio.filter((p) => p.returnPercent > 0).length}/
+                                {adminPortfolio.length}
                             </div>
                             <div className="text-sm text-pm-muted">Win Rate</div>
                         </div>
