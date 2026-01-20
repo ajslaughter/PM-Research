@@ -308,7 +308,7 @@ export default function PortfolioTable() {
                     >
                         <div className="pm-card text-center">
                             <div className="text-2xl font-mono font-bold text-pm-green">
-                                {adminPortfolio.filter((p) => p.status === "Open").length}
+                                {openPositions.length}
                             </div>
                             <div className="text-sm text-pm-muted">Open Positions</div>
                         </div>
@@ -320,10 +320,7 @@ export default function PortfolioTable() {
                         </div>
                         <div className="pm-card text-center">
                             <div className="text-2xl font-mono font-bold text-pm-purple">
-                                {Math.round(
-                                    adminPortfolio.reduce((sum, p) => sum + p.pmScore, 0) /
-                                    adminPortfolio.length
-                                )}
+                                {Math.round(avgScore)}
                             </div>
                             <div className="text-sm text-pm-muted">Avg. PM Score</div>
                         </div>

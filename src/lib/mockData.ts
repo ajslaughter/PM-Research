@@ -20,8 +20,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "NVDA",
         name: "NVIDIA Corporation",
         assetClass: "AI Hardware",
-        entryPrice: 1150.00, // 2026 Open Estimate
-        currentPrice: 1150.00, // Will be overridden by live API
+        entryPrice: 189.84, // Jan 2, 2026 Open
+        currentPrice: 189.84, // Will be overridden by live API
         returnPercent: 0,
         status: "Open",
         pmScore: 98,
@@ -31,8 +31,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "MSFT",
         name: "Microsoft Corp",
         assetClass: "Cloud/AI",
-        entryPrice: 480.50,
-        currentPrice: 480.50,
+        entryPrice: 472.94, // Jan 2, 2026 Open
+        currentPrice: 472.94,
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -42,8 +42,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "AAPL",
         name: "Apple Inc.",
         assetClass: "Consumer Tech",
-        entryPrice: 245.20,
-        currentPrice: 245.20,
+        entryPrice: 271.01, // Jan 2, 2026 Open
+        currentPrice: 271.01,
         returnPercent: 0,
         status: "Open",
         pmScore: 89,
@@ -53,8 +53,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "GOOGL",
         name: "Alphabet Inc.",
         assetClass: "Search/AI",
-        entryPrice: 195.80,
-        currentPrice: 195.80,
+        entryPrice: 315.15, // Jan 2, 2026 Open
+        currentPrice: 315.15,
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -64,8 +64,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "AMZN",
         name: "Amazon.com Inc.",
         assetClass: "E-Commerce",
-        entryPrice: 215.50,
-        currentPrice: 215.50,
+        entryPrice: 226.50, // Jan 2, 2026 Open
+        currentPrice: 226.50,
         returnPercent: 0,
         status: "Open",
         pmScore: 90,
@@ -75,8 +75,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "META",
         name: "Meta Platforms",
         assetClass: "Social/AI",
-        entryPrice: 580.20,
-        currentPrice: 580.20,
+        entryPrice: 650.41, // Jan 2, 2026 Open
+        currentPrice: 650.41,
         returnPercent: 0,
         status: "Open",
         pmScore: 93,
@@ -86,8 +86,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "TSLA",
         name: "Tesla Inc.",
         assetClass: "Auto/Robotics",
-        entryPrice: 185.00,
-        currentPrice: 185.00,
+        entryPrice: 438.07, // Jan 2, 2026 Open
+        currentPrice: 438.07,
         returnPercent: 0,
         status: "Open",
         pmScore: 87,
@@ -97,8 +97,8 @@ export const mockPortfolio: PortfolioPosition[] = [
         ticker: "BTC-USD",
         name: "Bitcoin",
         assetClass: "Digital Assets",
-        entryPrice: 95000.00,
-        currentPrice: 95000.00,
+        entryPrice: 88733.07, // Jan 2, 2026 Open
+        currentPrice: 88733.07,
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
