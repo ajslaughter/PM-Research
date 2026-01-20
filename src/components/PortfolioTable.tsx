@@ -31,11 +31,14 @@ const formatPercent = (value: number): string => {
 
 // Asset class badge colors
 const assetClassColors: Record<string, string> = {
-    AI: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-    Orbital: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    Automation: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    Quantum: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-    Energy: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    "AI Hardware": "bg-purple-500/20 text-purple-400 border-purple-500/30",
+    "Cloud/AI": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    "Consumer Tech": "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
+    "Search/AI": "bg-green-500/20 text-green-400 border-green-500/30",
+    "E-Commerce": "bg-orange-500/20 text-orange-400 border-orange-500/30",
+    "Social/AI": "bg-pink-500/20 text-pink-400 border-pink-500/30",
+    "Auto/Robotics": "bg-red-500/20 text-red-400 border-red-500/30",
+    "Digital Assets": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
 };
 
 // Teaser row for guests
@@ -201,7 +204,7 @@ export default function PortfolioTable() {
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
                             <th className="p-4">Ticker</th>
                             <th className="p-4">Asset Class</th>
-                            <th className="p-4 text-right">Entry (2026)</th>
+                            <th className="p-4 text-right">2026 Open</th>
                             <th className="p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
@@ -237,7 +240,7 @@ export default function PortfolioTable() {
                                     </div>
                                 </td>
                                 <td className="p-4">
-                                    <span className="px-2 py-1 bg-white/5 border border-white/10 rounded text-xs font-mono text-pm-text">
+                                    <span className={`px-2 py-1 rounded text-xs font-mono border ${assetClassColors[position.assetClass] || "bg-white/5 border-white/10 text-pm-text"}`}>
                                         {position.assetClass}
                                     </span>
                                 </td>
@@ -310,15 +313,8 @@ export default function PortfolioTable() {
                             <div className="text-sm text-pm-muted">Open Positions</div>
                         </div>
                         <div className="pm-card text-center">
-                            <div className="text-2xl font-mono font-bold text-pm-green">
-                                +
-                                {(
-                                    adminPortfolio
-                                        .filter((p) => p.status === "Open")
-                                        .reduce((sum, p) => sum + p.returnPercent, 0) /
-                                    adminPortfolio.filter((p) => p.status === "Open").length
-                                ).toFixed(1)}
-                                %
+                            <div className={`text-2xl font-mono font-bold ${avgReturn >= 0 ? "text-pm-green" : "text-pm-red"}`}>
+                                {avgReturn >= 0 ? "+" : ""}{avgReturn.toFixed(1)}%
                             </div>
                             <div className="text-sm text-pm-muted">Avg. Return (Open)</div>
                         </div>
@@ -333,8 +329,8 @@ export default function PortfolioTable() {
                         </div>
                         <div className="pm-card text-center">
                             <div className="text-2xl font-mono font-bold text-pm-text">
-                                {adminPortfolio.filter((p) => p.returnPercent > 0).length}/
-                                {adminPortfolio.length}
+                                {livePortfolio.filter((p) => p.returnPercent > 0).length}/
+                                {livePortfolio.length}
                             </div>
                             <div className="text-sm text-pm-muted">Win Rate</div>
                         </div>
