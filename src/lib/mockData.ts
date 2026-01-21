@@ -5,6 +5,7 @@ export interface PortfolioPosition {
     name: string;
     assetClass: "AI Hardware" | "Cloud/AI" | "Consumer Tech" | "Search/AI" | "E-Commerce" | "Social/AI" | "Auto/Robotics" | "Digital Assets";
     entryPrice: number;
+    ytdReferencePrice: number; // Dec 31, 2025 close price (or entry price if bought in 2026)
     currentPrice: number;
     returnPercent: number;
     status: "Open" | "Closed";
@@ -21,6 +22,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "NVIDIA Corporation",
         assetClass: "AI Hardware",
         entryPrice: 189.84, // Jan 2, 2026 Open
+        ytdReferencePrice: 137.49, // Dec 31, 2025 Close
         currentPrice: 186.23, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
@@ -32,6 +34,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Microsoft Corp",
         assetClass: "Cloud/AI",
         entryPrice: 472.94, // Jan 2, 2026 Open
+        ytdReferencePrice: 421.05, // Dec 31, 2025 Close
         currentPrice: 459.86, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
@@ -43,6 +46,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Apple Inc.",
         assetClass: "Consumer Tech",
         entryPrice: 271.01, // Jan 2, 2026 Open
+        ytdReferencePrice: 242.84, // Dec 31, 2025 Close
         currentPrice: 255.53, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
@@ -54,6 +58,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Alphabet Inc.",
         assetClass: "Search/AI",
         entryPrice: 315.15, // Jan 2, 2026 Open
+        ytdReferencePrice: 190.23, // Dec 31, 2025 Close
         currentPrice: 330.00, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
@@ -65,6 +70,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Amazon.com Inc.",
         assetClass: "E-Commerce",
         entryPrice: 226.50, // Jan 2, 2026 Open
+        ytdReferencePrice: 223.15, // Dec 31, 2025 Close
         currentPrice: 239.36, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
@@ -76,6 +82,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Meta Platforms",
         assetClass: "Social/AI",
         entryPrice: 650.41, // Jan 2, 2026 Open
+        ytdReferencePrice: 579.18, // Dec 31, 2025 Close
         currentPrice: 620.16, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
@@ -87,6 +94,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Tesla Inc.",
         assetClass: "Auto/Robotics",
         entryPrice: 438.07, // Jan 2, 2026 Open
+        ytdReferencePrice: 410.44, // Dec 31, 2025 Close
         currentPrice: 437.50, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",
@@ -98,6 +106,7 @@ export const mockPortfolio: PortfolioPosition[] = [
         name: "Bitcoin",
         assetClass: "Digital Assets",
         entryPrice: 88733.07, // Jan 2, 2026 Open
+        ytdReferencePrice: 93354.54, // Dec 31, 2025 Close
         currentPrice: 92480.52, // Jan 19, 2026 Close
         returnPercent: 0,
         status: "Open",

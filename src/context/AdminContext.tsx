@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
 import { ResearchNote, PortfolioPosition } from "@/lib/mockData";
 
 // Define the shape of our admin context
@@ -16,7 +16,11 @@ interface AdminContextType {
 
     // Portfolio CRUD
     portfolio: PortfolioPosition[];
+    addPortfolioPosition: (position: Omit<PortfolioPosition, "id">) => void;
     updatePortfolioPosition: (ticker: string, updates: Partial<PortfolioPosition>) => void;
+
+    // Data freshness
+    lastUpdated: Date | null;
 }
 
 // Create the context with default values
@@ -25,13 +29,75 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 // Import initial data
 import { mockResearchNotes as initialResearchNotes, mockPortfolio as initialPortfolio } from "@/lib/mockData";
 
+// LocalStorage keys
+const STORAGE_KEYS = {
+    PORTFOLIO: "pm-portfolio",
+    RESEARCH: "pm-research",
+} as const;
+
 // Provider component that wraps the app
 export function AdminProvider({ children }: { children: ReactNode }) {
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [isHydrated, setIsHydrated] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
     // Mutable data stores - initialized from mock data
     const [researchNotes, setResearchNotes] = useState<ResearchNote[]>(initialResearchNotes);
     const [portfolio, setPortfolio] = useState<PortfolioPosition[]>(initialPortfolio);
+
+    // Load data from localStorage on mount (client-side only)
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        try {
+            const savedPortfolio = localStorage.getItem(STORAGE_KEYS.PORTFOLIO);
+            const savedResearch = localStorage.getItem(STORAGE_KEYS.RESEARCH);
+
+            if (savedPortfolio) {
+                const parsed = JSON.parse(savedPortfolio);
+                // Validate that it's an array with required fields
+                if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].ticker) {
+                    setPortfolio(parsed);
+                }
+            }
+
+            if (savedResearch) {
+                const parsed = JSON.parse(savedResearch);
+                if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].title) {
+                    setResearchNotes(parsed);
+                }
+            }
+        } catch (error) {
+            console.error("Failed to load from localStorage:", error);
+        }
+
+        setIsHydrated(true);
+        setLastUpdated(new Date());
+    }, []);
+
+    // Persist portfolio to localStorage whenever it changes (after hydration)
+    useEffect(() => {
+        if (!isHydrated || typeof window === "undefined") return;
+
+        try {
+            localStorage.setItem(STORAGE_KEYS.PORTFOLIO, JSON.stringify(portfolio));
+            setLastUpdated(new Date());
+        } catch (error) {
+            console.error("Failed to save portfolio to localStorage:", error);
+        }
+    }, [portfolio, isHydrated]);
+
+    // Persist research to localStorage whenever it changes (after hydration)
+    useEffect(() => {
+        if (!isHydrated || typeof window === "undefined") return;
+
+        try {
+            localStorage.setItem(STORAGE_KEYS.RESEARCH, JSON.stringify(researchNotes));
+            setLastUpdated(new Date());
+        } catch (error) {
+            console.error("Failed to save research to localStorage:", error);
+        }
+    }, [researchNotes, isHydrated]);
 
     // Toggle admin mode
     const toggleAdmin = () => {
@@ -52,32 +118,40 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     }, []);
 
     // Research CRUD operations
-    const addResearchNote = (note: Omit<ResearchNote, "id">) => {
+    const addResearchNote = useCallback((note: Omit<ResearchNote, "id">) => {
         const newNote: ResearchNote = {
             ...note,
             id: `r${Date.now()}`, // Generate unique ID
         };
         setResearchNotes((prev) => [newNote, ...prev]);
-    };
+    }, []);
 
-    const updateResearchNote = (id: string, updates: Partial<ResearchNote>) => {
+    const updateResearchNote = useCallback((id: string, updates: Partial<ResearchNote>) => {
         setResearchNotes((prev) =>
             prev.map((note) => (note.id === id ? { ...note, ...updates } : note))
         );
-    };
+    }, []);
 
-    const deleteResearchNote = (id: string) => {
+    const deleteResearchNote = useCallback((id: string) => {
         setResearchNotes((prev) => prev.filter((note) => note.id !== id));
-    };
+    }, []);
 
     // Portfolio CRUD operations
-    const updatePortfolioPosition = (ticker: string, updates: Partial<PortfolioPosition>) => {
+    const addPortfolioPosition = useCallback((position: Omit<PortfolioPosition, "id">) => {
+        const newPosition: PortfolioPosition = {
+            ...position,
+            id: position.ticker, // Use ticker as ID
+        };
+        setPortfolio((prev) => [...prev, newPosition]);
+    }, []);
+
+    const updatePortfolioPosition = useCallback((ticker: string, updates: Partial<PortfolioPosition>) => {
         setPortfolio((prev) =>
             prev.map((position) =>
                 position.ticker === ticker ? { ...position, ...updates } : position
             )
         );
-    };
+    }, []);
 
     return (
         <AdminContext.Provider
@@ -89,7 +163,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 updateResearchNote,
                 deleteResearchNote,
                 portfolio,
+                addPortfolioPosition,
                 updatePortfolioPosition,
+                lastUpdated,
             }}
         >
             {children}

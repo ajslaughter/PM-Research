@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
@@ -11,8 +11,15 @@ import {
     TrendingDown,
     ExternalLink,
     Sparkles,
+    RefreshCw,
 } from "lucide-react";
 import Link from "next/link";
+
+// API response type
+interface PriceData {
+    price: number;
+    changePercent: number;
+}
 
 // Format currency
 const formatCurrency = (value: number): string => {
@@ -41,13 +48,19 @@ const assetClassColors: Record<string, string> = {
     "Digital Assets": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
 };
 
+// Skeleton loader component
+const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
+    <div className={`h-4 ${width} bg-pm-charcoal animate-pulse rounded`} />
+);
+
 // Teaser row for guests
 const teaserPosition: PortfolioPosition = {
     id: "teaser",
     ticker: "████",
     name: "AI Stock #1",
-    assetClass: "AI",
+    assetClass: "AI Hardware",
     entryPrice: 0,
+    ytdReferencePrice: 0,
     currentPrice: 0,
     returnPercent: 94.4,
     status: "Open",
@@ -57,21 +70,29 @@ const teaserPosition: PortfolioPosition = {
 
 export default function PortfolioTable() {
     const { isSubscribed } = useSubscription();
-    const { portfolio: adminPortfolio } = useAdmin();
+    const { portfolio: adminPortfolio, lastUpdated } = useAdmin();
 
-    const [prices, setPrices] = useState<Record<string, number>>({});
+    const [prices, setPrices] = useState<Record<string, PriceData>>({});
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+    const [lastPriceFetch, setLastPriceFetch] = useState<Date | null>(null);
+
+    // Build ticker list dynamically from current portfolio
+    const tickerList = useMemo(() => {
+        return adminPortfolio.map(p => p.ticker).join(',');
+    }, [adminPortfolio]);
 
     // Fetch live prices on mount and every 60 seconds
     useEffect(() => {
         const fetchPrices = async () => {
             try {
-                const res = await fetch("/api/prices");
+                // Pass current portfolio tickers to API
+                const res = await fetch(`/api/prices?tickers=${tickerList}`);
                 if (res.ok) {
                     const data = await res.json();
                     // Only set prices if we got valid data
                     if (data && !data.error) {
                         setPrices(data);
+                        setLastPriceFetch(new Date());
                     }
                 }
             } catch (error) {
@@ -85,18 +106,24 @@ export default function PortfolioTable() {
         fetchPrices();
         const interval = setInterval(fetchPrices, 60000); // Update every minute
         return () => clearInterval(interval);
-    }, []);
+    }, [tickerList]);
 
     // Merge admin-controlled data with live prices
     const livePortfolio = adminPortfolio.map((position) => {
-        const livePrice = prices[position.ticker] || position.currentPrice; // Fallback to mock if fetch fails
-        // Calculate return based on ENTRY price vs LIVE price
-        const liveReturn = ((livePrice - position.entryPrice) / position.entryPrice) * 100;
+        const priceData = prices[position.ticker];
+        const livePrice = priceData?.price || position.currentPrice; // Fallback to mock if fetch fails
+
+        // Calculate YTD return based on Dec 31, 2025 reference price vs LIVE price
+        const ytdReturn = ((livePrice - position.ytdReferencePrice) / position.ytdReferencePrice) * 100;
+
+        // Daily change from API
+        const dayChange = priceData?.changePercent || 0;
 
         return {
             ...position,
             currentPrice: livePrice,
-            returnPercent: liveReturn
+            returnPercent: ytdReturn,
+            dayChange,
         };
     });
 
@@ -104,6 +131,9 @@ export default function PortfolioTable() {
     const openPositions = livePortfolio.filter((p) => p.status === "Open");
     const avgReturn =
         openPositions.reduce((acc, curr) => acc + curr.returnPercent, 0) /
+        (openPositions.length || 1);
+    const avgDayChange =
+        openPositions.reduce((acc, curr) => acc + curr.dayChange, 0) /
         (openPositions.length || 1);
     const avgScore =
         openPositions.reduce((acc, curr) => acc + curr.pmScore, 0) /
@@ -116,6 +146,16 @@ export default function PortfolioTable() {
         { quarter: "Q3 2025", return: 8.2, isCurrent: false },
         { quarter: "Q2 2025", return: 15.1, isCurrent: false },
     ];
+
+    // Format the last updated time
+    const formatLastUpdated = () => {
+        if (!lastPriceFetch) return "Loading...";
+        return lastPriceFetch.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    };
 
     if (!isSubscribed) {
         return (
@@ -147,28 +187,28 @@ export default function PortfolioTable() {
                     <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
                         YTD Return
                     </div>
-                    <div className="text-2xl font-bold text-pm-green">
+                    <div className={`text-2xl font-bold ${avgReturn >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
                         {isLoadingPrices ? (
-                            <span className="animate-pulse">---</span>
+                            <SkeletonCell width="w-20" />
                         ) : (
-                            <span>+{avgReturn.toFixed(1)}%</span>
+                            <span>{avgReturn >= 0 ? '+' : ''}{avgReturn.toFixed(1)}%</span>
                         )}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">2026 Open Base</div>
+                    <div className="text-[10px] text-pm-muted mt-1">vs Dec 31, 2025</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-pm-purple">
                     <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
-                        Q1 2026
+                        Today
                     </div>
-                    <div className="text-2xl font-bold text-white">
+                    <div className={`text-2xl font-bold ${avgDayChange >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
                         {isLoadingPrices ? (
-                            <span className="animate-pulse">---</span>
+                            <SkeletonCell width="w-20" />
                         ) : (
-                            <span>+{avgReturn.toFixed(1)}%</span>
+                            <span>{avgDayChange >= 0 ? '+' : ''}{avgDayChange.toFixed(2)}%</span>
                         )}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">Quarter to Date</div>
+                    <div className="text-[10px] text-pm-muted mt-1">Daily Change</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-blue-500">
@@ -202,6 +242,24 @@ export default function PortfolioTable() {
                 ))}
             </div>
 
+            {/* Data Freshness Indicator */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-pm-muted">
+                    <div className={`w-2 h-2 rounded-full ${isLoadingPrices ? 'bg-yellow-500' : 'bg-pm-green'} animate-pulse`} />
+                    <span>
+                        {isLoadingPrices ? "Syncing market data..." : `Live data as of ${formatLastUpdated()}`}
+                    </span>
+                </div>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="flex items-center gap-1 text-xs text-pm-muted hover:text-pm-green transition-colors"
+                    title="Refresh prices"
+                >
+                    <RefreshCw className={`w-3 h-3 ${isLoadingPrices ? 'animate-spin' : ''}`} />
+                    Refresh
+                </button>
+            </div>
+
             <div className="overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50">
                 <table className="w-full text-left border-collapse">
                     <thead>
@@ -212,8 +270,8 @@ export default function PortfolioTable() {
                             <th className="p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
-                                    <span className="ml-2 text-pm-green animate-pulse">
-                                        (Loading...)
+                                    <span className="ml-2 text-yellow-500 animate-pulse">
+                                        (Syncing...)
                                     </span>
                                 )}
                                 {!isLoadingPrices && (
@@ -222,6 +280,7 @@ export default function PortfolioTable() {
                                     </span>
                                 )}
                             </th>
+                            <th className="p-4 text-right">Day %</th>
                             <th className="p-4 text-right">YTD Return</th>
                             <th className="p-4 text-center">PM Score</th>
                             <th className="p-4 text-right">Status</th>
@@ -253,11 +312,20 @@ export default function PortfolioTable() {
                                 </td>
                                 <td className="p-4 text-right font-mono font-medium text-white">
                                     {isLoadingPrices ? (
-                                        <span className="animate-pulse bg-white/10 rounded px-2">
-                                            ...
-                                        </span>
+                                        <SkeletonCell width="w-20" />
                                     ) : (
                                         `$${position.currentPrice.toFixed(2)}`
+                                    )}
+                                </td>
+                                <td className={`p-4 text-right font-mono text-sm ${position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
+                                    }`}>
+                                    {isLoadingPrices ? (
+                                        <SkeletonCell width="w-12" />
+                                    ) : (
+                                        <span>
+                                            {position.dayChange >= 0 ? "+" : ""}
+                                            {position.dayChange.toFixed(2)}%
+                                        </span>
                                     )}
                                 </td>
                                 <td
@@ -267,7 +335,7 @@ export default function PortfolioTable() {
                                         }`}
                                 >
                                     {isLoadingPrices ? (
-                                        "..."
+                                        <SkeletonCell width="w-16" />
                                     ) : (
                                         <>
                                             {position.returnPercent >= 0 ? (
@@ -320,7 +388,7 @@ export default function PortfolioTable() {
                             <div className={`text-2xl font-mono font-bold ${avgReturn >= 0 ? "text-pm-green" : "text-pm-red"}`}>
                                 {avgReturn >= 0 ? "+" : ""}{avgReturn.toFixed(1)}%
                             </div>
-                            <div className="text-sm text-pm-muted">Avg. Return (Open)</div>
+                            <div className="text-sm text-pm-muted">YTD Return</div>
                         </div>
                         <div className="pm-card text-center">
                             <div className="text-2xl font-mono font-bold text-pm-purple">
