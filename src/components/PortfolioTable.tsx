@@ -86,8 +86,9 @@ export default function PortfolioTable() {
         const priceData = prices[position.ticker];
         const livePrice = priceData?.price || position.currentPrice; // Fallback to mock if fetch fails
 
-        // Calculate YTD return based on Dec 31, 2025 reference price vs LIVE price
-        const ytdReturn = ((livePrice - position.ytdReferencePrice) / position.ytdReferencePrice) * 100;
+        // Calculate YTD return: (current - 2026 Open) / 2026 Open
+        // entryPrice = 2026 Open (what we show in the table)
+        const ytdReturn = ((livePrice - position.entryPrice) / position.entryPrice) * 100;
 
         // Daily change from API
         const dayChange = priceData?.changePercent || 0;
