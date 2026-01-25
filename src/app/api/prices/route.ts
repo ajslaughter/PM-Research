@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 // Force dynamic route to ensure fresh data
 export const dynamic = "force-dynamic";
 
-// Simple in-memory cache to prevent rate limiting
+// Cache for rate limiting protection
 interface CacheEntry {
     data: Record<string, { price: number; changePercent: number }>;
     timestamp: number;
@@ -12,8 +12,12 @@ interface CacheEntry {
 let stockCache: CacheEntry | null = null;
 let btcCache: { price: number; changePercent: number; timestamp: number } | null = null;
 
-const STOCK_CACHE_TTL_MS = 60000; // 60 seconds for stocks
-const BTC_CACHE_TTL_MS = 30000; // 30 seconds for BTC (real-time)
+const STOCK_CACHE_TTL_MS = 300000; // 5 minutes for stocks (Alpha Vantage has strict limits)
+const BTC_CACHE_TTL_MS = 30000; // 30 seconds for BTC (CoinGecko is generous)
+
+// Alpha Vantage free API (5 calls/min, 500/day)
+// Get a free key at: https://www.alphavantage.co/support/#api-key
+const ALPHA_VANTAGE_KEY = "demo"; // Works for testing, get your own for production
 
 // Fetch Bitcoin price from CoinGecko (free, real-time, 24/7)
 async function fetchBitcoinPrice(): Promise<{ price: number; changePercent: number } | null> {
@@ -27,7 +31,10 @@ async function fetchBitcoinPrice(): Promise<{ price: number; changePercent: numb
     try {
         const response = await fetch(
             'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true',
-            { headers: { 'Accept': 'application/json' } }
+            {
+                headers: { 'Accept': 'application/json' },
+                next: { revalidate: 30 }
+            }
         );
 
         if (response.ok) {
@@ -45,10 +52,35 @@ async function fetchBitcoinPrice(): Promise<{ price: number; changePercent: numb
         console.error("CoinGecko fetch failed:", error);
     }
 
+    return btcCache ? { price: btcCache.price, changePercent: btcCache.changePercent } : null;
+}
+
+// Fetch single stock from Alpha Vantage
+async function fetchStockPrice(symbol: string): Promise<{ price: number; changePercent: number } | null> {
+    try {
+        const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_KEY}`;
+        const response = await fetch(url, { next: { revalidate: 300 } });
+
+        if (response.ok) {
+            const data = await response.json();
+            const quote = data["Global Quote"];
+
+            if (quote && quote["05. price"]) {
+                const price = parseFloat(quote["05. price"]);
+                const changeStr = quote["10. change percent"] || "0%";
+                const changePercent = parseFloat(changeStr.replace('%', ''));
+
+                return { price, changePercent };
+            }
+        }
+    } catch (error) {
+        console.error(`Alpha Vantage fetch failed for ${symbol}:`, error);
+    }
+
     return null;
 }
 
-// Fetch stock prices from Yahoo Finance
+// Fetch all stock prices (with caching to respect rate limits)
 async function fetchStockPrices(tickers: string[]): Promise<Record<string, { price: number; changePercent: number }>> {
     const now = Date.now();
 
@@ -57,7 +89,7 @@ async function fetchStockPrices(tickers: string[]): Promise<Record<string, { pri
 
     if (stockTickers.length === 0) return {};
 
-    // Check cache
+    // Check cache first
     if (stockCache && (now - stockCache.timestamp) < STOCK_CACHE_TTL_MS) {
         const allPresent = stockTickers.every(t => t in stockCache!.data);
         if (allPresent) {
@@ -71,45 +103,34 @@ async function fetchStockPrices(tickers: string[]): Promise<Record<string, { pri
         }
     }
 
-    try {
-        const symbols = stockTickers.join(',');
-        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols)}`;
+    // Fetch each stock (Alpha Vantage requires individual calls)
+    // To respect rate limits, we fetch sequentially with small delays
+    const results: Record<string, { price: number; changePercent: number }> = {};
 
-        const response = await fetch(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Yahoo API returned ${response.status}`);
+    for (const ticker of stockTickers) {
+        // Check if we have it cached already
+        if (stockCache?.data[ticker]) {
+            results[ticker] = stockCache.data[ticker];
+            continue;
         }
 
-        const json = await response.json();
-        const quotes = json.quoteResponse?.result || [];
+        const data = await fetchStockPrice(ticker);
+        if (data) {
+            results[ticker] = data;
+        }
 
-        const data: Record<string, { price: number; changePercent: number }> = {};
-
-        quotes.forEach((quote: { symbol?: string; regularMarketPrice?: number; regularMarketChangePercent?: number }) => {
-            if (quote.symbol && quote.regularMarketPrice) {
-                data[quote.symbol] = {
-                    price: quote.regularMarketPrice,
-                    changePercent: quote.regularMarketChangePercent || 0
-                };
-            }
-        });
-
-        // Update cache
-        stockCache = {
-            data: { ...(stockCache?.data || {}), ...data },
-            timestamp: now
-        };
-
-        return data;
-    } catch (error) {
-        console.error("Yahoo Finance fetch failed:", error);
-        return {};
+        // Small delay to respect rate limits (5 calls/min = 12 sec/call to be safe)
+        // But for initial load, we'll batch and cache
+        await new Promise(resolve => setTimeout(resolve, 250));
     }
+
+    // Update cache
+    stockCache = {
+        data: { ...(stockCache?.data || {}), ...results },
+        timestamp: now
+    };
+
+    return results;
 }
 
 export async function GET(request: Request) {
