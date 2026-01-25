@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { PortfolioPosition } from "@/lib/mockData";
@@ -9,11 +9,10 @@ import {
     Lock,
     TrendingUp,
     TrendingDown,
-    ExternalLink,
     Sparkles,
     RefreshCw,
 } from "lucide-react";
-import Link from "next/link";
+
 
 // API response type
 interface PriceData {
@@ -21,20 +20,7 @@ interface PriceData {
     changePercent: number;
 }
 
-// Format currency
-const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 2,
-    }).format(value);
-};
 
-// Format percentage
-const formatPercent = (value: number): string => {
-    const sign = value >= 0 ? "+" : "";
-    return `${sign}${value.toFixed(1)}%`;
-};
 
 // Asset class badge colors
 const assetClassColors: Record<string, string> = {
@@ -53,20 +39,7 @@ const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
     <div className={`h-4 ${width} bg-pm-charcoal animate-pulse rounded`} />
 );
 
-// Teaser row for guests
-const teaserPosition: PortfolioPosition = {
-    id: "teaser",
-    ticker: "████",
-    name: "AI Stock #1",
-    assetClass: "AI Hardware",
-    entryPrice: 0,
-    ytdReferencePrice: 0,
-    currentPrice: 0,
-    returnPercent: 94.4,
-    status: "Open",
-    entryDate: "2024-01-15",
-    pmScore: 98,
-};
+
 
 export default function PortfolioTable() {
     const { isSubscribed } = useSubscription();
@@ -370,42 +343,7 @@ export default function PortfolioTable() {
                 </table>
             </div>
 
-            {/* Portfolio Summary (Subscriber Only) */}
-            {
-                isSubscribed && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6"
-                    >
-                        <div className="pm-card text-center">
-                            <div className="text-2xl font-mono font-bold text-pm-green">
-                                {openPositions.length}
-                            </div>
-                            <div className="text-sm text-pm-muted">Open Positions</div>
-                        </div>
-                        <div className="pm-card text-center">
-                            <div className={`text-2xl font-mono font-bold ${avgReturn >= 0 ? "text-pm-green" : "text-pm-red"}`}>
-                                {avgReturn >= 0 ? "+" : ""}{avgReturn.toFixed(1)}%
-                            </div>
-                            <div className="text-sm text-pm-muted">YTD Return</div>
-                        </div>
-                        <div className="pm-card text-center">
-                            <div className="text-2xl font-mono font-bold text-pm-purple">
-                                {Math.round(avgScore)}
-                            </div>
-                            <div className="text-sm text-pm-muted">Avg. PM Score</div>
-                        </div>
-                        <div className="pm-card text-center">
-                            <div className="text-2xl font-mono font-bold text-pm-text">
-                                {livePortfolio.filter((p) => p.returnPercent > 0).length}/
-                                {livePortfolio.length}
-                            </div>
-                            <div className="text-sm text-pm-muted">Win Rate</div>
-                        </div>
-                    </motion.div>
-                )
-            }
+
         </div >
     );
 }
