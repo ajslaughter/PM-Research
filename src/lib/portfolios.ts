@@ -419,4 +419,72 @@ Adding grid infrastructure names to our coverage universe.
         category: "Sector Analysis",
         readTime: "7 min",
     },
+    {
+        id: "r6",
+        title: "SMR Nuclear: The AI Power Renaissance",
+        summary: "Small Modular Reactors emerge as the definitive solution for hyperscaler energy demands. Meta-Oklo and NuScale-Entra1 partnerships signal a new nuclear supercycle.",
+        fullContent: `
+## The AI Energy Crisis
+
+The artificial intelligence revolution has created an unprecedented energy paradox: the most valuable companies on Earth cannot find enough electricity to power their growth. Global data center power demand is projected to surge **165% by 2030**, with the IEA forecasting annual consumption of 945 terawatt-hours—equivalent to Japan's entire national electricity usage. This is not a distant concern; it is a **present-tense capital allocation crisis**.
+
+Traditional grid infrastructure cannot scale fast enough. Renewable intermittency creates reliability gaps incompatible with 99.999% uptime requirements. The market is mispricing the urgency—and the solution.
+
+### The SMR Thesis
+
+Small Modular Reactors (SMRs) represent the technological convergence of three critical requirements:
+*   **Baseload Reliability**: 90%+ capacity factors vs. 25-35% for solar/wind
+*   **Carbon Neutrality**: Zero operational emissions, satisfying ESG mandates
+*   **Scalable Deployment**: Factory-built, site-assembled, 300MW-1GW modules
+
+The SMR market is projected to reach **$7B in 2026** and accelerate to **$18.7B by 2040**. But the real alpha is not in market sizing—it's in understanding *who* is buying.
+
+## Hyperscaler Validation
+
+### Meta-Oklo Partnership (1.2 GW)
+The definitive signal arrived in late 2025: Meta committed to purchasing up to **1.2 gigawatts** of nuclear capacity from Oklo Inc. This is not a press release—it is an anchor customer providing capital commitment visibility that de-risks the entire Oklo business model. BofA upgraded OKLO to Buy with a $127 price target following this announcement.
+
+### NuScale-Entra1 Strategic Alliance
+NuScale Power, holder of the *only* NRC-certified SMR design, entered a global partnership with Entra1 Energy. The catalyst: up to **$25 billion in capital** from Japan's $550B U.S. investment initiative, targeting SMR deployments for AI data centers, manufacturing, and defense. NuScale is also collaborating with the Tennessee Valley Authority on a **6-gigawatt SMR program**—the largest announced SMR initiative in U.S. history.
+
+### The NVIDIA Signal
+Jensen Huang has publicly emphasized that SMRs are essential for powering the next generation of AI infrastructure. When the CEO of the world's most valuable semiconductor company identifies your technology as critical path, the market should listen.
+
+## Alpha Extraction
+
+### Bull Thesis
+The SMR sector is transitioning from "speculative technology bet" to "contracted infrastructure play." The hyperscaler partnerships provide:
+*   Multi-year revenue visibility (previously absent)
+*   Creditworthy counterparties (Meta, TVA)
+*   Regulatory de-risking through institutional backing
+
+### The Trade
+*   **OKLO**: Pre-revenue but now with anchor customer. First commercial operations expected late 2027. Current valuation prices in execution risk, but the Meta deal fundamentally changes the risk/reward calculus.
+*   **SMR (NuScale)**: First-mover regulatory advantage. The Entra1 partnership and TVA program provide multiple shots on goal. Oak Ridge National Laboratory validation confirms technical readiness.
+*   **CEG (Constellation Energy)**: The "picks and shovels" play. Largest U.S. nuclear operator with existing fleet optionality and SMR integration capabilities.
+
+### Technical Moat Analysis
+NuScale's NRC certification represents a **5-7 year head start** on competitors. This is not easily replicated. The regulatory barrier creates a natural oligopoly structure that investors systematically undervalue.
+
+## Risk Factors
+
+*   **Execution Timeline**: Commercial operations remain 18-24 months away for lead projects
+*   **Cost Overruns**: The Idaho National Lab cancellation (2023) remains a cautionary data point
+*   **Valuation Sensitivity**: OKLO trades at speculative multiples; any delay creates significant downside
+*   **Policy Risk**: Nuclear permitting reform remains incomplete; regulatory friction persists
+
+## PM Research Conviction
+
+We are initiating coverage on the SMR nuclear sector with a **PM Score of 91**. The hyperscaler validation fundamentally changes the investment thesis from "technology speculation" to "infrastructure deployment." The AI power crisis is structural and multi-year; SMRs are the highest-conviction solution.
+
+### Position Sizing
+This is a barbell trade: combine the high-beta pure-plays (OKLO, SMR) with the stable cash-flow generator (CEG) to manage volatility while maintaining exposure to the nuclear renaissance.
+    `,
+        date: "2026-01-26",
+        pmScore: 91,
+        category: "Alpha Signal",
+        readTime: "14 min",
+        relatedTickers: ["OKLO", "SMR", "CEG"],
+        author: "PM Research Alpha Desk"
+    },
 ];
