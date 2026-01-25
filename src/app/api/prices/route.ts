@@ -179,7 +179,7 @@ export async function GET(request: NextRequest) {
         tickers.includes('BTC-USD') ? fetchBitcoin() : Promise.resolve(null)
     ]);
 
-    // Combine results - use live price if market open, otherwise previous close
+    // Combine results - always use the most recent price
     const prices: Record<string, number | null> = {};
 
     for (const ticker of tickers) {
@@ -193,8 +193,9 @@ export async function GET(request: NextRequest) {
         } else {
             const data = yahooResults[ticker];
             if (data) {
-                // Use live price if market open, otherwise previous close
-                prices[ticker] = marketOpen ? data.price : data.previousClose;
+                // Always use the latest price (regularMarketPrice)
+                // When market is closed, this is the most recent closing price
+                prices[ticker] = data.price;
             } else {
                 prices[ticker] = null;
             }

@@ -24,7 +24,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "AI Hardware",
         entryPrice: 189.84, // Jan 2, 2026 Open
         yearlyOpen: 134.38, // Jan 2, 2025 Open
-        currentPrice: 186.23, // Fallback price
+        currentPrice: 187.25, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 98,
@@ -36,7 +36,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "Cloud/AI",
         entryPrice: 472.94, // Jan 2, 2026 Open
         yearlyOpen: 416.82, // Jan 2, 2025 Open
-        currentPrice: 459.86, // Fallback price
+        currentPrice: 454.07, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -48,7 +48,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "Consumer Tech",
         entryPrice: 271.01, // Jan 2, 2026 Open
         yearlyOpen: 229.87, // Jan 2, 2025 Open
-        currentPrice: 255.53, // Fallback price
+        currentPrice: 246.81, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 89,
@@ -60,7 +60,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "Search/AI",
         entryPrice: 315.15, // Jan 2, 2026 Open
         yearlyOpen: 188.15, // Jan 2, 2025 Open
-        currentPrice: 330.00, // Fallback price
+        currentPrice: 328.20, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -72,7 +72,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "E-Commerce",
         entryPrice: 226.50, // Jan 2, 2026 Open
         yearlyOpen: 220.00, // Jan 2, 2025 Open
-        currentPrice: 239.36, // Fallback price
+        currentPrice: 229.61, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 90,
@@ -84,7 +84,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "Social/AI",
         entryPrice: 650.41, // Jan 2, 2026 Open
         yearlyOpen: 594.74, // Jan 2, 2025 Open
-        currentPrice: 620.16, // Fallback price
+        currentPrice: 658.76, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 93,
@@ -96,7 +96,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 438.07, // Jan 2, 2026 Open
         yearlyOpen: 402.36, // Jan 2, 2025 Open
-        currentPrice: 437.50, // Fallback price
+        currentPrice: 447.84, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 87,
@@ -108,7 +108,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "Digital Assets",
         entryPrice: 88733.07, // Jan 2, 2026 Open
         yearlyOpen: 94500.00, // Jan 2, 2025 Open
-        currentPrice: 92480.52, // Fallback price
+        currentPrice: 88927.33, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
@@ -126,7 +126,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Space",
         entryPrice: 28.50, // Jan 2, 2026 Open
         yearlyOpen: 26.50, // Jan 2, 2025 Open
-        currentPrice: 27.85, // Fallback price
+        currentPrice: 75.00, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 95,
@@ -138,7 +138,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Data Center",
         entryPrice: 32.80, // Jan 2, 2026 Open
         yearlyOpen: 32.80, // Jan 2, 2025 Open
-        currentPrice: 31.15, // Fallback price
+        currentPrice: 31.64, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 92,
@@ -150,7 +150,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Data Center",
         entryPrice: 132.50, // Jan 2, 2026 Open
         yearlyOpen: 130.25, // Jan 2, 2025 Open
-        currentPrice: 128.92, // Fallback price
+        currentPrice: 180.00, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -162,7 +162,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "AI Hardware",
         entryPrice: 242.50, // Jan 2, 2026 Open
         yearlyOpen: 232.50, // Jan 2, 2025 Open
-        currentPrice: 238.75, // Fallback price
+        currentPrice: 319.09, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -174,7 +174,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Quantum",
         entryPrice: 42.75, // Jan 2, 2026 Open
         yearlyOpen: 44.87, // Jan 2, 2025 Open
-        currentPrice: 40.55, // Fallback price
+        currentPrice: 47.41, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 88,
@@ -192,7 +192,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 580.25, // Jan 2, 2026 Open
         yearlyOpen: 535.00, // Jan 2, 2025 Open
-        currentPrice: 572.40, // Fallback price
+        currentPrice: 577.81, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -204,7 +204,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 12.50, // Jan 2, 2026 Open
         yearlyOpen: 8.50, // Jan 2, 2025 Open
-        currentPrice: 11.85, // Fallback price
+        currentPrice: 0.50, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 78,
@@ -216,7 +216,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 55.80, // Jan 2, 2026 Open
         yearlyOpen: 54.80, // Jan 2, 2025 Open
-        currentPrice: 54.25, // Fallback price
+        currentPrice: 55.50, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 86,
@@ -228,7 +228,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 14.20, // Jan 2, 2026 Open
         yearlyOpen: 28.50, // Jan 2, 2025 Open
-        currentPrice: 13.95, // Fallback price
+        currentPrice: 20.33, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 82,
@@ -240,7 +240,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 15.75, // Jan 2, 2026 Open
         yearlyOpen: 13.25, // Jan 2, 2025 Open
-        currentPrice: 15.10, // Fallback price
+        currentPrice: 14.72, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
