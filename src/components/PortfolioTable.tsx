@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { PortfolioPosition } from "@/lib/portfolios";
@@ -10,14 +10,17 @@ import {
     TrendingDown,
     Sparkles,
     RefreshCw,
+    AlertCircle,
 } from "lucide-react";
 
 
-// API response type
+// API response type - can be null for failed fetches
 interface PriceData {
     price: number;
     changePercent: number;
 }
+
+type PriceResponse = Record<string, PriceData | null>;
 
 // Props for the component
 interface PortfolioTableProps {
@@ -51,8 +54,10 @@ const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
 export default function PortfolioTable({ portfolioData, portfolioName }: PortfolioTableProps) {
     const { isSubscribed } = useSubscription();
 
-    const [prices, setPrices] = useState<Record<string, PriceData>>({});
+    const [prices, setPrices] = useState<PriceResponse>({});
+    const [staleTickers, setStaleTickers] = useState<Set<string>>(new Set());
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [lastPriceFetch, setLastPriceFetch] = useState<Date | null>(null);
 
     // Build ticker list dynamically from current portfolio
@@ -60,50 +65,76 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
         return portfolioData.map(p => p.ticker).join(',');
     }, [portfolioData]);
 
+    // Fetch prices function
+    const fetchPrices = useCallback(async (forceRefresh = false) => {
+        if (forceRefresh) {
+            setIsRefreshing(true);
+        }
+        try {
+            // Pass current portfolio tickers to API
+            const url = `/api/prices?tickers=${tickerList}${forceRefresh ? '&refresh=true' : ''}`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const data: PriceResponse = await res.json();
+                // Only process if we got valid data (not an error response)
+                if (data && !('error' in data)) {
+                    // Track which tickers returned null (stale)
+                    const newStaleTickers = new Set<string>();
+                    const validPrices: Record<string, PriceData> = {};
+
+                    for (const [ticker, priceData] of Object.entries(data)) {
+                        if (priceData === null) {
+                            newStaleTickers.add(ticker);
+                        } else {
+                            validPrices[ticker] = priceData;
+                        }
+                    }
+
+                    setPrices(validPrices);
+                    setStaleTickers(newStaleTickers);
+                    setLastPriceFetch(new Date());
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching prices:", error);
+        } finally {
+            setIsLoadingPrices(false);
+            setIsRefreshing(false);
+        }
+    }, [tickerList]);
+
     // Fetch live prices on mount and every 60 seconds
     useEffect(() => {
-        const fetchPrices = async () => {
-            try {
-                // Pass current portfolio tickers to API
-                const res = await fetch(`/api/prices?tickers=${tickerList}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    // Only set prices if we got valid data
-                    if (data && !data.error) {
-                        setPrices(data);
-                        setLastPriceFetch(new Date());
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching prices:", error);
-            } finally {
-                // Always stop loading - will use fallback prices from mockData
-                setIsLoadingPrices(false);
-            }
-        };
-
+        setIsLoadingPrices(true);
         fetchPrices();
-        const interval = setInterval(fetchPrices, 60000); // Update every minute
+        const interval = setInterval(() => fetchPrices(), 60000); // Update every minute
         return () => clearInterval(interval);
-    }, [tickerList]);
+    }, [fetchPrices]);
+
+    // Handle refresh button click
+    const handleRefresh = useCallback(() => {
+        fetchPrices(true);
+    }, [fetchPrices]);
 
     // Merge portfolio data with live prices
     const livePortfolio = portfolioData.map((position) => {
         const priceData = prices[position.ticker];
-        const livePrice = priceData?.price || position.currentPrice; // Fallback if fetch fails
+        const isStale = staleTickers.has(position.ticker);
+        const livePrice = priceData?.price ?? position.currentPrice; // Fallback if fetch fails
 
         // Calculate YTD return: (current - 2026 Open) / 2026 Open
         // entryPrice = 2026 Open (what we show in the table)
         const ytdReturn = ((livePrice - position.entryPrice) / position.entryPrice) * 100;
 
-        // Daily change from API
-        const dayChange = priceData?.changePercent || 0;
+        // Daily change from API, 0 if stale
+        const dayChange = priceData?.changePercent ?? 0;
 
         return {
             ...position,
             currentPrice: livePrice,
             returnPercent: ytdReturn,
             dayChange,
+            isStale, // Track if price is stale
         };
     });
 
@@ -144,7 +175,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                     <Lock className="w-12 h-12 text-pm-green mb-4 opacity-80" />
                     <h3 className="text-2xl font-bold mb-2">Operator Access Required</h3>
                     <p className="text-pm-muted mb-6 max-w-md">
-                        Upgrade to the Operator tier to view our real-time "Mag 7 + Bitcoin" equal-weight portfolio, YTD performance, and predictive signals.
+                        Upgrade to the Operator tier to view our real-time &ldquo;Mag 7 + Bitcoin&rdquo; equal-weight portfolio, YTD performance, and predictive signals.
                     </p>
                     <a href="/pricing" className="btn-primary">
                         View Pricing
@@ -225,17 +256,18 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
             {/* Data Freshness Indicator */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-pm-muted">
-                    <div className={`w-2 h-2 rounded-full ${isLoadingPrices ? 'bg-yellow-500' : 'bg-pm-green'} animate-pulse`} />
+                    <div className={`w-2 h-2 rounded-full ${isLoadingPrices || isRefreshing ? 'bg-yellow-500' : staleTickers.size > 0 ? 'bg-orange-500' : 'bg-pm-green'} animate-pulse`} />
                     <span>
-                        {isLoadingPrices ? "Syncing market data..." : `Live data as of ${formatLastUpdated()}`}
+                        {isLoadingPrices || isRefreshing ? "Syncing market data..." : staleTickers.size > 0 ? `Live data (${staleTickers.size} stale) as of ${formatLastUpdated()}` : `Live data as of ${formatLastUpdated()}`}
                     </span>
                 </div>
                 <button
-                    onClick={() => window.location.reload()}
-                    className="flex items-center gap-1 text-xs text-pm-muted hover:text-pm-green transition-colors"
+                    onClick={handleRefresh}
+                    disabled={isLoadingPrices || isRefreshing}
+                    className="flex items-center gap-1 text-xs text-pm-muted hover:text-pm-green transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Refresh prices"
                 >
-                    <RefreshCw className={`w-3 h-3 ${isLoadingPrices ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-3 h-3 ${isLoadingPrices || isRefreshing ? 'animate-spin' : ''}`} />
                     Refresh
                 </button>
             </div>
@@ -294,13 +326,22 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                                     {isLoadingPrices ? (
                                         <SkeletonCell width="w-20" />
                                     ) : (
-                                        `$${position.currentPrice.toFixed(2)}`
+                                        <span className="inline-flex items-center gap-1">
+                                            ${position.currentPrice.toFixed(2)}
+                                            {position.isStale && (
+                                                <span title="Price unavailable - using cached data" className="text-orange-400">
+                                                    <AlertCircle className="w-3 h-3" />
+                                                </span>
+                                            )}
+                                        </span>
                                     )}
                                 </td>
-                                <td className={`p-4 text-right font-mono text-sm ${position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
+                                <td className={`p-4 text-right font-mono text-sm ${position.isStale ? "text-pm-muted" : position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
                                     }`}>
                                     {isLoadingPrices ? (
                                         <SkeletonCell width="w-12" />
+                                    ) : position.isStale ? (
+                                        <span className="text-pm-muted">--</span>
                                     ) : (
                                         <span>
                                             {position.dayChange >= 0 ? "+" : ""}

@@ -156,20 +156,30 @@ export async function GET(request: Request) {
         const tickerParam = searchParams.get('tickers');
         const forceRefresh = searchParams.get('refresh') === 'true';
 
-        const defaultTickers = ["NVDA", "MSFT", "AAPL", "GOOGL", "AMZN", "META", "TSLA", "BTC-USD"];
-        const allTickers = tickerParam ? tickerParam.split(',').map(t => t.trim()) : defaultTickers;
+        // ONLY use tickers from query param - no defaults
+        if (!tickerParam || tickerParam.trim() === '') {
+            return NextResponse.json({ error: "No tickers provided. Use ?tickers=AAPL,MSFT,..." }, { status: 400 });
+        }
+
+        const allTickers = tickerParam.split(',').map(t => t.trim()).filter(t => t.length > 0);
+
+        if (allTickers.length === 0) {
+            return NextResponse.json({ error: "No valid tickers provided" }, { status: 400 });
+        }
 
         const now = Date.now();
-        const results: Record<string, PriceData> = {};
+        const results: Record<string, PriceData | null> = {};
         const tickersToFetch: string[] = [];
 
-        // Check cache first
+        // Check cache first - populate results for all requested tickers
         for (const ticker of allTickers) {
             const cached = priceCache[ticker];
             if (!forceRefresh && cached && (now - cached.timestamp) < CACHE_TTL_MS) {
                 results[ticker] = cached.data;
             } else {
                 tickersToFetch.push(ticker);
+                // Initialize as null - will be updated if fetch succeeds
+                results[ticker] = null;
             }
         }
 
@@ -180,14 +190,17 @@ export async function GET(request: Request) {
 
             // Fetch stocks from Yahoo (parallel with BTC)
             const [yahooData, btcData] = await Promise.all([
-                stockTickers.length > 0 ? fetchFromYahoo(stockTickers) : {},
+                stockTickers.length > 0 ? fetchFromYahoo(stockTickers) : Promise.resolve({} as Record<string, PriceData>),
                 hasBTC ? fetchBitcoin() : null
             ]);
 
             // Add Yahoo results
-            for (const [symbol, data] of Object.entries(yahooData)) {
-                results[symbol] = data;
-                priceCache[symbol] = { data, timestamp: now };
+            for (const symbol of Object.keys(yahooData)) {
+                const data = yahooData[symbol];
+                if (data) {
+                    results[symbol] = data;
+                    priceCache[symbol] = { data, timestamp: now };
+                }
             }
 
             // Add BTC
@@ -197,32 +210,40 @@ export async function GET(request: Request) {
             }
 
             // Try Alpha Vantage for any stocks still missing (rate limited, so only first few)
-            const stillMissing = stockTickers.filter(s => !(s in results)).slice(0, 3);
+            const stillMissing = stockTickers.filter(s => results[s] === null).slice(0, 3);
             for (const symbol of stillMissing) {
-                const avData = await fetchFromAlphaVantage(symbol);
-                if (avData) {
-                    results[symbol] = avData;
-                    priceCache[symbol] = { data: avData, timestamp: now };
+                try {
+                    const avData = await fetchFromAlphaVantage(symbol);
+                    if (avData) {
+                        results[symbol] = avData;
+                        priceCache[symbol] = { data: avData, timestamp: now };
+                    }
+                } catch (e) {
+                    console.error(`Alpha Vantage failed for ${symbol}:`, e);
+                    // results[symbol] stays null
                 }
                 // Small delay to respect rate limits
                 await new Promise(r => setTimeout(r, 300));
             }
         }
 
+        // Return all results - null values indicate failed fetches
+        // This allows the client to handle fallbacks per-ticker
         return NextResponse.json(results);
     } catch (error) {
         console.error("Price fetch error:", error);
 
-        // Return cached on error
-        const fallback: Record<string, PriceData> = {};
-        for (const [symbol, cached] of Object.entries(priceCache)) {
-            fallback[symbol] = cached.data;
+        // Return cached data for any requested tickers on error
+        const { searchParams } = new URL(request.url);
+        const tickerParam = searchParams.get('tickers');
+        const requestedTickers = tickerParam ? tickerParam.split(',').map(t => t.trim()) : [];
+
+        const fallback: Record<string, PriceData | null> = {};
+        for (const symbol of requestedTickers) {
+            const cached = priceCache[symbol];
+            fallback[symbol] = cached ? cached.data : null;
         }
 
-        if (Object.keys(fallback).length > 0) {
-            return NextResponse.json(fallback);
-        }
-
-        return NextResponse.json({ error: "Failed to fetch prices" }, { status: 500 });
+        return NextResponse.json(fallback);
     }
 }
