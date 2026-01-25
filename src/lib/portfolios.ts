@@ -124,7 +124,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Space",
         entryPrice: 28.50, // Jan 2, 2026 Open
         ytdReferencePrice: 25.12, // Dec 31, 2025 Close
-        currentPrice: 28.50,
+        currentPrice: 27.85, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 95,
@@ -136,7 +136,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Data Center",
         entryPrice: 32.80, // Jan 2, 2026 Open
         ytdReferencePrice: 29.45, // Dec 31, 2025 Close
-        currentPrice: 32.80,
+        currentPrice: 31.15, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 92,
@@ -148,7 +148,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Data Center",
         entryPrice: 132.50, // Jan 2, 2026 Open
         ytdReferencePrice: 118.75, // Dec 31, 2025 Close
-        currentPrice: 132.50,
+        currentPrice: 128.92, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -160,7 +160,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "AI Hardware",
         entryPrice: 242.50, // Jan 2, 2026 Open
         ytdReferencePrice: 225.80, // Dec 31, 2025 Close
-        currentPrice: 242.50,
+        currentPrice: 238.75, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -172,7 +172,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Quantum",
         entryPrice: 42.75, // Jan 2, 2026 Open
         ytdReferencePrice: 38.20, // Dec 31, 2025 Close
-        currentPrice: 42.75,
+        currentPrice: 40.55, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 88,
@@ -189,7 +189,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 580.25, // Jan 2, 2026 Open
         ytdReferencePrice: 545.80, // Dec 31, 2025 Close
-        currentPrice: 580.25,
+        currentPrice: 572.40, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -201,7 +201,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 12.50, // Jan 2, 2026 Open
         ytdReferencePrice: 10.25, // Dec 31, 2025 Close
-        currentPrice: 12.50,
+        currentPrice: 11.85, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 78,
@@ -213,7 +213,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 55.80, // Jan 2, 2026 Open
         ytdReferencePrice: 52.15, // Dec 31, 2025 Close
-        currentPrice: 55.80,
+        currentPrice: 54.25, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 86,
@@ -225,7 +225,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 14.20, // Jan 2, 2026 Open
         ytdReferencePrice: 13.45, // Dec 31, 2025 Close
-        currentPrice: 14.20,
+        currentPrice: 13.95, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 82,
@@ -237,7 +237,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 15.75, // Jan 2, 2026 Open
         ytdReferencePrice: 14.20, // Dec 31, 2025 Close
-        currentPrice: 15.75,
+        currentPrice: 15.10, // Jan 24, 2026 Close
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
