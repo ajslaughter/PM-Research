@@ -24,6 +24,11 @@ interface AdminContextType {
     addInnovationPosition: (position: Omit<PortfolioPosition, "id">) => void;
     updateInnovationPosition: (ticker: string, updates: Partial<PortfolioPosition>) => void;
 
+    // Robotics Portfolio CRUD
+    roboticsPortfolio: PortfolioPosition[];
+    addRoboticsPosition: (position: Omit<PortfolioPosition, "id">) => void;
+    updateRoboticsPosition: (ticker: string, updates: Partial<PortfolioPosition>) => void;
+
     // Data freshness
     lastUpdated: Date | null;
 }
@@ -32,12 +37,13 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 // Import initial data
-import { researchNotes as initialResearchNotes, corePortfolio as initialPortfolio, innovationPortfolio as initialInnovationPortfolio } from "@/lib/portfolios";
+import { researchNotes as initialResearchNotes, corePortfolio as initialPortfolio, innovationPortfolio as initialInnovationPortfolio, roboticsPortfolio as initialRoboticsPortfolio } from "@/lib/portfolios";
 
 // LocalStorage keys
 const STORAGE_KEYS = {
     PORTFOLIO: "pm-portfolio",
     INNOVATION: "pm-innovation-portfolio",
+    ROBOTICS: "pm-robotics-portfolio",
     RESEARCH: "pm-research",
 } as const;
 
@@ -51,6 +57,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const [researchNotes, setResearchNotes] = useState<ResearchNote[]>(initialResearchNotes);
     const [portfolio, setPortfolio] = useState<PortfolioPosition[]>(initialPortfolio);
     const [innovationPortfolio, setInnovationPortfolio] = useState<PortfolioPosition[]>(initialInnovationPortfolio);
+    const [roboticsPortfolio, setRoboticsPortfolio] = useState<PortfolioPosition[]>(initialRoboticsPortfolio);
 
     // Load data from localStorage on mount (client-side only)
     useEffect(() => {
@@ -72,6 +79,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 const parsed = JSON.parse(savedInnovation);
                 if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].ticker) {
                     setInnovationPortfolio(parsed);
+                }
+            }
+
+            const savedRobotics = localStorage.getItem(STORAGE_KEYS.ROBOTICS);
+            if (savedRobotics) {
+                const parsed = JSON.parse(savedRobotics);
+                if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].ticker) {
+                    setRoboticsPortfolio(parsed);
                 }
             }
 
@@ -112,6 +127,30 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             console.error("Failed to save research to localStorage:", error);
         }
     }, [researchNotes, isHydrated]);
+
+    // Persist innovation portfolio to localStorage whenever it changes (after hydration)
+    useEffect(() => {
+        if (!isHydrated || typeof window === "undefined") return;
+
+        try {
+            localStorage.setItem(STORAGE_KEYS.INNOVATION, JSON.stringify(innovationPortfolio));
+            setLastUpdated(new Date());
+        } catch (error) {
+            console.error("Failed to save innovation portfolio to localStorage:", error);
+        }
+    }, [innovationPortfolio, isHydrated]);
+
+    // Persist robotics portfolio to localStorage whenever it changes (after hydration)
+    useEffect(() => {
+        if (!isHydrated || typeof window === "undefined") return;
+
+        try {
+            localStorage.setItem(STORAGE_KEYS.ROBOTICS, JSON.stringify(roboticsPortfolio));
+            setLastUpdated(new Date());
+        } catch (error) {
+            console.error("Failed to save robotics portfolio to localStorage:", error);
+        }
+    }, [roboticsPortfolio, isHydrated]);
 
     // Toggle admin mode
     const toggleAdmin = () => {
@@ -167,6 +206,40 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         );
     }, []);
 
+    // Innovation Portfolio CRUD operations
+    const addInnovationPosition = useCallback((position: Omit<PortfolioPosition, "id">) => {
+        const newPosition: PortfolioPosition = {
+            ...position,
+            id: position.ticker,
+        };
+        setInnovationPortfolio((prev) => [...prev, newPosition]);
+    }, []);
+
+    const updateInnovationPosition = useCallback((ticker: string, updates: Partial<PortfolioPosition>) => {
+        setInnovationPortfolio((prev) =>
+            prev.map((position) =>
+                position.ticker === ticker ? { ...position, ...updates } : position
+            )
+        );
+    }, []);
+
+    // Robotics Portfolio CRUD operations
+    const addRoboticsPosition = useCallback((position: Omit<PortfolioPosition, "id">) => {
+        const newPosition: PortfolioPosition = {
+            ...position,
+            id: position.ticker,
+        };
+        setRoboticsPortfolio((prev) => [...prev, newPosition]);
+    }, []);
+
+    const updateRoboticsPosition = useCallback((ticker: string, updates: Partial<PortfolioPosition>) => {
+        setRoboticsPortfolio((prev) =>
+            prev.map((position) =>
+                position.ticker === ticker ? { ...position, ...updates } : position
+            )
+        );
+    }, []);
+
     return (
         <AdminContext.Provider
             value={{
@@ -179,6 +252,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 portfolio,
                 addPortfolioPosition,
                 updatePortfolioPosition,
+                innovationPortfolio,
+                addInnovationPosition,
+                updateInnovationPosition,
+                roboticsPortfolio,
+                addRoboticsPosition,
+                updateRoboticsPosition,
                 lastUpdated,
             }}
         >
