@@ -124,10 +124,10 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
         const isStale = staleTickers.has(position.ticker);
         const currentPrice = livePrice ?? position.currentPrice; // Fallback if fetch fails
 
-        // Calculate YTD return: (currentPrice - yearlyOpen) / yearlyOpen * 100
-        // yearlyOpen = Jan 2, 2025 Open price
-        const ytdReturn = position.yearlyOpen > 0
-            ? ((currentPrice - position.yearlyOpen) / position.yearlyOpen) * 100
+        // Calculate YTD return: (currentPrice - entryPrice) / entryPrice * 100
+        // entryPrice = Jan 2, 2026 Open price (2026 YTD baseline)
+        const ytdReturn = position.entryPrice > 0
+            ? ((currentPrice - position.entryPrice) / position.entryPrice) * 100
             : 0;
 
         // Calculate daily change (current vs entry price for this year)
@@ -212,7 +212,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                             <span>{avgReturn >= 0 ? '+' : ''}{avgReturn.toFixed(1)}%</span>
                         )}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">vs Jan 2, 2025</div>
+                    <div className="text-[10px] text-pm-muted mt-1">vs Jan 2, 2026</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-pm-purple">
