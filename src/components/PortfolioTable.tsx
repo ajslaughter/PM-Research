@@ -14,13 +14,12 @@ import {
 } from "lucide-react";
 
 
-// API response type - can be null for failed fetches
-interface PriceData {
-    price: number;
-    changePercent: number;
+// API response type
+interface PriceApiResponse {
+    prices: Record<string, number | null>;
+    marketOpen: boolean;
+    timestamp: string;
 }
-
-type PriceResponse = Record<string, PriceData | null>;
 
 // Props for the component
 interface PortfolioTableProps {
@@ -54,7 +53,8 @@ const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
 export default function PortfolioTable({ portfolioData, portfolioName }: PortfolioTableProps) {
     const { isSubscribed } = useSubscription();
 
-    const [prices, setPrices] = useState<PriceResponse>({});
+    const [prices, setPrices] = useState<Record<string, number | null>>({});
+    const [marketOpen, setMarketOpen] = useState(false);
     const [staleTickers, setStaleTickers] = useState<Set<string>>(new Set());
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -75,24 +75,22 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
             const url = `/api/prices?tickers=${tickerList}${forceRefresh ? '&refresh=true' : ''}`;
             const res = await fetch(url);
             if (res.ok) {
-                const data: PriceResponse = await res.json();
+                const data: PriceApiResponse = await res.json();
                 // Only process if we got valid data (not an error response)
-                if (data && !('error' in data)) {
+                if (data && data.prices && !('error' in data)) {
                     // Track which tickers returned null (stale)
                     const newStaleTickers = new Set<string>();
-                    const validPrices: Record<string, PriceData> = {};
 
-                    for (const [ticker, priceData] of Object.entries(data)) {
-                        if (priceData === null) {
+                    for (const [ticker, price] of Object.entries(data.prices)) {
+                        if (price === null) {
                             newStaleTickers.add(ticker);
-                        } else {
-                            validPrices[ticker] = priceData;
                         }
                     }
 
-                    setPrices(validPrices);
+                    setPrices(data.prices);
+                    setMarketOpen(data.marketOpen);
                     setStaleTickers(newStaleTickers);
-                    setLastPriceFetch(new Date());
+                    setLastPriceFetch(new Date(data.timestamp));
                 }
             }
         } catch (error) {
@@ -103,13 +101,17 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
         }
     }, [tickerList]);
 
-    // Fetch live prices on mount and every 60 seconds
+    // Fetch live prices on mount and poll based on market status
+    // 30 seconds during market hours, 5 minutes when market is closed
     useEffect(() => {
         setIsLoadingPrices(true);
         fetchPrices();
-        const interval = setInterval(() => fetchPrices(), 60000); // Update every minute
+        const interval = setInterval(
+            () => fetchPrices(),
+            marketOpen ? 30000 : 300000
+        );
         return () => clearInterval(interval);
-    }, [fetchPrices]);
+    }, [fetchPrices, marketOpen]);
 
     // Handle refresh button click
     const handleRefresh = useCallback(() => {
@@ -118,23 +120,28 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
 
     // Merge portfolio data with live prices
     const livePortfolio = portfolioData.map((position) => {
-        const priceData = prices[position.ticker];
+        const livePrice = prices[position.ticker];
         const isStale = staleTickers.has(position.ticker);
-        const livePrice = priceData?.price ?? position.currentPrice; // Fallback if fetch fails
+        const currentPrice = livePrice ?? position.currentPrice; // Fallback if fetch fails
 
-        // Calculate YTD return: (current - 2026 Open) / 2026 Open
-        // entryPrice = 2026 Open (what we show in the table)
-        const ytdReturn = ((livePrice - position.entryPrice) / position.entryPrice) * 100;
+        // Calculate YTD return: (currentPrice - yearlyOpen) / yearlyOpen * 100
+        // yearlyOpen = Jan 2, 2025 Open price
+        const ytdReturn = position.yearlyOpen > 0
+            ? ((currentPrice - position.yearlyOpen) / position.yearlyOpen) * 100
+            : 0;
 
-        // Daily change from API, 0 if stale
-        const dayChange = priceData?.changePercent ?? 0;
+        // Calculate daily change (current vs entry price for this year)
+        const dayChange = position.entryPrice > 0
+            ? ((currentPrice - position.entryPrice) / position.entryPrice) * 100
+            : 0;
 
         return {
             ...position,
-            currentPrice: livePrice,
+            currentPrice,
             returnPercent: ytdReturn,
             dayChange,
             isStale, // Track if price is stale
+            isLive: livePrice !== null,
         };
     });
 
@@ -205,7 +212,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                             <span>{avgReturn >= 0 ? '+' : ''}{avgReturn.toFixed(1)}%</span>
                         )}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">vs Dec 31, 2025</div>
+                    <div className="text-[10px] text-pm-muted mt-1">vs Jan 2, 2025</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-pm-purple">
@@ -255,11 +262,27 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
 
             {/* Data Freshness Indicator */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs text-pm-muted">
-                    <div className={`w-2 h-2 rounded-full ${isLoadingPrices || isRefreshing ? 'bg-yellow-500' : staleTickers.size > 0 ? 'bg-orange-500' : 'bg-pm-green'} animate-pulse`} />
-                    <span>
-                        {isLoadingPrices || isRefreshing ? "Syncing market data..." : staleTickers.size > 0 ? `Live data (${staleTickers.size} stale) as of ${formatLastUpdated()}` : `Live data as of ${formatLastUpdated()}`}
-                    </span>
+                <div className="flex items-center gap-4 text-xs text-pm-muted">
+                    {/* Market Status */}
+                    <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${marketOpen ? 'bg-pm-green animate-pulse' : 'bg-gray-500'}`} />
+                        <span className="text-gray-400">
+                            {marketOpen ? 'Market Open' : 'Market Closed'}
+                        </span>
+                    </div>
+                    {/* Data Status */}
+                    <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${isLoadingPrices || isRefreshing ? 'bg-yellow-500' : staleTickers.size > 0 ? 'bg-orange-500' : 'bg-pm-green'} animate-pulse`} />
+                        <span>
+                            {isLoadingPrices || isRefreshing ? "Syncing..." : staleTickers.size > 0 ? `${staleTickers.size} stale` : "Live"}
+                        </span>
+                    </div>
+                    {/* Last Update */}
+                    {lastPriceFetch && (
+                        <span className="text-gray-500">
+                            Updated: {formatLastUpdated()}
+                        </span>
+                    )}
                 </div>
                 <button
                     onClick={handleRefresh}
@@ -322,16 +345,19 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                                 <td className="p-4 text-right font-mono text-pm-muted">
                                     ${position.entryPrice.toFixed(2)}
                                 </td>
-                                <td className="p-4 text-right font-mono font-medium text-white">
+                                <td className="p-4 text-right font-mono font-medium">
                                     {isLoadingPrices ? (
                                         <SkeletonCell width="w-20" />
                                     ) : (
-                                        <span className="inline-flex items-center gap-1">
+                                        <span className={`inline-flex items-center gap-1 ${position.isLive ? 'text-white' : 'text-gray-400'}`}>
                                             ${position.currentPrice.toFixed(2)}
                                             {position.isStale && (
                                                 <span title="Price unavailable - using cached data" className="text-orange-400">
                                                     <AlertCircle className="w-3 h-3" />
                                                 </span>
+                                            )}
+                                            {!position.isLive && !position.isStale && (
+                                                <span className="text-xs text-yellow-500" title="Cached price">●</span>
                                             )}
                                         </span>
                                     )}

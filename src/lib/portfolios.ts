@@ -1,20 +1,21 @@
-// Mock portfolio data for PM Research
+// Portfolio data for PM Research
 export interface PortfolioPosition {
     id: string;
     ticker: string;
     name: string;
     assetClass: "AI Hardware" | "Cloud/AI" | "Consumer Tech" | "Search/AI" | "E-Commerce" | "Social/AI" | "Auto/Robotics" | "Digital Assets" | "Space" | "Quantum" | "Grid Infrastructure" | "Data Center";
     entryPrice: number;
-    ytdReferencePrice: number; // Dec 31, 2025 close price (or entry price if bought in 2026)
+    yearlyOpen: number; // Jan 2, 2025 Open price - used for YTD performance calculation
     currentPrice: number;
     returnPercent: number;
     status: "Open" | "Closed";
-    entryDate?: string; // Made optional as new data doesn't include it
+    entryDate?: string;
     pmScore: number;
 }
 
 // Mag 7 + BTC (Equally Weighted Strategy)
-// Entry prices represent fictional "2026 Open" baseline
+// yearlyOpen = Jan 2, 2025 Open price (for YTD performance)
+// entryPrice = Jan 2, 2026 Open price (position entry)
 export const corePortfolio: PortfolioPosition[] = [
     {
         id: "NVDA",
@@ -22,8 +23,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "NVIDIA Corporation",
         assetClass: "AI Hardware",
         entryPrice: 189.84, // Jan 2, 2026 Open
-        ytdReferencePrice: 137.49, // Dec 31, 2025 Close
-        currentPrice: 186.23, // Jan 19, 2026 Close
+        yearlyOpen: 134.38, // Jan 2, 2025 Open
+        currentPrice: 186.23, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 98,
@@ -34,8 +35,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "Microsoft Corp",
         assetClass: "Cloud/AI",
         entryPrice: 472.94, // Jan 2, 2026 Open
-        ytdReferencePrice: 421.05, // Dec 31, 2025 Close
-        currentPrice: 459.86, // Jan 19, 2026 Close
+        yearlyOpen: 416.82, // Jan 2, 2025 Open
+        currentPrice: 459.86, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -46,8 +47,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "Apple Inc.",
         assetClass: "Consumer Tech",
         entryPrice: 271.01, // Jan 2, 2026 Open
-        ytdReferencePrice: 242.84, // Dec 31, 2025 Close
-        currentPrice: 255.53, // Jan 19, 2026 Close
+        yearlyOpen: 229.87, // Jan 2, 2025 Open
+        currentPrice: 255.53, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 89,
@@ -58,8 +59,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "Alphabet Inc.",
         assetClass: "Search/AI",
         entryPrice: 315.15, // Jan 2, 2026 Open
-        ytdReferencePrice: 190.23, // Dec 31, 2025 Close
-        currentPrice: 330.00, // Jan 19, 2026 Close
+        yearlyOpen: 188.15, // Jan 2, 2025 Open
+        currentPrice: 330.00, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -70,8 +71,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "Amazon.com Inc.",
         assetClass: "E-Commerce",
         entryPrice: 226.50, // Jan 2, 2026 Open
-        ytdReferencePrice: 223.15, // Dec 31, 2025 Close
-        currentPrice: 239.36, // Jan 19, 2026 Close
+        yearlyOpen: 220.00, // Jan 2, 2025 Open
+        currentPrice: 239.36, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 90,
@@ -82,8 +83,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "Meta Platforms",
         assetClass: "Social/AI",
         entryPrice: 650.41, // Jan 2, 2026 Open
-        ytdReferencePrice: 579.18, // Dec 31, 2025 Close
-        currentPrice: 620.16, // Jan 19, 2026 Close
+        yearlyOpen: 594.74, // Jan 2, 2025 Open
+        currentPrice: 620.16, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 93,
@@ -94,8 +95,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "Tesla Inc.",
         assetClass: "Auto/Robotics",
         entryPrice: 438.07, // Jan 2, 2026 Open
-        ytdReferencePrice: 410.44, // Dec 31, 2025 Close
-        currentPrice: 437.50, // Jan 19, 2026 Close
+        yearlyOpen: 402.36, // Jan 2, 2025 Open
+        currentPrice: 437.50, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 87,
@@ -106,8 +107,8 @@ export const corePortfolio: PortfolioPosition[] = [
         name: "Bitcoin",
         assetClass: "Digital Assets",
         entryPrice: 88733.07, // Jan 2, 2026 Open
-        ytdReferencePrice: 93354.54, // Dec 31, 2025 Close
-        currentPrice: 92480.52, // Jan 19, 2026 Close
+        yearlyOpen: 94500.00, // Jan 2, 2025 Open
+        currentPrice: 92480.52, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
@@ -116,6 +117,7 @@ export const corePortfolio: PortfolioPosition[] = [
 
 // PM Research Innovation Portfolio
 // High-conviction plays from our research coverage
+// yearlyOpen = Jan 2, 2025 Open price (for YTD performance)
 export const innovationPortfolio: PortfolioPosition[] = [
     {
         id: "RKLB",
@@ -123,8 +125,8 @@ export const innovationPortfolio: PortfolioPosition[] = [
         name: "Rocket Lab USA",
         assetClass: "Space",
         entryPrice: 28.50, // Jan 2, 2026 Open
-        ytdReferencePrice: 25.12, // Dec 31, 2025 Close
-        currentPrice: 27.85, // Jan 24, 2026 Close
+        yearlyOpen: 26.50, // Jan 2, 2025 Open
+        currentPrice: 27.85, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 95,
@@ -135,8 +137,8 @@ export const innovationPortfolio: PortfolioPosition[] = [
         name: "Super Micro Computer",
         assetClass: "Data Center",
         entryPrice: 32.80, // Jan 2, 2026 Open
-        ytdReferencePrice: 29.45, // Dec 31, 2025 Close
-        currentPrice: 31.15, // Jan 24, 2026 Close
+        yearlyOpen: 32.80, // Jan 2, 2025 Open
+        currentPrice: 31.15, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 92,
@@ -147,8 +149,8 @@ export const innovationPortfolio: PortfolioPosition[] = [
         name: "Vertiv Holdings",
         assetClass: "Data Center",
         entryPrice: 132.50, // Jan 2, 2026 Open
-        ytdReferencePrice: 118.75, // Dec 31, 2025 Close
-        currentPrice: 128.92, // Jan 24, 2026 Close
+        yearlyOpen: 130.25, // Jan 2, 2025 Open
+        currentPrice: 128.92, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -159,8 +161,8 @@ export const innovationPortfolio: PortfolioPosition[] = [
         name: "Broadcom Inc.",
         assetClass: "AI Hardware",
         entryPrice: 242.50, // Jan 2, 2026 Open
-        ytdReferencePrice: 225.80, // Dec 31, 2025 Close
-        currentPrice: 238.75, // Jan 24, 2026 Close
+        yearlyOpen: 232.50, // Jan 2, 2025 Open
+        currentPrice: 238.75, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -171,8 +173,8 @@ export const innovationPortfolio: PortfolioPosition[] = [
         name: "IonQ Inc.",
         assetClass: "Quantum",
         entryPrice: 42.75, // Jan 2, 2026 Open
-        ytdReferencePrice: 38.20, // Dec 31, 2025 Close
-        currentPrice: 40.55, // Jan 24, 2026 Close
+        yearlyOpen: 44.87, // Jan 2, 2025 Open
+        currentPrice: 40.55, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 88,
@@ -181,6 +183,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
 
 // PM Research Robotics Portfolio
 // Pure-play robotics and automation
+// yearlyOpen = Jan 2, 2025 Open price (for YTD performance)
 export const roboticsPortfolio: PortfolioPosition[] = [
     {
         id: "ISRG",
@@ -188,8 +191,8 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         name: "Intuitive Surgical",
         assetClass: "Auto/Robotics",
         entryPrice: 580.25, // Jan 2, 2026 Open
-        ytdReferencePrice: 545.80, // Dec 31, 2025 Close
-        currentPrice: 572.40, // Jan 24, 2026 Close
+        yearlyOpen: 535.00, // Jan 2, 2025 Open
+        currentPrice: 572.40, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -200,8 +203,8 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         name: "iRobot Corporation",
         assetClass: "Auto/Robotics",
         entryPrice: 12.50, // Jan 2, 2026 Open
-        ytdReferencePrice: 10.25, // Dec 31, 2025 Close
-        currentPrice: 11.85, // Jan 24, 2026 Close
+        yearlyOpen: 8.50, // Jan 2, 2025 Open
+        currentPrice: 11.85, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 78,
@@ -212,8 +215,8 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         name: "ABB Ltd",
         assetClass: "Auto/Robotics",
         entryPrice: 55.80, // Jan 2, 2026 Open
-        ytdReferencePrice: 52.15, // Dec 31, 2025 Close
-        currentPrice: 54.25, // Jan 24, 2026 Close
+        yearlyOpen: 54.80, // Jan 2, 2025 Open
+        currentPrice: 54.25, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 86,
@@ -224,8 +227,8 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         name: "Fanuc Corporation",
         assetClass: "Auto/Robotics",
         entryPrice: 14.20, // Jan 2, 2026 Open
-        ytdReferencePrice: 13.45, // Dec 31, 2025 Close
-        currentPrice: 13.95, // Jan 24, 2026 Close
+        yearlyOpen: 28.50, // Jan 2, 2025 Open
+        currentPrice: 13.95, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 82,
@@ -236,8 +239,8 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         name: "UiPath Inc.",
         assetClass: "Auto/Robotics",
         entryPrice: 15.75, // Jan 2, 2026 Open
-        ytdReferencePrice: 14.20, // Dec 31, 2025 Close
-        currentPrice: 15.10, // Jan 24, 2026 Close
+        yearlyOpen: 13.25, // Jan 2, 2025 Open
+        currentPrice: 15.10, // Fallback price
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
