@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import yahooFinance from "yahoo-finance2";
 
 // Force dynamic route to ensure fresh data
 export const dynamic = "force-dynamic";
@@ -40,13 +39,27 @@ export async function GET(request: Request) {
             }
         }
 
-        // 3. Fetch fresh data from Yahoo Finance
-        const results = await yahooFinance.quote(tickersToFetch);
+        // 3. Fetch fresh data from Yahoo Finance public API (no package needed)
+        const symbols = tickersToFetch.join(',');
+        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols)}`;
+
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Yahoo API returned ${response.status}`);
+        }
+
+        const json = await response.json();
+        const quotes = json.quoteResponse?.result || [];
 
         // 4. Map results to include price AND daily change percent
         const data: Record<string, { price: number; changePercent: number }> = {};
 
-        results.forEach((quote) => {
+        quotes.forEach((quote: { symbol?: string; regularMarketPrice?: number; regularMarketChangePercent?: number }) => {
             if (quote.symbol && quote.regularMarketPrice) {
                 data[quote.symbol] = {
                     price: quote.regularMarketPrice,
