@@ -36,7 +36,7 @@ export const corePortfolio: PortfolioPosition[] = [
         assetClass: "Cloud/AI",
         entryPrice: 472.94, // Jan 2, 2026 Open
         yearlyOpen: 416.82, // Jan 2, 2025 Open
-        currentPrice: 454.07, // Fallback price - updated Jan 25, 2026
+        currentPrice: 466.70, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -126,7 +126,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Space",
         entryPrice: 28.50, // Jan 2, 2026 Open
         yearlyOpen: 26.50, // Jan 2, 2025 Open
-        currentPrice: 75.00, // Fallback price - updated Jan 25, 2026
+        currentPrice: 74.62, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 95,
@@ -150,7 +150,7 @@ export const innovationPortfolio: PortfolioPosition[] = [
         assetClass: "Data Center",
         entryPrice: 132.50, // Jan 2, 2026 Open
         yearlyOpen: 130.25, // Jan 2, 2025 Open
-        currentPrice: 180.00, // Fallback price - updated Jan 25, 2026
+        currentPrice: 182.49, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 91,
@@ -192,7 +192,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 580.25, // Jan 2, 2026 Open
         yearlyOpen: 535.00, // Jan 2, 2025 Open
-        currentPrice: 577.81, // Fallback price - updated Jan 25, 2026
+        currentPrice: 523.99, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 94,
@@ -204,7 +204,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 12.50, // Jan 2, 2026 Open
         yearlyOpen: 8.50, // Jan 2, 2025 Open
-        currentPrice: 0.50, // Fallback price - updated Jan 25, 2026
+        currentPrice: 0.17, // Fallback price - updated Jan 25, 2026 (now IRBTQ)
         returnPercent: 0,
         status: "Open",
         pmScore: 78,
@@ -216,7 +216,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 55.80, // Jan 2, 2026 Open
         yearlyOpen: 54.80, // Jan 2, 2025 Open
-        currentPrice: 55.50, // Fallback price - updated Jan 25, 2026
+        currentPrice: 55.25, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 86,
@@ -240,7 +240,7 @@ export const roboticsPortfolio: PortfolioPosition[] = [
         assetClass: "Auto/Robotics",
         entryPrice: 15.75, // Jan 2, 2026 Open
         yearlyOpen: 13.25, // Jan 2, 2025 Open
-        currentPrice: 14.72, // Fallback price - updated Jan 25, 2026
+        currentPrice: 17.32, // Fallback price - updated Jan 25, 2026
         returnPercent: 0,
         status: "Open",
         pmScore: 85,
