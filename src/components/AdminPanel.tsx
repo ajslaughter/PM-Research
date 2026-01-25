@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdmin } from "@/context/AdminContext";
-import { ResearchNote, PortfolioPosition } from "@/lib/mockData";
+import { ResearchNote, PortfolioPosition } from "@/lib/portfolios";
 import {
     Settings,
     Plus,

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
-import { ResearchNote, PortfolioPosition } from "@/lib/mockData";
+import { ResearchNote, PortfolioPosition } from "@/lib/portfolios";
 
 // Define the shape of our admin context
 interface AdminContextType {
@@ -14,10 +14,15 @@ interface AdminContextType {
     updateResearchNote: (id: string, updates: Partial<ResearchNote>) => void;
     deleteResearchNote: (id: string) => void;
 
-    // Portfolio CRUD
+    // Portfolio CRUD (Mag 7 + BTC)
     portfolio: PortfolioPosition[];
     addPortfolioPosition: (position: Omit<PortfolioPosition, "id">) => void;
     updatePortfolioPosition: (ticker: string, updates: Partial<PortfolioPosition>) => void;
+
+    // Innovation Portfolio CRUD
+    innovationPortfolio: PortfolioPosition[];
+    addInnovationPosition: (position: Omit<PortfolioPosition, "id">) => void;
+    updateInnovationPosition: (ticker: string, updates: Partial<PortfolioPosition>) => void;
 
     // Data freshness
     lastUpdated: Date | null;
@@ -27,11 +32,12 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 // Import initial data
-import { mockResearchNotes as initialResearchNotes, mockPortfolio as initialPortfolio } from "@/lib/mockData";
+import { researchNotes as initialResearchNotes, corePortfolio as initialPortfolio, innovationPortfolio as initialInnovationPortfolio } from "@/lib/portfolios";
 
 // LocalStorage keys
 const STORAGE_KEYS = {
     PORTFOLIO: "pm-portfolio",
+    INNOVATION: "pm-innovation-portfolio",
     RESEARCH: "pm-research",
 } as const;
 
@@ -44,6 +50,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     // Mutable data stores - initialized from mock data
     const [researchNotes, setResearchNotes] = useState<ResearchNote[]>(initialResearchNotes);
     const [portfolio, setPortfolio] = useState<PortfolioPosition[]>(initialPortfolio);
+    const [innovationPortfolio, setInnovationPortfolio] = useState<PortfolioPosition[]>(initialInnovationPortfolio);
 
     // Load data from localStorage on mount (client-side only)
     useEffect(() => {
@@ -55,9 +62,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
             if (savedPortfolio) {
                 const parsed = JSON.parse(savedPortfolio);
-                // Validate that it's an array with required fields
                 if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].ticker) {
                     setPortfolio(parsed);
+                }
+            }
+
+            const savedInnovation = localStorage.getItem(STORAGE_KEYS.INNOVATION);
+            if (savedInnovation) {
+                const parsed = JSON.parse(savedInnovation);
+                if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].ticker) {
+                    setInnovationPortfolio(parsed);
                 }
             }
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
-import { ResearchNote } from "@/lib/mockData";
+import { ResearchNote } from "@/lib/portfolios";
 import {
     Clock,
     Sparkles,

@@ -3,8 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { useAdmin } from "@/context/AdminContext";
-import { PortfolioPosition } from "@/lib/mockData";
+import { PortfolioPosition } from "@/lib/portfolios";
 import {
     Lock,
     TrendingUp,
@@ -20,7 +19,11 @@ interface PriceData {
     changePercent: number;
 }
 
-
+// Props for the component
+interface PortfolioTableProps {
+    portfolioData: PortfolioPosition[];
+    portfolioName: string;
+}
 
 // Asset class badge colors
 const assetClassColors: Record<string, string> = {
@@ -32,6 +35,10 @@ const assetClassColors: Record<string, string> = {
     "Social/AI": "bg-pink-500/20 text-pink-400 border-pink-500/30",
     "Auto/Robotics": "bg-red-500/20 text-red-400 border-red-500/30",
     "Digital Assets": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    "Space": "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
+    "Quantum": "bg-violet-500/20 text-violet-400 border-violet-500/30",
+    "Grid Infrastructure": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+    "Data Center": "bg-teal-500/20 text-teal-400 border-teal-500/30",
 };
 
 // Skeleton loader component
@@ -41,9 +48,8 @@ const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
 
 
 
-export default function PortfolioTable() {
+export default function PortfolioTable({ portfolioData, portfolioName }: PortfolioTableProps) {
     const { isSubscribed } = useSubscription();
-    const { portfolio: adminPortfolio, lastUpdated } = useAdmin();
 
     const [prices, setPrices] = useState<Record<string, PriceData>>({});
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
@@ -51,8 +57,8 @@ export default function PortfolioTable() {
 
     // Build ticker list dynamically from current portfolio
     const tickerList = useMemo(() => {
-        return adminPortfolio.map(p => p.ticker).join(',');
-    }, [adminPortfolio]);
+        return portfolioData.map(p => p.ticker).join(',');
+    }, [portfolioData]);
 
     // Fetch live prices on mount and every 60 seconds
     useEffect(() => {
@@ -81,10 +87,10 @@ export default function PortfolioTable() {
         return () => clearInterval(interval);
     }, [tickerList]);
 
-    // Merge admin-controlled data with live prices
-    const livePortfolio = adminPortfolio.map((position) => {
+    // Merge portfolio data with live prices
+    const livePortfolio = portfolioData.map((position) => {
         const priceData = prices[position.ticker];
-        const livePrice = priceData?.price || position.currentPrice; // Fallback to mock if fetch fails
+        const livePrice = priceData?.price || position.currentPrice; // Fallback if fetch fails
 
         // Calculate YTD return: (current - 2026 Open) / 2026 Open
         // entryPrice = 2026 Open (what we show in the table)

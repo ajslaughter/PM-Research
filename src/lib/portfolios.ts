@@ -3,7 +3,7 @@ export interface PortfolioPosition {
     id: string;
     ticker: string;
     name: string;
-    assetClass: "AI Hardware" | "Cloud/AI" | "Consumer Tech" | "Search/AI" | "E-Commerce" | "Social/AI" | "Auto/Robotics" | "Digital Assets";
+    assetClass: "AI Hardware" | "Cloud/AI" | "Consumer Tech" | "Search/AI" | "E-Commerce" | "Social/AI" | "Auto/Robotics" | "Digital Assets" | "Space" | "Quantum" | "Grid Infrastructure" | "Data Center";
     entryPrice: number;
     ytdReferencePrice: number; // Dec 31, 2025 close price (or entry price if bought in 2026)
     currentPrice: number;
@@ -15,7 +15,7 @@ export interface PortfolioPosition {
 
 // Mag 7 + BTC (Equally Weighted Strategy)
 // Entry prices represent fictional "2026 Open" baseline
-export const mockPortfolio: PortfolioPosition[] = [
+export const corePortfolio: PortfolioPosition[] = [
     {
         id: "NVDA",
         ticker: "NVDA",
@@ -114,6 +114,165 @@ export const mockPortfolio: PortfolioPosition[] = [
     },
 ];
 
+// PM Research Innovation Portfolio
+// High-conviction plays from our research coverage
+export const innovationPortfolio: PortfolioPosition[] = [
+    {
+        id: "RKLB",
+        ticker: "RKLB",
+        name: "Rocket Lab USA",
+        assetClass: "Space",
+        entryPrice: 28.50, // Jan 2, 2026 Open
+        ytdReferencePrice: 25.12, // Dec 31, 2025 Close
+        currentPrice: 28.50,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 95,
+    },
+    {
+        id: "SMCI",
+        ticker: "SMCI",
+        name: "Super Micro Computer",
+        assetClass: "Data Center",
+        entryPrice: 32.80, // Jan 2, 2026 Open
+        ytdReferencePrice: 29.45, // Dec 31, 2025 Close
+        currentPrice: 32.80,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 92,
+    },
+    {
+        id: "VRT",
+        ticker: "VRT",
+        name: "Vertiv Holdings",
+        assetClass: "Data Center",
+        entryPrice: 132.50, // Jan 2, 2026 Open
+        ytdReferencePrice: 118.75, // Dec 31, 2025 Close
+        currentPrice: 132.50,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 91,
+    },
+    {
+        id: "AVGO",
+        ticker: "AVGO",
+        name: "Broadcom Inc.",
+        assetClass: "AI Hardware",
+        entryPrice: 242.50, // Jan 2, 2026 Open
+        ytdReferencePrice: 225.80, // Dec 31, 2025 Close
+        currentPrice: 242.50,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 94,
+    },
+    {
+        id: "IONQ",
+        ticker: "IONQ",
+        name: "IonQ Inc.",
+        assetClass: "Quantum",
+        entryPrice: 42.75, // Jan 2, 2026 Open
+        ytdReferencePrice: 38.20, // Dec 31, 2025 Close
+        currentPrice: 42.75,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 88,
+    },
+];
+
+// PM Research Robotics Portfolio
+// Pure-play robotics and automation
+export const roboticsPortfolio: PortfolioPosition[] = [
+    {
+        id: "ISRG",
+        ticker: "ISRG",
+        name: "Intuitive Surgical",
+        assetClass: "Auto/Robotics",
+        entryPrice: 580.25, // Jan 2, 2026 Open
+        ytdReferencePrice: 545.80, // Dec 31, 2025 Close
+        currentPrice: 580.25,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 94,
+    },
+    {
+        id: "IRBT",
+        ticker: "IRBT",
+        name: "iRobot Corporation",
+        assetClass: "Auto/Robotics",
+        entryPrice: 12.50, // Jan 2, 2026 Open
+        ytdReferencePrice: 10.25, // Dec 31, 2025 Close
+        currentPrice: 12.50,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 78,
+    },
+    {
+        id: "ABB",
+        ticker: "ABB",
+        name: "ABB Ltd",
+        assetClass: "Auto/Robotics",
+        entryPrice: 55.80, // Jan 2, 2026 Open
+        ytdReferencePrice: 52.15, // Dec 31, 2025 Close
+        currentPrice: 55.80,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 86,
+    },
+    {
+        id: "FANUY",
+        ticker: "FANUY",
+        name: "Fanuc Corporation",
+        assetClass: "Auto/Robotics",
+        entryPrice: 14.20, // Jan 2, 2026 Open
+        ytdReferencePrice: 13.45, // Dec 31, 2025 Close
+        currentPrice: 14.20,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 82,
+    },
+    {
+        id: "PATH",
+        ticker: "PATH",
+        name: "UiPath Inc.",
+        assetClass: "Auto/Robotics",
+        entryPrice: 15.75, // Jan 2, 2026 Open
+        ytdReferencePrice: 14.20, // Dec 31, 2025 Close
+        currentPrice: 15.75,
+        returnPercent: 0,
+        status: "Open",
+        pmScore: 85,
+    },
+];
+
+// Portfolio configuration for dropdown
+export interface PortfolioConfig {
+    id: string;
+    name: string;
+    description: string;
+    data: PortfolioPosition[];
+}
+
+export const portfolioConfigs: PortfolioConfig[] = [
+    {
+        id: "mag7",
+        name: "PM Research Portfolio",
+        description: "Mag 7 + Bitcoin - Core Holdings",
+        data: corePortfolio,
+    },
+    {
+        id: "innovation",
+        name: "Innovation Portfolio",
+        description: "High-Conviction Research Picks",
+        data: innovationPortfolio,
+    },
+    {
+        id: "robotics",
+        name: "Robotics Portfolio",
+        description: "Pure-Play Automation & Robotics",
+        data: roboticsPortfolio,
+    },
+];
+
 // Mock research notes
 export interface ResearchNote {
     id: string;
@@ -128,7 +287,7 @@ export interface ResearchNote {
     author?: string;
 }
 
-export const mockResearchNotes: ResearchNote[] = [
+export const researchNotes: ResearchNote[] = [
     {
         id: "r1",
         title: "AI Infrastructure: The Next Wave of CAPEX",
