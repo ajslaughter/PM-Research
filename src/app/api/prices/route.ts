@@ -7,8 +7,8 @@ interface PriceData {
     changePercent: number;
 }
 
-// In-memory cache
-let cache: { data: Record<string, PriceData>; timestamp: number } | null = null;
+// In-memory cache - stores ALL fetched tickers
+let priceCache: Record<string, { data: PriceData; timestamp: number }> = {};
 const CACHE_TTL_MS = 60000; // 1 minute
 
 // Fetch Bitcoin from CoinGecko (free, real-time, no rate limits)
@@ -33,48 +33,45 @@ async function fetchBitcoin(): Promise<PriceData | null> {
     return null;
 }
 
-// Fetch all stocks in ONE request from Yahoo Finance
+// Fetch stocks from Yahoo Finance - try v7 quote API first (more reliable)
 async function fetchStocks(symbols: string[]): Promise<Record<string, PriceData>> {
     const results: Record<string, PriceData> = {};
 
     if (symbols.length === 0) return results;
 
-    try {
-        // Yahoo Finance v8 API - supports batch requests
-        const symbolList = symbols.join(',');
-        const url = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${encodeURIComponent(symbolList)}&range=1d&interval=1d`;
+    const symbolList = symbols.join(',');
 
-        const res = await fetch(url, {
+    try {
+        // Try v7 quote API first - most reliable
+        const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolList)}`;
+        const quoteRes = await fetch(quoteUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Accept': 'application/json'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': '*/*',
+                'Accept-Language': 'en-US,en;q=0.9',
             },
             cache: 'no-store'
         });
 
-        if (res.ok) {
-            const data = await res.json();
+        if (quoteRes.ok) {
+            const quoteData = await quoteRes.json();
+            const quotes = quoteData.quoteResponse?.result || [];
 
-            // Parse spark data
-            for (const symbol of symbols) {
-                const sparkData = data.spark?.result?.find((r: { symbol: string }) => r.symbol === symbol);
-                if (sparkData?.response?.[0]?.meta) {
-                    const meta = sparkData.response[0].meta;
-                    const price = meta.regularMarketPrice || meta.previousClose;
-                    const prevClose = meta.chartPreviousClose || meta.previousClose;
-
-                    if (price) {
-                        const changePercent = prevClose ? ((price - prevClose) / prevClose) * 100 : 0;
-                        results[symbol] = { price, changePercent };
-                    }
+            for (const quote of quotes) {
+                if (quote.symbol && quote.regularMarketPrice) {
+                    results[quote.symbol] = {
+                        price: quote.regularMarketPrice,
+                        changePercent: quote.regularMarketChangePercent || 0
+                    };
                 }
             }
         }
 
-        // If Yahoo spark failed, try the quote endpoint
-        if (Object.keys(results).length === 0) {
-            const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolList)}`;
-            const quoteRes = await fetch(quoteUrl, {
+        // If v7 quote didn't return all symbols, try v8 spark API
+        const missedSymbols = symbols.filter(s => !(s in results));
+        if (missedSymbols.length > 0) {
+            const sparkUrl = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${encodeURIComponent(missedSymbols.join(','))}&range=1d&interval=1d`;
+            const sparkRes = await fetch(sparkUrl, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                     'Accept': 'application/json'
@@ -82,16 +79,20 @@ async function fetchStocks(symbols: string[]): Promise<Record<string, PriceData>
                 cache: 'no-store'
             });
 
-            if (quoteRes.ok) {
-                const quoteData = await quoteRes.json();
-                const quotes = quoteData.quoteResponse?.result || [];
+            if (sparkRes.ok) {
+                const sparkData = await sparkRes.json();
 
-                for (const quote of quotes) {
-                    if (quote.symbol && quote.regularMarketPrice) {
-                        results[quote.symbol] = {
-                            price: quote.regularMarketPrice,
-                            changePercent: quote.regularMarketChangePercent || 0
-                        };
+                for (const symbol of missedSymbols) {
+                    const result = sparkData.spark?.result?.find((r: { symbol: string }) => r.symbol === symbol);
+                    if (result?.response?.[0]?.meta) {
+                        const meta = result.response[0].meta;
+                        const price = meta.regularMarketPrice || meta.previousClose;
+                        const prevClose = meta.chartPreviousClose || meta.previousClose;
+
+                        if (price) {
+                            const changePercent = prevClose ? ((price - prevClose) / prevClose) * 100 : 0;
+                            results[symbol] = { price, changePercent };
+                        }
                     }
                 }
             }
@@ -114,44 +115,56 @@ export async function GET(request: Request) {
 
         const now = Date.now();
 
-        // Return cached if fresh
-        if (!forceRefresh && cache && (now - cache.timestamp) < CACHE_TTL_MS) {
-            const allPresent = allTickers.every(t => t in cache!.data);
-            if (allPresent) {
-                const result: Record<string, PriceData> = {};
-                allTickers.forEach(t => { if (cache!.data[t]) result[t] = cache!.data[t]; });
-                return NextResponse.json(result);
+        // Check which tickers need fresh data
+        const results: Record<string, PriceData> = {};
+        const tickersToFetch: string[] = [];
+
+        for (const ticker of allTickers) {
+            const cached = priceCache[ticker];
+            if (!forceRefresh && cached && (now - cached.timestamp) < CACHE_TTL_MS) {
+                results[ticker] = cached.data;
+            } else {
+                tickersToFetch.push(ticker);
             }
         }
 
-        // Separate BTC from stocks
-        const hasBTC = allTickers.includes('BTC-USD');
-        const stockTickers = allTickers.filter(t => t !== 'BTC-USD');
+        // Fetch any missing/stale tickers
+        if (tickersToFetch.length > 0) {
+            const hasBTC = tickersToFetch.includes('BTC-USD');
+            const stockTickers = tickersToFetch.filter(t => t !== 'BTC-USD');
 
-        // Fetch in parallel
-        const [stockData, btcData] = await Promise.all([
-            fetchStocks(stockTickers),
-            hasBTC ? fetchBitcoin() : null
-        ]);
+            // Fetch in parallel
+            const [stockData, btcData] = await Promise.all([
+                stockTickers.length > 0 ? fetchStocks(stockTickers) : {},
+                hasBTC ? fetchBitcoin() : null
+            ]);
 
-        // Combine results
-        const results: Record<string, PriceData> = { ...stockData };
-        if (hasBTC && btcData) {
-            results['BTC-USD'] = btcData;
+            // Add stock results
+            for (const [symbol, data] of Object.entries(stockData)) {
+                results[symbol] = data;
+                priceCache[symbol] = { data, timestamp: now };
+            }
+
+            // Add BTC result
+            if (hasBTC && btcData) {
+                results['BTC-USD'] = btcData;
+                priceCache['BTC-USD'] = { data: btcData, timestamp: now };
+            }
         }
-
-        // Update cache
-        cache = {
-            data: { ...(cache?.data || {}), ...results },
-            timestamp: now
-        };
 
         return NextResponse.json(results);
     } catch (error) {
         console.error("Price fetch error:", error);
 
-        // Return cached on error
-        if (cache) return NextResponse.json(cache.data);
+        // Return any cached data on error
+        const fallback: Record<string, PriceData> = {};
+        for (const [symbol, cached] of Object.entries(priceCache)) {
+            fallback[symbol] = cached.data;
+        }
+
+        if (Object.keys(fallback).length > 0) {
+            return NextResponse.json(fallback);
+        }
 
         return NextResponse.json({ error: "Failed to fetch prices" }, { status: 500 });
     }
