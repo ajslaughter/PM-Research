@@ -1,41 +1,25 @@
 import { NextResponse } from "next/server";
 
-// Force dynamic route to ensure fresh data
 export const dynamic = "force-dynamic";
 
-// Cache for rate limiting protection
 interface PriceData {
     price: number;
     changePercent: number;
 }
 
-interface CacheEntry {
-    data: Record<string, PriceData>;
-    timestamp: number;
-}
+// In-memory cache
+let cache: { data: Record<string, PriceData>; timestamp: number } | null = null;
+const CACHE_TTL_MS = 60000; // 1 minute
 
-let priceCache: CacheEntry | null = null;
-
-// Cache for 5 minutes to respect Alpha Vantage rate limits
-// BTC updates more frequently via CoinGecko
-const CACHE_TTL_MS = 300000;
-
-// Alpha Vantage: Set ALPHA_VANTAGE_KEY in environment, or uses demo
-const ALPHA_VANTAGE_KEY = process.env.ALPHA_VANTAGE_KEY || "demo";
-
-// Fetch Bitcoin from CoinGecko (free, no key needed, real-time 24/7)
-async function fetchBitcoinPrice(): Promise<PriceData | null> {
+// Fetch Bitcoin from CoinGecko (free, real-time, no rate limits)
+async function fetchBitcoin(): Promise<PriceData | null> {
     try {
-        const response = await fetch(
+        const res = await fetch(
             'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true',
-            {
-                headers: { 'Accept': 'application/json' },
-                cache: 'no-store'
-            }
+            { cache: 'no-store' }
         );
-
-        if (response.ok) {
-            const data = await response.json();
+        if (res.ok) {
+            const data = await res.json();
             if (data.bitcoin) {
                 return {
                     price: data.bitcoin.usd,
@@ -43,40 +27,80 @@ async function fetchBitcoinPrice(): Promise<PriceData | null> {
                 };
             }
         }
-    } catch (error) {
-        console.error("CoinGecko fetch failed:", error);
+    } catch (e) {
+        console.error("CoinGecko error:", e);
     }
-
     return null;
 }
 
-// Fetch stock from Alpha Vantage
-async function fetchStockPrice(symbol: string): Promise<PriceData | null> {
+// Fetch all stocks in ONE request from Yahoo Finance
+async function fetchStocks(symbols: string[]): Promise<Record<string, PriceData>> {
+    const results: Record<string, PriceData> = {};
+
+    if (symbols.length === 0) return results;
+
     try {
-        const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_KEY}`;
-        const response = await fetch(url, { cache: 'no-store' });
+        // Yahoo Finance v8 API - supports batch requests
+        const symbolList = symbols.join(',');
+        const url = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${encodeURIComponent(symbolList)}&range=1d&interval=1d`;
 
-        if (response.ok) {
-            const data = await response.json();
-            const quote = data["Global Quote"];
+        const res = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Accept': 'application/json'
+            },
+            cache: 'no-store'
+        });
 
-            if (quote && quote["05. price"]) {
-                return {
-                    price: parseFloat(quote["05. price"]),
-                    changePercent: parseFloat((quote["10. change percent"] || "0%").replace('%', ''))
-                };
-            }
+        if (res.ok) {
+            const data = await res.json();
 
-            // Check for rate limit message
-            if (data.Note || data.Information) {
-                console.warn("Alpha Vantage rate limited:", data.Note || data.Information);
+            // Parse spark data
+            for (const symbol of symbols) {
+                const sparkData = data.spark?.result?.find((r: { symbol: string }) => r.symbol === symbol);
+                if (sparkData?.response?.[0]?.meta) {
+                    const meta = sparkData.response[0].meta;
+                    const price = meta.regularMarketPrice || meta.previousClose;
+                    const prevClose = meta.chartPreviousClose || meta.previousClose;
+
+                    if (price) {
+                        const changePercent = prevClose ? ((price - prevClose) / prevClose) * 100 : 0;
+                        results[symbol] = { price, changePercent };
+                    }
+                }
             }
         }
-    } catch (error) {
-        console.error(`Alpha Vantage fetch failed for ${symbol}:`, error);
+
+        // If Yahoo spark failed, try the quote endpoint
+        if (Object.keys(results).length === 0) {
+            const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolList)}`;
+            const quoteRes = await fetch(quoteUrl, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
+            });
+
+            if (quoteRes.ok) {
+                const quoteData = await quoteRes.json();
+                const quotes = quoteData.quoteResponse?.result || [];
+
+                for (const quote of quotes) {
+                    if (quote.symbol && quote.regularMarketPrice) {
+                        results[quote.symbol] = {
+                            price: quote.regularMarketPrice,
+                            changePercent: quote.regularMarketChangePercent || 0
+                        };
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Yahoo Finance error:", e);
     }
 
-    return null;
+    return results;
 }
 
 export async function GET(request: Request) {
@@ -85,84 +109,50 @@ export async function GET(request: Request) {
         const tickerParam = searchParams.get('tickers');
         const forceRefresh = searchParams.get('refresh') === 'true';
 
-        // Default tickers
         const defaultTickers = ["NVDA", "MSFT", "AAPL", "GOOGL", "AMZN", "META", "TSLA", "BTC-USD"];
-        const tickersToFetch = tickerParam ? tickerParam.split(',').map(t => t.trim()) : defaultTickers;
+        const allTickers = tickerParam ? tickerParam.split(',').map(t => t.trim()) : defaultTickers;
 
         const now = Date.now();
 
-        // Return cached data if fresh (unless force refresh)
-        if (!forceRefresh && priceCache && (now - priceCache.timestamp) < CACHE_TTL_MS) {
-            const allPresent = tickersToFetch.every(t => t in priceCache!.data);
+        // Return cached if fresh
+        if (!forceRefresh && cache && (now - cache.timestamp) < CACHE_TTL_MS) {
+            const allPresent = allTickers.every(t => t in cache!.data);
             if (allPresent) {
-                // Still fetch fresh BTC since it's real-time
-                if (tickersToFetch.includes('BTC-USD')) {
-                    const btcData = await fetchBitcoinPrice();
-                    if (btcData) {
-                        priceCache.data['BTC-USD'] = btcData;
-                    }
-                }
-
                 const result: Record<string, PriceData> = {};
-                tickersToFetch.forEach(t => {
-                    if (priceCache!.data[t]) {
-                        result[t] = priceCache!.data[t];
-                    }
-                });
+                allTickers.forEach(t => { if (cache!.data[t]) result[t] = cache!.data[t]; });
                 return NextResponse.json(result);
             }
         }
 
-        // Fetch fresh data
-        const results: Record<string, PriceData> = {};
+        // Separate BTC from stocks
+        const hasBTC = allTickers.includes('BTC-USD');
+        const stockTickers = allTickers.filter(t => t !== 'BTC-USD');
 
-        // Fetch BTC first (fast, no rate limit concerns)
-        if (tickersToFetch.includes('BTC-USD')) {
-            const btcData = await fetchBitcoinPrice();
-            if (btcData) {
-                results['BTC-USD'] = btcData;
-            }
-        }
+        // Fetch in parallel
+        const [stockData, btcData] = await Promise.all([
+            fetchStocks(stockTickers),
+            hasBTC ? fetchBitcoin() : null
+        ]);
 
-        // Fetch stocks (rate limited - fetch sequentially)
-        const stockTickers = tickersToFetch.filter(t => t !== 'BTC-USD');
-
-        for (const ticker of stockTickers) {
-            // Use cached value if we have it and it's not too old
-            if (priceCache?.data[ticker] && (now - priceCache.timestamp) < CACHE_TTL_MS) {
-                results[ticker] = priceCache.data[ticker];
-                continue;
-            }
-
-            const stockData = await fetchStockPrice(ticker);
-            if (stockData) {
-                results[ticker] = stockData;
-            }
-
-            // Small delay between requests to respect rate limits
-            if (stockTickers.indexOf(ticker) < stockTickers.length - 1) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
+        // Combine results
+        const results: Record<string, PriceData> = { ...stockData };
+        if (hasBTC && btcData) {
+            results['BTC-USD'] = btcData;
         }
 
         // Update cache
-        priceCache = {
-            data: { ...(priceCache?.data || {}), ...results },
+        cache = {
+            data: { ...(cache?.data || {}), ...results },
             timestamp: now
         };
 
         return NextResponse.json(results);
     } catch (error) {
-        console.error("Failed to fetch prices:", error);
+        console.error("Price fetch error:", error);
 
-        // Return cached data on error
-        if (priceCache) {
-            return NextResponse.json(priceCache.data);
-        }
+        // Return cached on error
+        if (cache) return NextResponse.json(cache.data);
 
-        return NextResponse.json(
-            { error: "Failed to fetch prices" },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "Failed to fetch prices" }, { status: 500 });
     }
 }
