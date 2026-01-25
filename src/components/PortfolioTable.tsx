@@ -301,7 +301,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
                             <th className="p-4">Ticker</th>
                             <th className="p-4">Asset Class</th>
-                            <th className="p-4 text-right">2025 Open</th>
+                            <th className="p-4 text-right">2026 Open</th>
                             <th className="p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
@@ -343,7 +343,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                                     </span>
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
-                                    ${position.yearlyOpen.toFixed(2)}
+                                    ${position.entryPrice.toFixed(2)}
                                 </td>
                                 <td className="p-4 text-right font-mono font-medium">
                                     {isLoadingPrices ? (
