@@ -118,9 +118,12 @@ export async function GET(request: NextRequest) {
 
     const results = await Promise.all(pricePromises);
 
-    const prices: Record<string, number | null> = {};
+    const prices: Record<string, { price: number | null; changePercent: number }> = {};
     for (const { ticker, result } of results) {
-        prices[ticker] = result?.price ?? null;
+        prices[ticker] = {
+            price: result?.price ?? null,
+            changePercent: result?.changePercent ?? 0,
+        };
     }
 
     return NextResponse.json({

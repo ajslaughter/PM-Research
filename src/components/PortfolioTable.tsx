@@ -15,8 +15,13 @@ import {
 
 
 // API response type
+interface PriceData {
+    price: number | null;
+    changePercent: number;
+}
+
 interface PriceApiResponse {
-    prices: Record<string, number | null>;
+    prices: Record<string, PriceData>;
     marketOpen: boolean;
     timestamp: string;
 }
@@ -53,7 +58,7 @@ const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
 export default function PortfolioTable({ portfolioData, portfolioName }: PortfolioTableProps) {
     const { isSubscribed } = useSubscription();
 
-    const [prices, setPrices] = useState<Record<string, number | null>>({});
+    const [prices, setPrices] = useState<Record<string, PriceData>>({});
     const [marketOpen, setMarketOpen] = useState(false);
     const [staleTickers, setStaleTickers] = useState<Set<string>>(new Set());
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
@@ -78,11 +83,11 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                 const data: PriceApiResponse = await res.json();
                 // Only process if we got valid data (not an error response)
                 if (data && data.prices && !('error' in data)) {
-                    // Track which tickers returned null (stale)
+                    // Track which tickers returned null price (stale)
                     const newStaleTickers = new Set<string>();
 
-                    for (const [ticker, price] of Object.entries(data.prices)) {
-                        if (price === null) {
+                    for (const [ticker, priceData] of Object.entries(data.prices)) {
+                        if (priceData.price === null) {
                             newStaleTickers.add(ticker);
                         }
                     }
@@ -120,9 +125,9 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
 
     // Merge portfolio data with live prices
     const livePortfolio = portfolioData.map((position) => {
-        const livePrice = prices[position.ticker];
+        const liveData = prices[position.ticker];
         const isStale = staleTickers.has(position.ticker);
-        const currentPrice = livePrice ?? position.currentPrice; // Fallback if fetch fails
+        const currentPrice = liveData?.price ?? position.currentPrice; // Fallback if fetch fails
 
         // Calculate YTD return: (currentPrice - entryPrice) / entryPrice * 100
         // entryPrice = Jan 2, 2026 Open price (2026 YTD baseline)
@@ -130,10 +135,8 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
             ? ((currentPrice - position.entryPrice) / position.entryPrice) * 100
             : 0;
 
-        // Calculate daily change (current vs entry price for this year)
-        const dayChange = position.entryPrice > 0
-            ? ((currentPrice - position.entryPrice) / position.entryPrice) * 100
-            : 0;
+        // Use daily change from API (based on previous close)
+        const dayChange = liveData?.changePercent ?? 0;
 
         return {
             ...position,
@@ -141,7 +144,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
             returnPercent: ytdReturn,
             dayChange,
             isStale, // Track if price is stale
-            isLive: livePrice !== null,
+            isLive: !!liveData?.price,
         };
     });
 
