@@ -93,7 +93,24 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             if (savedResearch) {
                 const parsed = JSON.parse(savedResearch);
                 if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].title) {
-                    setResearchNotes(parsed);
+                    // Check if new articles were added to the source file
+                    // If initial data has more articles OR different article IDs, use initial data
+                    const savedIds = new Set(parsed.map((n: ResearchNote) => n.id));
+                    const initialIds = new Set(initialResearchNotes.map(n => n.id));
+                    const hasNewArticles = initialResearchNotes.some(n => !savedIds.has(n.id));
+
+                    if (hasNewArticles || initialResearchNotes.length > parsed.length) {
+                        // Merge: keep any localStorage-only articles but add new source articles
+                        const mergedNotes = [...initialResearchNotes];
+                        parsed.forEach((savedNote: ResearchNote) => {
+                            if (!initialIds.has(savedNote.id)) {
+                                mergedNotes.push(savedNote);
+                            }
+                        });
+                        setResearchNotes(mergedNotes);
+                    } else {
+                        setResearchNotes(parsed);
+                    }
                 }
             }
         } catch (error) {
