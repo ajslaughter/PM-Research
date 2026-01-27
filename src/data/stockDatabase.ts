@@ -4,12 +4,12 @@ export interface StockData {
   name: string;
   assetClass: string;
   sector: string;
-  yearlyOpen: number; // Jan 2, 2026 open price - used for YTD calculation
+  yearlyOpen: number; // Dec 31, 2025 adjusted close - used for YTD calculation
   pmScore: number;
   lastUpdated: string;
 }
 
-// Initial database with real Jan 2, 2026 open prices
+// Initial database with Dec 31, 2025 adjusted close prices (Polygon)
 export const stockDatabase: Record<string, StockData> = {
   // Mag 7 + Bitcoin (Core Portfolio)
   "NVDA": {
@@ -19,7 +19,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 189.84,
     pmScore: 98,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "MSFT": {
     ticker: "MSFT",
@@ -28,7 +28,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 484.39,
     pmScore: 94,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "AAPL": {
     ticker: "AAPL",
@@ -37,7 +37,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 272.26,
     pmScore: 89,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "GOOGL": {
     ticker: "GOOGL",
@@ -46,7 +46,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 316.90,
     pmScore: 92,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "AMZN": {
     ticker: "AMZN",
@@ -55,7 +55,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Consumer Cyclical",
     yearlyOpen: 231.34,
     pmScore: 90,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "META": {
     ticker: "META",
@@ -64,7 +64,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 662.72,
     pmScore: 91,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "TSLA": {
     ticker: "TSLA",
@@ -73,7 +73,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Consumer Cyclical",
     yearlyOpen: 457.80,
     pmScore: 85,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "BTC-USD": {
     ticker: "BTC-USD",
@@ -82,7 +82,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Cryptocurrency",
     yearlyOpen: 88742.00,
     pmScore: 88,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
 
   // Innovation Portfolio
@@ -93,7 +93,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Aerospace",
     yearlyOpen: 70.63,
     pmScore: 94,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "SMCI": {
     ticker: "SMCI",
@@ -102,7 +102,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 29.96,
     pmScore: 78,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "VRT": {
     ticker: "VRT",
@@ -111,7 +111,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Industrials",
     yearlyOpen: 169.47,
     pmScore: 86,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "AVGO": {
     ticker: "AVGO",
@@ -120,7 +120,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 352.78,
     pmScore: 93,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "IONQ": {
     ticker: "IONQ",
@@ -129,7 +129,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 46.01,
     pmScore: 82,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
 
   // Robotics Portfolio
@@ -140,7 +140,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Healthcare",
     yearlyOpen: 566.78,
     pmScore: 91,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "IRBT": {
     ticker: "IRBT",
@@ -149,7 +149,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Consumer Cyclical",
     yearlyOpen: 0.11,
     pmScore: 62,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "ABB": {
     ticker: "ABB",
@@ -158,7 +158,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Industrials",
     yearlyOpen: 73.51,
     pmScore: 84,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "FANUY": {
     ticker: "FANUY",
@@ -167,7 +167,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Industrials",
     yearlyOpen: 19.65,
     pmScore: 80,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "PATH": {
     ticker: "PATH",
@@ -176,7 +176,7 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyOpen: 16.50,
     pmScore: 75,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
 };
 

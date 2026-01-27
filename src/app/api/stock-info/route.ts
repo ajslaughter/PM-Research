@@ -36,18 +36,15 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Invalid response' }, { status: 500 });
         }
 
-        // Find Jan 2, 2026 open price (or closest trading day after)
+        // Find Dec 31, 2025 adjusted close (or closest prior trading day)
         let yearlyOpen = meta.regularMarketPrice;
-        const jan2026Start = new Date('2026-01-02T00:00:00Z').getTime() / 1000;
-        const jan2026End = new Date('2026-01-10T00:00:00Z').getTime() / 1000; // First week of Jan
+        const dec2025Start = new Date('2025-12-26T00:00:00Z').getTime() / 1000;
+        const dec2025End = new Date('2025-12-31T23:59:59Z').getTime() / 1000;
 
-        for (let i = 0; i < timestamps.length; i++) {
-            if (timestamps[i] >= jan2026Start && timestamps[i] <= jan2026End) {
-                // Use the open price if available, otherwise close
-                if (opens[i] && opens[i] > 0) {
-                    yearlyOpen = opens[i];
-                    break;
-                } else if (closes[i] && closes[i] > 0) {
+        for (let i = timestamps.length - 1; i >= 0; i--) {
+            if (timestamps[i] >= dec2025Start && timestamps[i] <= dec2025End) {
+                // Use the close price for 2025-12-31 baseline
+                if (closes[i] && closes[i] > 0) {
                     yearlyOpen = closes[i];
                     break;
                 }
