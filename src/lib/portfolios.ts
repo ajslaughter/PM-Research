@@ -49,11 +49,10 @@ export const defaultPortfolios: Portfolio[] = [
         name: "Robotics Portfolio",
         description: "Automation & Robotics",
         positions: [
-            { ticker: "ISRG", weight: 20 },
-            { ticker: "IRBT", weight: 20 },
-            { ticker: "ABB", weight: 20 },
-            { ticker: "FANUY", weight: 20 },
-            { ticker: "PATH", weight: 20 },
+            { ticker: "ISRG", weight: 25 },
+            { ticker: "ABB", weight: 25 },
+            { ticker: "FANUY", weight: 25 },
+            { ticker: "PATH", weight: 25 },
         ],
     },
 ];

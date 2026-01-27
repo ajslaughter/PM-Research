@@ -2,6 +2,36 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
 
+const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || process.env.POLYGON_API_KEY || '';
+const POLYGON_BASE_URL = 'https://api.polygon.io';
+
+async function getYearEndClose(ticker: string): Promise<number> {
+    // Fetch Dec 31, 2025 adjusted close from Polygon (or last trading day of 2025)
+    const from = '2025-12-29';
+    const to = '2025-12-31';
+    const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${from}/${to}?adjusted=true&sort=desc&limit=5&apiKey=${POLYGON_API_KEY}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+        return 0;
+    }
+
+    const data = await response.json();
+    if (!data.results || data.results.length === 0) {
+        return 0;
+    }
+
+    // Find the last trading day of 2025 and return its adjusted close
+    for (const bar of data.results) {
+        const barDate = new Date(bar.t);
+        if (barDate.getUTCFullYear() === 2025) {
+            return bar.c;
+        }
+    }
+
+    return 0;
+}
+
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const ticker = searchParams.get('ticker')?.toUpperCase();
@@ -11,9 +41,9 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        // Fetch from Yahoo Finance
+        // Fetch current price and metadata from Yahoo Finance
         const response = await fetch(
-            `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1y`,
+            `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`,
             {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -28,36 +58,21 @@ export async function GET(request: NextRequest) {
 
         const data = await response.json();
         const meta = data.chart?.result?.[0]?.meta;
-        const timestamps = data.chart?.result?.[0]?.timestamp || [];
-        const opens = data.chart?.result?.[0]?.indicators?.quote?.[0]?.open || [];
-        const closes = data.chart?.result?.[0]?.indicators?.quote?.[0]?.close || [];
 
         if (!meta) {
             return NextResponse.json({ error: 'Invalid response' }, { status: 500 });
         }
 
-        // Find Jan 2, 2026 open price (or closest trading day after)
-        let yearlyOpen = meta.regularMarketPrice;
-        const jan2026Start = new Date('2026-01-02T00:00:00Z').getTime() / 1000;
-        const jan2026End = new Date('2026-01-10T00:00:00Z').getTime() / 1000; // First week of Jan
-
-        for (let i = 0; i < timestamps.length; i++) {
-            if (timestamps[i] >= jan2026Start && timestamps[i] <= jan2026End) {
-                // Use the open price if available, otherwise close
-                if (opens[i] && opens[i] > 0) {
-                    yearlyOpen = opens[i];
-                    break;
-                } else if (closes[i] && closes[i] > 0) {
-                    yearlyOpen = closes[i];
-                    break;
-                }
-            }
+        // Get Dec 31, 2025 adjusted close from Polygon for YTD baseline
+        let yearlyClose = await getYearEndClose(ticker);
+        if (yearlyClose === 0) {
+            // Fallback to current price if Polygon fails
+            yearlyClose = meta.regularMarketPrice;
         }
 
         // Determine asset class based on sector/industry
         let assetClass = 'Unknown';
         const longName = (meta.longName || '').toLowerCase();
-        const shortName = (meta.shortName || '').toLowerCase();
 
         if (longName.includes('bitcoin') || longName.includes('crypto') || ticker.includes('USD')) {
             assetClass = 'Digital Assets';
@@ -78,7 +93,7 @@ export async function GET(request: NextRequest) {
             name: meta.shortName || meta.longName || ticker,
             assetClass,
             sector: 'Unknown',
-            yearlyOpen: Math.round(yearlyOpen * 100) / 100,
+            yearlyOpen: Math.round(yearlyClose * 100) / 100,
             currentPrice: meta.regularMarketPrice,
             pmScore: 75, // Default PM score for new stocks
             lastUpdated: new Date().toISOString().split('T')[0],
