@@ -4,12 +4,12 @@ export interface StockData {
   name: string;
   assetClass: string;
   sector: string;
-  yearlyOpen: number; // Jan 2, 2026 open price - used for YTD calculation
+  yearlyOpen: number; // Dec 31, 2025 close price - used for YTD calculation
   pmScore: number;
   lastUpdated: string;
 }
 
-// Initial database with real Jan 2, 2026 open prices
+// Initial database with real Dec 31, 2025 close prices
 export const stockDatabase: Record<string, StockData> = {
   // Mag 7 + Bitcoin (Core Portfolio)
   "NVDA": {
@@ -140,15 +140,6 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Healthcare",
     yearlyOpen: 566.78,
     pmScore: 91,
-    lastUpdated: "2026-01-02"
-  },
-  "IRBT": {
-    ticker: "IRBT",
-    name: "iRobot Corporation",
-    assetClass: "Auto/Robotics",
-    sector: "Consumer Cyclical",
-    yearlyOpen: 0.11,
-    pmScore: 62,
     lastUpdated: "2026-01-02"
   },
   "ABB": {
