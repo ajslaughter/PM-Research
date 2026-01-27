@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { motion } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { PortfolioPosition } from "@/lib/portfolios";
+import { useAdmin } from "@/context/AdminContext";
+import { assetClassColors } from "@/data/stockDatabase";
+import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
 import {
     Lock,
     TrendingUp,
@@ -13,11 +14,12 @@ import {
     AlertCircle,
 } from "lucide-react";
 
-
 // API response type
 interface PriceData {
     price: number | null;
+    change: number;
     changePercent: number;
+    isLive: boolean;
 }
 
 interface PriceApiResponse {
@@ -28,35 +30,18 @@ interface PriceApiResponse {
 
 // Props for the component
 interface PortfolioTableProps {
-    portfolioData: PortfolioPosition[];
+    portfolioId: string;
     portfolioName: string;
 }
-
-// Asset class badge colors
-const assetClassColors: Record<string, string> = {
-    "AI Hardware": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-    "Cloud/AI": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    "Consumer Tech": "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-    "Search/AI": "bg-green-500/20 text-green-400 border-green-500/30",
-    "E-Commerce": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    "Social/AI": "bg-pink-500/20 text-pink-400 border-pink-500/30",
-    "Auto/Robotics": "bg-red-500/20 text-red-400 border-red-500/30",
-    "Digital Assets": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    "Space": "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-    "Quantum": "bg-violet-500/20 text-violet-400 border-violet-500/30",
-    "Grid Infrastructure": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    "Data Center": "bg-teal-500/20 text-teal-400 border-teal-500/30",
-};
 
 // Skeleton loader component
 const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
     <div className={`h-4 ${width} bg-pm-charcoal animate-pulse rounded`} />
 );
 
-
-
-export default function PortfolioTable({ portfolioData, portfolioName }: PortfolioTableProps) {
+export default function PortfolioTable({ portfolioId, portfolioName }: PortfolioTableProps) {
     const { isSubscribed } = useSubscription();
+    const { portfolios, stockDb } = useAdmin();
 
     const [prices, setPrices] = useState<Record<string, PriceData>>({});
     const [marketOpen, setMarketOpen] = useState(false);
@@ -65,25 +50,35 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [lastPriceFetch, setLastPriceFetch] = useState<Date | null>(null);
 
+    // Get current portfolio
+    const currentPortfolio = useMemo(() => {
+        return portfolios.find((p) => p.id === portfolioId);
+    }, [portfolios, portfolioId]);
+
+    // Get positions from current portfolio
+    const positions = currentPortfolio?.positions || [];
+
     // Build ticker list dynamically from current portfolio
     const tickerList = useMemo(() => {
-        return portfolioData.map(p => p.ticker).join(',');
-    }, [portfolioData]);
+        return positions.map((p) => p.ticker).join(',');
+    }, [positions]);
 
     // Fetch prices function
     const fetchPrices = useCallback(async (forceRefresh = false) => {
+        if (!tickerList) {
+            setIsLoadingPrices(false);
+            return;
+        }
+
         if (forceRefresh) {
             setIsRefreshing(true);
         }
         try {
-            // Pass current portfolio tickers to API
             const url = `/api/prices?tickers=${tickerList}${forceRefresh ? '&refresh=true' : ''}`;
             const res = await fetch(url);
             if (res.ok) {
                 const data: PriceApiResponse = await res.json();
-                // Only process if we got valid data (not an error response)
                 if (data && data.prices && !('error' in data)) {
-                    // Track which tickers returned null price (stale)
                     const newStaleTickers = new Set<string>();
 
                     for (const [ticker, priceData] of Object.entries(data.prices)) {
@@ -107,7 +102,6 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
     }, [tickerList]);
 
     // Fetch live prices on mount and poll based on market status
-    // 30 seconds during market hours, 5 minutes when market is closed
     useEffect(() => {
         setIsLoadingPrices(true);
         fetchPrices();
@@ -123,46 +117,46 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
         fetchPrices(true);
     }, [fetchPrices]);
 
-    // Merge portfolio data with live prices
-    const livePortfolio = portfolioData.map((position) => {
+    // Merge portfolio data with stock database and live prices
+    const livePortfolio = positions.map((position) => {
+        const stock = stockDb[position.ticker.toUpperCase()];
         const liveData = prices[position.ticker];
         const isStale = staleTickers.has(position.ticker);
-        const currentPrice = liveData?.price ?? position.currentPrice; // Fallback if fetch fails
+        const currentPrice = liveData?.price ?? 0;
+        const yearlyOpen = stock?.yearlyOpen ?? 0;
 
-        // Calculate YTD return: (currentPrice - entryPrice) / entryPrice * 100
-        // entryPrice = Jan 2, 2026 Open price (2026 YTD baseline)
-        const ytdReturn = position.entryPrice > 0
-            ? ((currentPrice - position.entryPrice) / position.entryPrice) * 100
+        // Calculate YTD return using stock database yearlyOpen
+        const ytdReturn = yearlyOpen > 0 && currentPrice > 0
+            ? calculateYTD(currentPrice, yearlyOpen)
             : 0;
 
-        // Use daily change from API (based on previous close)
+        // Use daily change from API
         const dayChange = liveData?.changePercent ?? 0;
 
         return {
-            ...position,
+            ticker: position.ticker,
+            name: stock?.name || position.ticker,
+            assetClass: stock?.assetClass || 'Unknown',
+            weight: position.weight,
+            yearlyOpen,
             currentPrice,
             returnPercent: ytdReturn,
             dayChange,
-            isStale, // Track if price is stale
-            isLive: !!liveData?.price,
+            pmScore: stock?.pmScore || 0,
+            isStale,
+            isLive: liveData?.isLive ?? false,
         };
     });
 
-    // Calculate portfolio aggregate stats
-    const openPositions = livePortfolio.filter((p) => p.status === "Open");
-    const avgReturn =
-        openPositions.reduce((acc, curr) => acc + curr.returnPercent, 0) /
-        (openPositions.length || 1);
-    const avgDayChange =
-        openPositions.reduce((acc, curr) => acc + curr.dayChange, 0) /
-        (openPositions.length || 1);
-    const avgScore =
-        openPositions.reduce((acc, curr) => acc + curr.pmScore, 0) /
-        (openPositions.length || 1);
+    // Calculate portfolio aggregate stats using weighted calculations
+    const weightedYTD = calculateWeightedYTD(positions, prices, stockDb);
+    const weightedDayChange = calculateWeightedDayChange(positions, prices);
+    const avgPmScore = calculateAvgPmScore(positions, stockDb);
+    const totalWeight = positions.reduce((acc, p) => acc + p.weight, 0);
 
     // Simulated Quarterly Performance (for display purposes)
     const quarterlyPerformance = [
-        { quarter: "Q1 2026", return: avgReturn, isCurrent: true },
+        { quarter: "Q1 2026", return: weightedYTD, isCurrent: true },
         { quarter: "Q4 2025", return: 12.4, isCurrent: false },
         { quarter: "Q3 2025", return: 8.2, isCurrent: false },
         { quarter: "Q2 2025", return: 15.1, isCurrent: false },
@@ -185,17 +179,31 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                     <Lock className="w-12 h-12 text-pm-green mb-4 opacity-80" />
                     <h3 className="text-2xl font-bold mb-2">Operator Access Required</h3>
                     <p className="text-pm-muted mb-6 max-w-md">
-                        Upgrade to the Operator tier to view our real-time &ldquo;Mag 7 + Bitcoin&rdquo; equal-weight portfolio, YTD performance, and predictive signals.
+                        Upgrade to the Operator tier to view our real-time portfolio, YTD performance, and predictive signals.
                     </p>
                     <a href="/pricing" className="btn-primary">
                         View Pricing
                     </a>
                 </div>
-                {/* Blurred fake table background */}
                 <div className="opacity-20 pointer-events-none filter blur-sm">
-                    {/* ... reusing table structure but empty ... */}
                     <div className="w-full h-96 bg-pm-charcoal rounded-xl border border-pm-border"></div>
                 </div>
+            </div>
+        );
+    }
+
+    if (!currentPortfolio) {
+        return (
+            <div className="pm-card p-8 text-center">
+                <p className="text-pm-muted">Portfolio not found</p>
+            </div>
+        );
+    }
+
+    if (positions.length === 0) {
+        return (
+            <div className="pm-card p-8 text-center">
+                <p className="text-pm-muted">No positions in this portfolio. Use the admin panel to add positions.</p>
             </div>
         );
     }
@@ -208,11 +216,11 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                     <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
                         YTD Return
                     </div>
-                    <div className={`text-2xl font-bold ${avgReturn >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
+                    <div className={`text-2xl font-bold ${weightedYTD >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
                         {isLoadingPrices ? (
                             <SkeletonCell width="w-20" />
                         ) : (
-                            <span>{avgReturn >= 0 ? '+' : ''}{avgReturn.toFixed(1)}%</span>
+                            <span>{weightedYTD >= 0 ? '+' : ''}{weightedYTD.toFixed(1)}%</span>
                         )}
                     </div>
                     <div className="text-[10px] text-pm-muted mt-1">vs Jan 2, 2026</div>
@@ -222,14 +230,14 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                     <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
                         Today
                     </div>
-                    <div className={`text-2xl font-bold ${avgDayChange >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
+                    <div className={`text-2xl font-bold ${weightedDayChange >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
                         {isLoadingPrices ? (
                             <SkeletonCell width="w-20" />
                         ) : (
-                            <span>{avgDayChange >= 0 ? '+' : ''}{avgDayChange.toFixed(2)}%</span>
+                            <span>{weightedDayChange >= 0 ? '+' : ''}{weightedDayChange.toFixed(2)}%</span>
                         )}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">Daily Change</div>
+                    <div className="text-[10px] text-pm-muted mt-1">Weighted Daily</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-blue-500">
@@ -237,7 +245,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                         Avg PM Score
                     </div>
                     <div className="text-2xl font-bold text-white">
-                        {Math.round(avgScore)}
+                        {Math.round(avgPmScore)}
                     </div>
                     <div className="text-[10px] text-pm-muted mt-1">Strong Conviction</div>
                 </div>
@@ -247,9 +255,11 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                         Holdings
                     </div>
                     <div className="text-2xl font-bold text-white">
-                        {openPositions.length}
+                        {positions.length}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">Equal Weight</div>
+                    <div className="text-[10px] text-pm-muted mt-1">
+                        {totalWeight === 100 ? 'Fully Allocated' : `${totalWeight.toFixed(1)}% Allocated`}
+                    </div>
                 </div>
             </div>
 
@@ -304,6 +314,7 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
                             <th className="p-4">Ticker</th>
                             <th className="p-4">Asset Class</th>
+                            <th className="p-4 text-right">Weight</th>
                             <th className="p-4 text-right">2026 Open</th>
                             <th className="p-4 text-right">
                                 Current
@@ -321,7 +332,6 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                             <th className="p-4 text-right">Day %</th>
                             <th className="p-4 text-right">YTD Return</th>
                             <th className="p-4 text-center">PM Score</th>
-                            <th className="p-4 text-right">Status</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-pm-border">
@@ -346,14 +356,17 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                                     </span>
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
-                                    ${position.entryPrice.toFixed(2)}
+                                    {position.weight.toFixed(1)}%
+                                </td>
+                                <td className="p-4 text-right font-mono text-pm-muted">
+                                    ${position.yearlyOpen.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
                                 <td className="p-4 text-right font-mono font-medium">
                                     {isLoadingPrices ? (
                                         <SkeletonCell width="w-20" />
                                     ) : (
                                         <span className={`inline-flex items-center gap-1 ${position.isLive ? 'text-white' : 'text-gray-400'}`}>
-                                            ${position.currentPrice.toFixed(2)}
+                                            ${position.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             {position.isStale && (
                                                 <span title="Price unavailable - using cached data" className="text-orange-400">
                                                     <AlertCircle className="w-3 h-3" />
@@ -404,23 +417,11 @@ export default function PortfolioTable({ portfolioData, portfolioName }: Portfol
                                         {position.pmScore}
                                     </div>
                                 </td>
-                                <td className="p-4 text-right">
-                                    <span
-                                        className={`text-xs font-mono uppercase px-2 py-1 rounded ${position.status === "Open"
-                                            ? "bg-pm-green/10 text-pm-green"
-                                            : "bg-pm-charcoal text-pm-muted"
-                                            }`}
-                                    >
-                                        {position.status}
-                                    </span>
-                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-
-
-        </div >
+        </div>
     );
 }

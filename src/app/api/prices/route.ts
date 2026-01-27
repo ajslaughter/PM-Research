@@ -118,11 +118,13 @@ export async function GET(request: NextRequest) {
 
     const results = await Promise.all(pricePromises);
 
-    const prices: Record<string, { price: number | null; changePercent: number }> = {};
+    const prices: Record<string, { price: number | null; changePercent: number; change: number; isLive: boolean }> = {};
     for (const { ticker, result } of results) {
         prices[ticker] = {
             price: result?.price ?? null,
+            change: result?.change ?? 0,
             changePercent: result?.changePercent ?? 0,
+            isLive: result?.price !== null && result?.price !== undefined,
         };
     }
 

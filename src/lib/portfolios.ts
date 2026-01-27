@@ -1,277 +1,60 @@
 // Portfolio data for PM Research
+
+// Simplified portfolio position - just ticker and weight
+// All other data (name, assetClass, yearlyOpen, pmScore) comes from stockDatabase
 export interface PortfolioPosition {
-    id: string;
     ticker: string;
-    name: string;
-    assetClass: "AI Hardware" | "Cloud/AI" | "Consumer Tech" | "Search/AI" | "E-Commerce" | "Social/AI" | "Auto/Robotics" | "Digital Assets" | "Space" | "Quantum" | "Grid Infrastructure" | "Data Center";
-    entryPrice: number;
-    yearlyOpen: number; // Jan 2, 2026 Open price - used for YTD performance calculation
-    currentPrice: number;
-    returnPercent: number;
-    status: "Open" | "Closed";
-    entryDate?: string;
-    pmScore: number;
+    weight: number; // Percentage (0-100), should sum to 100 per portfolio
 }
 
-// Mag 7 + BTC (Equally Weighted Strategy)
-// entryPrice = Jan 2, 2026 Open price (position entry / YTD baseline)
-export const corePortfolio: PortfolioPosition[] = [
-    {
-        id: "NVDA",
-        ticker: "NVDA",
-        name: "NVIDIA Corporation",
-        assetClass: "AI Hardware",
-        entryPrice: 189.84, // Jan 2, 2026 Open
-        yearlyOpen: 189.84, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 187.25, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 98,
-    },
-    {
-        id: "MSFT",
-        ticker: "MSFT",
-        name: "Microsoft Corp",
-        assetClass: "Cloud/AI",
-        entryPrice: 472.94, // Jan 2, 2026 Open
-        yearlyOpen: 472.94, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 465.95, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 94,
-    },
-    {
-        id: "AAPL",
-        ticker: "AAPL",
-        name: "Apple Inc.",
-        assetClass: "Consumer Tech",
-        entryPrice: 271.01, // Jan 2, 2026 Open
-        yearlyOpen: 271.01, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 247.75, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 89,
-    },
-    {
-        id: "GOOGL",
-        ticker: "GOOGL",
-        name: "Alphabet Inc.",
-        assetClass: "Search/AI",
-        entryPrice: 318.50, // Jan 2, 2026 Open
-        yearlyOpen: 318.50, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 327.73, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 92,
-    },
-    {
-        id: "AMZN",
-        ticker: "AMZN",
-        name: "Amazon.com Inc.",
-        assetClass: "E-Commerce",
-        entryPrice: 234.80, // Jan 2, 2026 Open
-        yearlyOpen: 234.80, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 238.81, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 90,
-    },
-    {
-        id: "META",
-        ticker: "META",
-        name: "Meta Platforms",
-        assetClass: "Social/AI",
-        entryPrice: 632.40, // Jan 2, 2026 Open
-        yearlyOpen: 632.40, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 657.97, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 91,
-    },
-    {
-        id: "TSLA",
-        ticker: "TSLA",
-        name: "Tesla Inc.",
-        assetClass: "Auto/Robotics",
-        entryPrice: 475.52, // Jan 2, 2026 Open
-        yearlyOpen: 475.52, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 447.40, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 85,
-    },
-    {
-        id: "BTC-USD",
-        ticker: "BTC-USD",
-        name: "Bitcoin",
-        assetClass: "Digital Assets",
-        entryPrice: 87586.00, // Jan 2, 2026 Open
-        yearlyOpen: 87586.00, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 87898.00, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 88,
-    },
-];
-
-// PM Research Innovation Portfolio
-// High-conviction plays from our research coverage
-// entryPrice = Jan 2, 2026 Open price (YTD baseline)
-export const innovationPortfolio: PortfolioPosition[] = [
-    {
-        id: "RKLB",
-        ticker: "RKLB",
-        name: "Rocket Lab USA",
-        assetClass: "Space",
-        entryPrice: 65.50, // Jan 2, 2026 Open
-        yearlyOpen: 65.50, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 90.76, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 94,
-    },
-    {
-        id: "SMCI",
-        ticker: "SMCI",
-        name: "Super Micro Computer",
-        assetClass: "Data Center",
-        entryPrice: 35.20, // Jan 2, 2026 Open
-        yearlyOpen: 35.20, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 32.64, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 78,
-    },
-    {
-        id: "VRT",
-        ticker: "VRT",
-        name: "Vertiv Holdings",
-        assetClass: "Data Center",
-        entryPrice: 142.30, // Jan 2, 2026 Open
-        yearlyOpen: 142.30, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 182.49, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 86,
-    },
-    {
-        id: "AVGO",
-        ticker: "AVGO",
-        name: "Broadcom Inc.",
-        assetClass: "AI Hardware",
-        entryPrice: 343.00, // Jan 2, 2026 Open
-        yearlyOpen: 343.00, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 319.09, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 93,
-    },
-    {
-        id: "IONQ",
-        ticker: "IONQ",
-        name: "IonQ Inc.",
-        assetClass: "Quantum",
-        entryPrice: 52.80, // Jan 2, 2026 Open
-        yearlyOpen: 52.80, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 47.25, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 82,
-    },
-];
-
-// PM Research Robotics Portfolio
-// Pure-play robotics and automation
-// entryPrice = Jan 2, 2026 Open price (YTD baseline)
-export const roboticsPortfolio: PortfolioPosition[] = [
-    {
-        id: "ISRG",
-        ticker: "ISRG",
-        name: "Intuitive Surgical",
-        assetClass: "Auto/Robotics",
-        entryPrice: 566.36, // Jan 2, 2026 Open
-        yearlyOpen: 566.36, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 535.00, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 91,
-    },
-    {
-        id: "IRBT",
-        ticker: "IRBT",
-        name: "iRobot Corporation",
-        assetClass: "Auto/Robotics",
-        entryPrice: 8.90, // Jan 2, 2026 Open
-        yearlyOpen: 8.90, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 0.17, // Fallback price (now IRBTQ)
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 62,
-    },
-    {
-        id: "ABB",
-        ticker: "ABB",
-        name: "ABB Ltd",
-        assetClass: "Auto/Robotics",
-        entryPrice: 57.20, // Jan 2, 2026 Open
-        yearlyOpen: 57.20, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 55.25, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 84,
-    },
-    {
-        id: "FANUY",
-        ticker: "FANUY",
-        name: "Fanuc Corporation",
-        assetClass: "Auto/Robotics",
-        entryPrice: 30.50, // Jan 2, 2026 Open
-        yearlyOpen: 30.50, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 20.33, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 80,
-    },
-    {
-        id: "PATH",
-        ticker: "PATH",
-        name: "UiPath Inc.",
-        assetClass: "Auto/Robotics",
-        entryPrice: 14.80, // Jan 2, 2026 Open
-        yearlyOpen: 14.80, // Jan 2, 2026 Open (YTD baseline)
-        currentPrice: 17.32, // Fallback price
-        returnPercent: 0,
-        status: "Open",
-        pmScore: 75,
-    },
-];
-
-// Portfolio configuration for dropdown
-export interface PortfolioConfig {
+// Portfolio structure
+export interface Portfolio {
     id: string;
     name: string;
     description: string;
-    data: PortfolioPosition[];
+    positions: PortfolioPosition[];
 }
 
-export const portfolioConfigs: PortfolioConfig[] = [
+// Default portfolios
+export const defaultPortfolios: Portfolio[] = [
     {
-        id: "mag7",
+        id: "pm-research",
         name: "PM Research Portfolio",
         description: "Mag 7 + Bitcoin - Core Holdings",
-        data: corePortfolio,
+        positions: [
+            { ticker: "NVDA", weight: 12.5 },
+            { ticker: "MSFT", weight: 12.5 },
+            { ticker: "AAPL", weight: 12.5 },
+            { ticker: "GOOGL", weight: 12.5 },
+            { ticker: "AMZN", weight: 12.5 },
+            { ticker: "META", weight: 12.5 },
+            { ticker: "TSLA", weight: 12.5 },
+            { ticker: "BTC-USD", weight: 12.5 },
+        ],
     },
     {
         id: "innovation",
         name: "Innovation Portfolio",
-        description: "High-Conviction Research Picks",
-        data: innovationPortfolio,
+        description: "High-Growth Tech & Space",
+        positions: [
+            { ticker: "RKLB", weight: 20 },
+            { ticker: "SMCI", weight: 20 },
+            { ticker: "VRT", weight: 20 },
+            { ticker: "AVGO", weight: 20 },
+            { ticker: "IONQ", weight: 20 },
+        ],
     },
     {
         id: "robotics",
         name: "Robotics Portfolio",
-        description: "Pure-Play Automation & Robotics",
-        data: roboticsPortfolio,
+        description: "Automation & Robotics",
+        positions: [
+            { ticker: "ISRG", weight: 20 },
+            { ticker: "IRBT", weight: 20 },
+            { ticker: "ABB", weight: 20 },
+            { ticker: "FANUY", weight: 20 },
+            { ticker: "PATH", weight: 20 },
+        ],
     },
 ];
 
