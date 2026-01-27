@@ -6,10 +6,9 @@ const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || process.env.P
 const POLYGON_BASE_URL = 'https://api.polygon.io';
 
 async function getYearEndClose(ticker: string): Promise<number> {
-    // Fetch Dec 31, 2025 adjusted close from Polygon (or last trading day of 2025)
-    const from = '2025-12-29';
-    const to = '2025-12-31';
-    const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${from}/${to}?adjusted=true&sort=desc&limit=5&apiKey=${POLYGON_API_KEY}`;
+    // Fetch Dec 31, 2025 adjusted close from Polygon
+    const targetDate = '2025-12-31';
+    const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${targetDate}/${targetDate}?adjusted=true&apiKey=${POLYGON_API_KEY}`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -21,15 +20,8 @@ async function getYearEndClose(ticker: string): Promise<number> {
         return 0;
     }
 
-    // Find the last trading day of 2025 and return its adjusted close
-    for (const bar of data.results) {
-        const barDate = new Date(bar.t);
-        if (barDate.getUTCFullYear() === 2025) {
-            return bar.c;
-        }
-    }
-
-    return 0;
+    // Return the adjusted close from Dec 31, 2025
+    return data.results[0].c;
 }
 
 export async function GET(request: NextRequest) {

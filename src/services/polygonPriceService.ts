@@ -29,9 +29,9 @@ export async function getYTDBaseline(ticker: string): Promise<number> {
     return cached!.value;
   }
 
-  const from = '2025-12-29';
-  const to = '2025-12-31';
-  const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${upperTicker}/range/1/day/${from}/${to}?adjusted=true&sort=desc&limit=5&apiKey=${POLYGON_API_KEY}`;
+  // Fetch Dec 31, 2025 adjusted close specifically
+  const targetDate = '2025-12-31';
+  const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${upperTicker}/range/1/day/${targetDate}/${targetDate}?adjusted=true&apiKey=${POLYGON_API_KEY}`;
 
   const response = await fetch(url);
   if (!response.ok) {
@@ -43,15 +43,9 @@ export async function getYTDBaseline(ticker: string): Promise<number> {
     return 0;
   }
 
-  let baseline = 0;
-  for (const bar of data.results) {
-    const barDate = new Date(bar.t);
-    const year = barDate.getUTCFullYear();
-    if (year === 2025) {
-      baseline = sanitizePrice(bar.c);
-      break;
-    }
-  }
+  // Get the adjusted close from Dec 31, 2025
+  const bar = data.results[0];
+  const baseline = sanitizePrice(bar.c);
 
   if (baseline > 0) {
     baselineCache.set(upperTicker, { value: baseline, timestamp: Date.now() });

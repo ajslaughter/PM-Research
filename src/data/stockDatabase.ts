@@ -17,18 +17,18 @@ export const stockDatabase: Record<string, StockData> = {
     name: "NVIDIA Corporation",
     assetClass: "AI Hardware",
     sector: "Technology",
-    yearlyClose: 189.84,
+    yearlyClose: 186.50,
     pmScore: 98,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "MSFT": {
     ticker: "MSFT",
     name: "Microsoft Corp",
     assetClass: "Cloud/AI",
     sector: "Technology",
-    yearlyClose: 484.39,
+    yearlyClose: 483.62,
     pmScore: 94,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "AAPL": {
     ticker: "AAPL",
@@ -53,27 +53,27 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Amazon.com Inc.",
     assetClass: "E-Commerce",
     sector: "Consumer Cyclical",
-    yearlyClose: 231.34,
+    yearlyClose: 230.82,
     pmScore: 90,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "META": {
     ticker: "META",
     name: "Meta Platforms Inc.",
     assetClass: "Social/AI",
     sector: "Technology",
-    yearlyClose: 662.72,
+    yearlyClose: 660.09,
     pmScore: 91,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "TSLA": {
     ticker: "TSLA",
     name: "Tesla Inc.",
     assetClass: "Auto/Robotics",
     sector: "Consumer Cyclical",
-    yearlyClose: 457.80,
+    yearlyClose: 449.72,
     pmScore: 85,
-    lastUpdated: "2026-01-02"
+    lastUpdated: "2025-12-31"
   },
   "BTC-USD": {
     ticker: "BTC-USD",
