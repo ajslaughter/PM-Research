@@ -1,19 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import PortfolioTable from "@/components/PortfolioTable";
 import { useSubscription } from "@/context/SubscriptionContext";
+import { useAdmin } from "@/context/AdminContext";
 import { Lock, Unlock, ChevronDown } from "lucide-react";
-import { portfolioConfigs } from "@/lib/portfolios";
 
 export default function PortfolioPage() {
     const { isSubscribed } = useSubscription();
-    const [selectedPortfolioId, setSelectedPortfolioId] = useState("mag7");
+    const { portfolios, activePortfolioId, setActivePortfolioId } = useAdmin();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    // Find the selected portfolio config
-    const selectedPortfolio = portfolioConfigs.find(p => p.id === selectedPortfolioId) || portfolioConfigs[0];
+    // Find the selected portfolio
+    const selectedPortfolio = portfolios.find(p => p.id === activePortfolioId) || portfolios[0];
+
+    // Ensure we have a valid portfolio selected
+    useEffect(() => {
+        if (!selectedPortfolio && portfolios.length > 0) {
+            setActivePortfolioId(portfolios[0].id);
+        }
+    }, [portfolios, selectedPortfolio, setActivePortfolioId]);
+
+    if (!selectedPortfolio) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-pm-muted">Loading portfolios...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="relative min-h-screen">
@@ -52,18 +67,18 @@ export default function PortfolioPage() {
 
                             {isDropdownOpen && (
                                 <div className="absolute top-full left-0 mt-2 w-72 bg-pm-charcoal border border-pm-border rounded-lg shadow-xl z-50">
-                                    {portfolioConfigs.map((config) => (
+                                    {portfolios.map((portfolio) => (
                                         <button
-                                            key={config.id}
+                                            key={portfolio.id}
                                             onClick={() => {
-                                                setSelectedPortfolioId(config.id);
+                                                setActivePortfolioId(portfolio.id);
                                                 setIsDropdownOpen(false);
                                             }}
-                                            className={`w-full text-left px-4 py-3 hover:bg-pm-dark transition-colors first:rounded-t-lg last:rounded-b-lg ${config.id === selectedPortfolioId ? 'bg-pm-green/10 border-l-2 border-pm-green' : ''
+                                            className={`w-full text-left px-4 py-3 hover:bg-pm-dark transition-colors first:rounded-t-lg last:rounded-b-lg ${portfolio.id === activePortfolioId ? 'bg-pm-green/10 border-l-2 border-pm-green' : ''
                                                 }`}
                                         >
-                                            <div className="font-medium">{config.name}</div>
-                                            <div className="text-xs text-pm-muted">{config.description}</div>
+                                            <div className="font-medium">{portfolio.name}</div>
+                                            <div className="text-xs text-pm-muted">{portfolio.description}</div>
                                         </button>
                                     ))}
                                 </div>
@@ -92,15 +107,15 @@ export default function PortfolioPage() {
                     </div>
                 </motion.div>
 
-                {/* Portfolio Table - passes the selected portfolio data */}
+                {/* Portfolio Table - passes the portfolio ID */}
                 <motion.div
-                    key={selectedPortfolioId}
+                    key={activePortfolioId}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
                     <PortfolioTable
-                        portfolioData={selectedPortfolio.data}
+                        portfolioId={selectedPortfolio.id}
                         portfolioName={selectedPortfolio.name}
                     />
                 </motion.div>

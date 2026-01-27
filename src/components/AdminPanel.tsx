@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdmin } from "@/context/AdminContext";
-import { ResearchNote, PortfolioPosition } from "@/lib/portfolios";
+import { ResearchNote } from "@/lib/portfolios";
+import { StockData } from "@/data/stockDatabase";
 import {
     Settings,
     Plus,
@@ -13,7 +14,10 @@ import {
     Edit3,
     FileText,
     Briefcase,
-    ChevronDown,
+    RefreshCw,
+    AlertTriangle,
+    Check,
+    Search,
 } from "lucide-react";
 
 // Types for forms
@@ -30,18 +34,30 @@ interface ResearchFormData {
     relatedTickers: string;
 }
 
-interface PortfolioFormData {
-    entryPrice: number;
-    pmScore: number;
-    status: "Open" | "Closed";
-}
-
 // Admin Panel Component
 export default function AdminPanel() {
-    const { isAdmin, researchNotes, portfolio, addResearchNote, updateResearchNote, deleteResearchNote, updatePortfolioPosition } = useAdmin();
+    const {
+        isAdmin,
+        researchNotes,
+        portfolios,
+        activePortfolioId,
+        setActivePortfolioId,
+        stockDb,
+        addResearchNote,
+        updateResearchNote,
+        deleteResearchNote,
+        addPortfolio,
+        updatePortfolio,
+        deletePortfolio,
+        addPosition,
+        updatePosition,
+        removePosition,
+        rebalanceWeights,
+        addStock,
+    } = useAdmin();
 
     const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<"research" | "portfolio">("research");
+    const [activeTab, setActiveTab] = useState<"research" | "portfolio">("portfolio");
 
     // Research form state
     const [showResearchForm, setShowResearchForm] = useState(false);
@@ -58,12 +74,22 @@ export default function AdminPanel() {
     });
 
     // Portfolio form state
-    const [editingPortfolio, setEditingPortfolio] = useState<PortfolioPosition | null>(null);
-    const [portfolioForm, setPortfolioForm] = useState<PortfolioFormData>({
-        entryPrice: 0,
-        pmScore: 85,
-        status: "Open",
-    });
+    const [showNewPortfolioForm, setShowNewPortfolioForm] = useState(false);
+    const [newPortfolioName, setNewPortfolioName] = useState("");
+    const [newPortfolioDesc, setNewPortfolioDesc] = useState("");
+
+    // Add position state
+    const [newTicker, setNewTicker] = useState("");
+    const [newWeight, setNewWeight] = useState(10);
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchError, setSearchError] = useState("");
+
+    // Get current portfolio
+    const currentPortfolio = portfolios.find((p) => p.id === activePortfolioId);
+
+    // Calculate total weight for current portfolio
+    const totalWeight = currentPortfolio?.positions.reduce((acc, p) => acc + p.weight, 0) || 0;
+    const weightWarning = totalWeight !== 100;
 
     // Don't render if not admin
     if (!isAdmin) return null;
@@ -125,21 +151,69 @@ export default function AdminPanel() {
         setShowResearchForm(true);
     };
 
-    // Handle edit portfolio
-    const handleEditPortfolio = (position: PortfolioPosition) => {
-        setEditingPortfolio(position);
-        setPortfolioForm({
-            entryPrice: position.entryPrice,
-            pmScore: position.pmScore,
-            status: position.status,
-        });
+    // Handle new portfolio submit
+    const handleNewPortfolioSubmit = () => {
+        if (newPortfolioName.trim()) {
+            addPortfolio(newPortfolioName.trim(), newPortfolioDesc.trim());
+            setNewPortfolioName("");
+            setNewPortfolioDesc("");
+            setShowNewPortfolioForm(false);
+        }
     };
 
-    // Handle portfolio submit
-    const handlePortfolioSubmit = () => {
-        if (editingPortfolio) {
-            updatePortfolioPosition(editingPortfolio.ticker, portfolioForm);
-            setEditingPortfolio(null);
+    // Handle add position
+    const handleAddPosition = async () => {
+        if (!newTicker.trim() || !currentPortfolio) return;
+
+        const ticker = newTicker.trim().toUpperCase();
+        setSearchError("");
+
+        // Check if already in portfolio
+        if (currentPortfolio.positions.find((p) => p.ticker === ticker)) {
+            setSearchError("Ticker already in portfolio");
+            return;
+        }
+
+        // Check if in stock database
+        if (stockDb[ticker]) {
+            addPosition(currentPortfolio.id, ticker, newWeight);
+            setNewTicker("");
+            return;
+        }
+
+        // Fetch from API
+        setIsSearching(true);
+        try {
+            const res = await fetch(`/api/stock-info?ticker=${ticker}`);
+            if (res.ok) {
+                const data = await res.json();
+                // Add to stock database
+                const newStock: StockData = {
+                    ticker: data.ticker,
+                    name: data.name,
+                    assetClass: data.assetClass || 'Unknown',
+                    sector: data.sector || 'Unknown',
+                    yearlyOpen: data.yearlyOpen,
+                    pmScore: data.pmScore || 75,
+                    lastUpdated: data.lastUpdated || new Date().toISOString().split('T')[0],
+                };
+                addStock(newStock);
+                addPosition(currentPortfolio.id, ticker, newWeight);
+                setNewTicker("");
+            } else {
+                setSearchError("Ticker not found");
+            }
+        } catch (error) {
+            setSearchError("Failed to fetch ticker info");
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+    // Handle weight change
+    const handleWeightChange = (ticker: string, weight: number) => {
+        if (currentPortfolio) {
+            updatePosition(currentPortfolio.id, ticker, weight);
         }
     };
 
@@ -172,7 +246,7 @@ export default function AdminPanel() {
                                 </div>
                                 <div>
                                     <h2 className="font-bold text-lg">Admin Panel</h2>
-                                    <p className="text-xs text-pm-muted">Manage content</p>
+                                    <p className="text-xs text-pm-muted">Manage portfolios & content</p>
                                 </div>
                             </div>
                             <button
@@ -186,29 +260,251 @@ export default function AdminPanel() {
                         {/* Tabs */}
                         <div className="flex border-b border-pm-border">
                             <button
-                                onClick={() => setActiveTab("research")}
-                                className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${activeTab === "research"
-                                        ? "bg-pm-charcoal text-pm-green border-b-2 border-pm-green"
-                                        : "text-pm-muted hover:text-white"
-                                    }`}
-                            >
-                                <FileText className="w-4 h-4" />
-                                Research
-                            </button>
-                            <button
                                 onClick={() => setActiveTab("portfolio")}
                                 className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${activeTab === "portfolio"
-                                        ? "bg-pm-charcoal text-pm-green border-b-2 border-pm-green"
-                                        : "text-pm-muted hover:text-white"
+                                    ? "bg-pm-charcoal text-pm-green border-b-2 border-pm-green"
+                                    : "text-pm-muted hover:text-white"
                                     }`}
                             >
                                 <Briefcase className="w-4 h-4" />
                                 Portfolio
                             </button>
+                            <button
+                                onClick={() => setActiveTab("research")}
+                                className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${activeTab === "research"
+                                    ? "bg-pm-charcoal text-pm-green border-b-2 border-pm-green"
+                                    : "text-pm-muted hover:text-white"
+                                    }`}
+                            >
+                                <FileText className="w-4 h-4" />
+                                Research
+                            </button>
                         </div>
 
                         {/* Content */}
                         <div className="p-4">
+                            {activeTab === "portfolio" && (
+                                <div className="space-y-4">
+                                    {/* Portfolio Selector */}
+                                    <div className="space-y-2">
+                                        <label className="text-xs text-pm-muted uppercase tracking-wider">
+                                            Select Portfolio
+                                        </label>
+                                        <div className="flex gap-2">
+                                            <select
+                                                value={activePortfolioId}
+                                                onChange={(e) => setActivePortfolioId(e.target.value)}
+                                                className="flex-1 px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
+                                            >
+                                                {portfolios.map((p) => (
+                                                    <option key={p.id} value={p.id}>
+                                                        {p.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                onClick={() => setShowNewPortfolioForm(true)}
+                                                className="px-3 py-2 bg-pm-green/10 text-pm-green border border-pm-green/30 rounded-lg hover:bg-pm-green/20 transition-colors"
+                                                title="Create new portfolio"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* New Portfolio Form */}
+                                    {showNewPortfolioForm && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="bg-pm-charcoal rounded-lg border border-pm-border p-4 space-y-3"
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="font-bold text-sm">New Portfolio</h3>
+                                                <button onClick={() => setShowNewPortfolioForm(false)} className="p-1 hover:bg-white/10 rounded">
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                placeholder="Portfolio Name"
+                                                value={newPortfolioName}
+                                                onChange={(e) => setNewPortfolioName(e.target.value)}
+                                                className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Description"
+                                                value={newPortfolioDesc}
+                                                onChange={(e) => setNewPortfolioDesc(e.target.value)}
+                                                className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
+                                            />
+                                            <button
+                                                onClick={handleNewPortfolioSubmit}
+                                                disabled={!newPortfolioName.trim()}
+                                                className="w-full py-2 rounded-lg bg-pm-green text-pm-black font-medium flex items-center justify-center gap-2 hover:bg-pm-green/90 transition-colors disabled:opacity-50"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                                Create Portfolio
+                                            </button>
+                                        </motion.div>
+                                    )}
+
+                                    {/* Current Portfolio Info */}
+                                    {currentPortfolio && (
+                                        <div className="bg-pm-charcoal/50 rounded-lg border border-pm-border p-4 space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h3 className="font-bold">{currentPortfolio.name}</h3>
+                                                    <p className="text-xs text-pm-muted">{currentPortfolio.description}</p>
+                                                </div>
+                                                {portfolios.length > 1 && (
+                                                    <button
+                                                        onClick={() => {
+                                                            if (confirm(`Delete "${currentPortfolio.name}"?`)) {
+                                                                deletePortfolio(currentPortfolio.id);
+                                                            }
+                                                        }}
+                                                        className="p-2 rounded hover:bg-red-500/20 text-pm-muted hover:text-red-400 transition-colors"
+                                                        title="Delete portfolio"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            {/* Weight Warning */}
+                                            {weightWarning && (
+                                                <div className={`flex items-center gap-2 text-xs p-2 rounded ${totalWeight > 100 ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'}`}>
+                                                    <AlertTriangle className="w-4 h-4" />
+                                                    <span>
+                                                        Total weight: {totalWeight.toFixed(1)}%
+                                                        {totalWeight > 100 ? ' (over-allocated)' : ' (under-allocated)'}
+                                                    </span>
+                                                </div>
+                                            )}
+
+                                            {!weightWarning && (
+                                                <div className="flex items-center gap-2 text-xs p-2 rounded bg-pm-green/10 text-pm-green">
+                                                    <Check className="w-4 h-4" />
+                                                    <span>Fully allocated (100%)</span>
+                                                </div>
+                                            )}
+
+                                            {/* Actions */}
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => rebalanceWeights(currentPortfolio.id)}
+                                                    disabled={currentPortfolio.positions.length === 0}
+                                                    className="flex-1 py-2 rounded-lg bg-pm-purple/10 text-pm-purple border border-pm-purple/30 text-xs font-medium flex items-center justify-center gap-2 hover:bg-pm-purple/20 transition-colors disabled:opacity-50"
+                                                >
+                                                    <RefreshCw className="w-3 h-3" />
+                                                    Equal Weight
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Add Position */}
+                                    <div className="bg-pm-charcoal/50 rounded-lg border border-pm-border p-4 space-y-3">
+                                        <h4 className="text-sm font-medium">Add Position</h4>
+                                        <div className="flex gap-2">
+                                            <div className="flex-1">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Ticker (e.g., AAPL)"
+                                                    value={newTicker}
+                                                    onChange={(e) => {
+                                                        setNewTicker(e.target.value.toUpperCase());
+                                                        setSearchError("");
+                                                    }}
+                                                    className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
+                                                />
+                                            </div>
+                                            <div className="w-20">
+                                                <input
+                                                    type="number"
+                                                    placeholder="Weight"
+                                                    value={newWeight}
+                                                    onChange={(e) => setNewWeight(parseFloat(e.target.value) || 0)}
+                                                    min={0}
+                                                    max={100}
+                                                    step={0.1}
+                                                    className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
+                                                />
+                                            </div>
+                                            <button
+                                                onClick={handleAddPosition}
+                                                disabled={!newTicker.trim() || isSearching}
+                                                className="px-3 py-2 bg-pm-green text-pm-black rounded-lg hover:bg-pm-green/90 transition-colors disabled:opacity-50"
+                                            >
+                                                {isSearching ? (
+                                                    <Search className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <Plus className="w-4 h-4" />
+                                                )}
+                                            </button>
+                                        </div>
+                                        {searchError && (
+                                            <p className="text-xs text-red-400">{searchError}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Positions List */}
+                                    <div className="space-y-2">
+                                        <h4 className="text-sm text-pm-muted font-mono uppercase tracking-wider">
+                                            Positions ({currentPortfolio?.positions.length || 0})
+                                        </h4>
+                                        {currentPortfolio?.positions.map((position) => {
+                                            const stock = stockDb[position.ticker];
+                                            return (
+                                                <div
+                                                    key={position.ticker}
+                                                    className="bg-pm-charcoal/50 rounded-lg border border-pm-border p-3 flex items-center justify-between"
+                                                >
+                                                    <div className="flex items-center gap-3 flex-1">
+                                                        <div className="w-10 h-10 rounded-lg bg-pm-green/10 flex items-center justify-center font-mono font-bold text-pm-green text-xs">
+                                                            {position.ticker.slice(0, 4)}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <h5 className="font-medium text-sm">{position.ticker}</h5>
+                                                            <p className="text-xs text-pm-muted truncate">
+                                                                {stock?.name || 'Unknown'}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex items-center gap-1">
+                                                            <input
+                                                                type="number"
+                                                                value={position.weight}
+                                                                onChange={(e) => handleWeightChange(position.ticker, parseFloat(e.target.value) || 0)}
+                                                                min={0}
+                                                                max={100}
+                                                                step={0.1}
+                                                                className="w-16 px-2 py-1 bg-pm-black border border-pm-border rounded text-sm text-right focus:border-pm-green focus:outline-none"
+                                                            />
+                                                            <span className="text-xs text-pm-muted">%</span>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => removePosition(currentPortfolio.id, position.ticker)}
+                                                            className="p-2 rounded hover:bg-red-500/20 text-pm-muted hover:text-red-400 transition-colors"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                        {(!currentPortfolio?.positions || currentPortfolio.positions.length === 0) && (
+                                            <p className="text-sm text-pm-muted text-center py-4">
+                                                No positions. Add some above.
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             {activeTab === "research" && (
                                 <div className="space-y-4">
                                     {/* Add New Button */}
@@ -357,123 +653,6 @@ export default function AdminPanel() {
                                                         className="p-2 rounded hover:bg-red-500/20 text-pm-muted hover:text-red-400 transition-colors"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === "portfolio" && (
-                                <div className="space-y-4">
-                                    {/* Edit Portfolio Form */}
-                                    {editingPortfolio && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: -20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="bg-pm-charcoal rounded-lg border border-pm-border p-4 space-y-4"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <h3 className="font-bold">
-                                                    Edit {editingPortfolio.ticker}
-                                                </h3>
-                                                <button
-                                                    onClick={() => setEditingPortfolio(null)}
-                                                    className="p-1 hover:bg-white/10 rounded"
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </button>
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <label className="text-xs text-pm-muted mb-1 block">Entry Price</label>
-                                                    <input
-                                                        type="number"
-                                                        value={portfolioForm.entryPrice}
-                                                        onChange={(e) => setPortfolioForm({ ...portfolioForm, entryPrice: parseFloat(e.target.value) || 0 })}
-                                                        step="0.01"
-                                                        className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <label className="text-xs text-pm-muted mb-1 block">PM Score</label>
-                                                    <input
-                                                        type="number"
-                                                        value={portfolioForm.pmScore}
-                                                        onChange={(e) => setPortfolioForm({ ...portfolioForm, pmScore: parseInt(e.target.value) || 0 })}
-                                                        min={0}
-                                                        max={100}
-                                                        className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="text-xs text-pm-muted mb-1 block">Status</label>
-                                                <select
-                                                    value={portfolioForm.status}
-                                                    onChange={(e) => setPortfolioForm({ ...portfolioForm, status: e.target.value as "Open" | "Closed" })}
-                                                    className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
-                                                >
-                                                    <option value="Open">Open</option>
-                                                    <option value="Closed">Closed</option>
-                                                </select>
-                                            </div>
-
-                                            <button
-                                                onClick={handlePortfolioSubmit}
-                                                className="w-full py-2 rounded-lg bg-pm-green text-pm-black font-medium flex items-center justify-center gap-2 hover:bg-pm-green/90 transition-colors"
-                                            >
-                                                <Save className="w-4 h-4" />
-                                                Update Position
-                                            </button>
-                                        </motion.div>
-                                    )}
-
-                                    {/* Portfolio Positions List */}
-                                    <div className="space-y-2">
-                                        <h4 className="text-sm text-pm-muted font-mono uppercase tracking-wider">
-                                            Positions ({portfolio.length})
-                                        </h4>
-                                        {portfolio.map((position) => (
-                                            <div
-                                                key={position.ticker}
-                                                className="bg-pm-charcoal/50 rounded-lg border border-pm-border p-3 flex items-center justify-between"
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-lg bg-pm-green/10 flex items-center justify-center font-mono font-bold text-pm-green text-sm">
-                                                        {position.ticker.slice(0, 4)}
-                                                    </div>
-                                                    <div>
-                                                        <h5 className="font-medium text-sm">{position.ticker}</h5>
-                                                        <p className="text-xs text-pm-muted">{position.name}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-4">
-                                                    <div className="text-right">
-                                                        <div className="text-sm font-mono">${position.entryPrice.toFixed(2)}</div>
-                                                        <div className="text-xs text-pm-muted">Entry</div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className="text-sm font-mono text-pm-green">{position.pmScore}</div>
-                                                        <div className="text-xs text-pm-muted">Score</div>
-                                                    </div>
-                                                    <span
-                                                        className={`text-xs px-2 py-1 rounded ${position.status === "Open"
-                                                                ? "bg-pm-green/10 text-pm-green"
-                                                                : "bg-pm-muted/10 text-pm-muted"
-                                                            }`}
-                                                    >
-                                                        {position.status}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => handleEditPortfolio(position)}
-                                                        className="p-2 rounded hover:bg-white/10 text-pm-muted hover:text-white transition-colors"
-                                                    >
-                                                        <Edit3 className="w-4 h-4" />
                                                     </button>
                                                 </div>
                                             </div>
