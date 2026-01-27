@@ -26,7 +26,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Microsoft Corp",
     assetClass: "Cloud/AI",
     sector: "Technology",
-    yearlyOpen: 472.94,
+    yearlyOpen: 484.39,
     pmScore: 94,
     lastUpdated: "2026-01-02"
   },
@@ -35,7 +35,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Apple Inc.",
     assetClass: "Consumer Tech",
     sector: "Technology",
-    yearlyOpen: 271.01,
+    yearlyOpen: 272.26,
     pmScore: 89,
     lastUpdated: "2026-01-02"
   },
@@ -44,7 +44,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Alphabet Inc.",
     assetClass: "Search/AI",
     sector: "Technology",
-    yearlyOpen: 318.50,
+    yearlyOpen: 316.90,
     pmScore: 92,
     lastUpdated: "2026-01-02"
   },
@@ -53,7 +53,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Amazon.com Inc.",
     assetClass: "E-Commerce",
     sector: "Consumer Cyclical",
-    yearlyOpen: 234.80,
+    yearlyOpen: 231.34,
     pmScore: 90,
     lastUpdated: "2026-01-02"
   },
@@ -62,7 +62,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Meta Platforms Inc.",
     assetClass: "Social/AI",
     sector: "Technology",
-    yearlyOpen: 632.40,
+    yearlyOpen: 662.72,
     pmScore: 91,
     lastUpdated: "2026-01-02"
   },
@@ -71,7 +71,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Tesla Inc.",
     assetClass: "Auto/Robotics",
     sector: "Consumer Cyclical",
-    yearlyOpen: 475.52,
+    yearlyOpen: 457.80,
     pmScore: 85,
     lastUpdated: "2026-01-02"
   },
@@ -80,7 +80,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Bitcoin",
     assetClass: "Digital Assets",
     sector: "Cryptocurrency",
-    yearlyOpen: 87586.00,
+    yearlyOpen: 88742.00,
     pmScore: 88,
     lastUpdated: "2026-01-02"
   },
@@ -91,7 +91,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Rocket Lab USA",
     assetClass: "Space",
     sector: "Aerospace",
-    yearlyOpen: 65.50,
+    yearlyOpen: 70.63,
     pmScore: 94,
     lastUpdated: "2026-01-02"
   },
@@ -100,7 +100,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Super Micro Computer",
     assetClass: "Data Center",
     sector: "Technology",
-    yearlyOpen: 35.20,
+    yearlyOpen: 29.96,
     pmScore: 78,
     lastUpdated: "2026-01-02"
   },
@@ -109,7 +109,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Vertiv Holdings",
     assetClass: "Data Center",
     sector: "Industrials",
-    yearlyOpen: 142.30,
+    yearlyOpen: 169.47,
     pmScore: 86,
     lastUpdated: "2026-01-02"
   },
@@ -118,7 +118,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Broadcom Inc.",
     assetClass: "AI Hardware",
     sector: "Technology",
-    yearlyOpen: 343.00,
+    yearlyOpen: 352.78,
     pmScore: 93,
     lastUpdated: "2026-01-02"
   },
@@ -127,7 +127,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "IonQ Inc.",
     assetClass: "Quantum",
     sector: "Technology",
-    yearlyOpen: 52.80,
+    yearlyOpen: 46.01,
     pmScore: 82,
     lastUpdated: "2026-01-02"
   },
@@ -138,7 +138,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Intuitive Surgical",
     assetClass: "Auto/Robotics",
     sector: "Healthcare",
-    yearlyOpen: 566.36,
+    yearlyOpen: 566.78,
     pmScore: 91,
     lastUpdated: "2026-01-02"
   },
@@ -147,7 +147,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "iRobot Corporation",
     assetClass: "Auto/Robotics",
     sector: "Consumer Cyclical",
-    yearlyOpen: 8.90,
+    yearlyOpen: 0.11,
     pmScore: 62,
     lastUpdated: "2026-01-02"
   },
@@ -156,7 +156,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "ABB Ltd",
     assetClass: "Auto/Robotics",
     sector: "Industrials",
-    yearlyOpen: 57.20,
+    yearlyOpen: 73.51,
     pmScore: 84,
     lastUpdated: "2026-01-02"
   },
@@ -165,7 +165,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Fanuc Corporation",
     assetClass: "Auto/Robotics",
     sector: "Industrials",
-    yearlyOpen: 30.50,
+    yearlyOpen: 19.65,
     pmScore: 80,
     lastUpdated: "2026-01-02"
   },
@@ -174,7 +174,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "UiPath Inc.",
     assetClass: "Auto/Robotics",
     sector: "Technology",
-    yearlyOpen: 14.80,
+    yearlyOpen: 16.50,
     pmScore: 75,
     lastUpdated: "2026-01-02"
   },
