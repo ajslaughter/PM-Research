@@ -123,11 +123,11 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
         const liveData = prices[position.ticker];
         const isStale = staleTickers.has(position.ticker);
         const currentPrice = liveData?.price ?? 0;
-        const yearlyOpen = stock?.yearlyOpen ?? 0;
+        const yearlyClose = stock?.yearlyClose ?? 0;
 
-        // Calculate YTD return using stock database yearlyOpen
-        const ytdReturn = yearlyOpen > 0 && currentPrice > 0
-            ? calculateYTD(currentPrice, yearlyOpen)
+        // Calculate YTD return using stock database yearlyClose
+        const ytdReturn = yearlyClose > 0 && currentPrice > 0
+            ? calculateYTD(currentPrice, yearlyClose)
             : 0;
 
         // Use daily change from API
@@ -138,7 +138,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
             name: stock?.name || position.ticker,
             assetClass: stock?.assetClass || 'Unknown',
             weight: position.weight,
-            yearlyOpen,
+            yearlyClose,
             currentPrice,
             returnPercent: ytdReturn,
             dayChange,
@@ -360,7 +360,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                     {position.weight.toFixed(1)}%
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
-                                    ${position.yearlyOpen.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
                                 <td className="p-4 text-right font-mono font-medium">
                                     {isLoadingPrices ? (

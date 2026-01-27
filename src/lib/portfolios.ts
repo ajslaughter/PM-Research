@@ -1,7 +1,7 @@
 // Portfolio data for PM Research
 
 // Simplified portfolio position - just ticker and weight
-// All other data (name, assetClass, yearlyOpen, pmScore) comes from stockDatabase
+// All other data (name, assetClass, yearlyClose, pmScore) comes from stockDatabase
 export interface PortfolioPosition {
     ticker: string;
     weight: number; // Percentage (0-100), should sum to 100 per portfolio

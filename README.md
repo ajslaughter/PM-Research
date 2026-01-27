@@ -52,7 +52,7 @@ Use the navbar button to toggle between **Guest** and **Subscriber** views.
 
 ### Live Market Data
 - **Real-Time Prices**: Integrated `yahoo-finance2` to fetch live data for portfolio assets every 60 seconds.
-- **Dynamic Returns**: Automatically calculates YTD return based on a fixed "2026 Open" entry price strategy.
+- **Dynamic Returns**: Automatically calculates YTD return based on a fixed "2025 Close" entry price strategy.
 
 ### Pages
 1. **Landing**: Hero section, features, and CTAs

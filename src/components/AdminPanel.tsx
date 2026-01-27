@@ -193,7 +193,7 @@ export default function AdminPanel() {
                     name: data.name,
                     assetClass: data.assetClass || 'Unknown',
                     sector: data.sector || 'Unknown',
-                    yearlyOpen: data.yearlyOpen,
+                    yearlyClose: data.yearlyClose,
                     pmScore: data.pmScore || 75,
                     lastUpdated: data.lastUpdated || new Date().toISOString().split('T')[0],
                 };
