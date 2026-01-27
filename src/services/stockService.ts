@@ -44,9 +44,9 @@ export function stockExists(ticker: string): boolean {
 }
 
 // Calculate YTD return
-export function calculateYTD(currentPrice: number, yearlyOpen: number): number {
-  if (!yearlyOpen || yearlyOpen === 0) return 0;
-  return ((currentPrice - yearlyOpen) / yearlyOpen) * 100;
+export function calculateYTD(currentPrice: number, yearlyClose: number): number {
+  if (!yearlyClose || yearlyClose === 0) return 0;
+  return ((currentPrice - yearlyClose) / yearlyClose) * 100;
 }
 
 // Calculate weighted portfolio YTD
@@ -63,7 +63,7 @@ export function calculateWeightedYTD(
     const livePrice = livePrices[position.ticker]?.price;
 
     if (stock && livePrice && livePrice > 0) {
-      const ytd = calculateYTD(livePrice, stock.yearlyOpen);
+      const ytd = calculateYTD(livePrice, stock.yearlyClose);
       weightedYTD += (position.weight / 100) * ytd;
       totalWeight += position.weight;
     }

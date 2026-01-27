@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
             name: meta.shortName || meta.longName || ticker,
             assetClass,
             sector: 'Unknown',
-            yearlyOpen: Math.round(yearlyClose * 100) / 100,
+            yearlyClose: Math.round(yearlyClose * 100) / 100,
             currentPrice: meta.regularMarketPrice,
             pmScore: 75, // Default PM score for new stocks
             lastUpdated: new Date().toISOString().split('T')[0],
