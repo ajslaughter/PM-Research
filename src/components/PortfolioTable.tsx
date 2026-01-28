@@ -224,7 +224,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                             <span>{weightedYTD >= 0 ? '+' : ''}{weightedYTD.toFixed(1)}%</span>
                         )}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">vs Dec 31, 2025</div>
+                    <div className="text-[10px] text-pm-muted mt-1">vs Jan 2, 2026</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-pm-purple">
@@ -316,7 +316,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                             <th className="p-4">Ticker</th>
                             <th className="p-4">Asset Class</th>
                             <th className="p-4 text-right">Weight</th>
-                            <th className="p-4 text-right">2025 Close</th>
+                            <th className="p-4 text-right">Jan 2 Close</th>
                             <th className="p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
