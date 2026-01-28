@@ -664,4 +664,23 @@ ASTS represents a rare "infrastructure monopoly in formation" opportunity. The c
         relatedTickers: ["ASTS", "T", "VZ"],
         author: "PM Research Alpha Desk"
     },
+    {
+        id: "r10",
+        title: "CoWoS Crunch: The Packaging Bottleneck Nobody's Pricing",
+        summary: "TSMC allocation memo leaked. Advanced packaging capacity math doesn't work through 2027.",
+        fullContent: `TSMC internal allocation memo leaked: 35% of CoWoS to NVIDIA.
+One customer. Through 2027.
+Total CoWoS capacity for 2026: 2.8M wafer-starts.
+GB200 demand alone: 3.2M.
+The math doesn't work.
+Equipment lead times are 18 months.
+The GPU shortage ended.
+The packaging shortage just started.`,
+        date: "2026-01-28",
+        pmScore: 91,
+        category: "Alpha Signal",
+        readTime: "2 min",
+        relatedTickers: ["TSM", "NVDA", "AMD", "AMAT"],
+        author: "PM Research Alpha Desk"
+    },
 ];
