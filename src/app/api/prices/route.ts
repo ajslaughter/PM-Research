@@ -25,13 +25,14 @@ function isMarketOpen(): boolean {
     return timeInMinutes >= marketOpen && timeInMinutes < marketClose;
 }
 
-// Fetch single stock from Yahoo v8 chart API with change data
 async function fetchYahooChart(ticker: string): Promise<PriceResult | null> {
     try {
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=2d`;
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=2d&ts=${Date.now()}`;
         const response = await fetch(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
             },
             cache: 'no-store',
             next: { revalidate: 0 },
@@ -59,13 +60,17 @@ async function fetchYahooChart(ticker: string): Promise<PriceResult | null> {
     return null;
 }
 
-// Fetch Bitcoin price with 24h change
 async function fetchBitcoin(): Promise<PriceResult | null> {
-    // Try CoinGecko with 24h change
     try {
         const res = await fetch(
-            'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true',
-            { cache: 'no-store' }
+            `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&ts=${Date.now()}`,
+            {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                },
+            }
         );
         if (res.ok) {
             const data = await res.json();
@@ -80,9 +85,14 @@ async function fetchBitcoin(): Promise<PriceResult | null> {
         console.error('CoinGecko error:', e);
     }
 
-    // Try Coinbase (no change data available, return 0)
     try {
-        const res = await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot', { cache: 'no-store' });
+        const res = await fetch(`https://api.coinbase.com/v2/prices/BTC-USD/spot?ts=${Date.now()}`, {
+            cache: 'no-store',
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+            },
+        });
         if (res.ok) {
             const data = await res.json();
             const price = parseFloat(data?.data?.amount);
@@ -134,7 +144,9 @@ export async function GET(request: NextRequest) {
         timestamp: new Date().toISOString(),
     }, {
         headers: {
-            'Cache-Control': 'no-store, no-cache, must-revalidate',
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0',
         },
     });
 }

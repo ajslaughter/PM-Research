@@ -34,10 +34,24 @@ interface PortfolioTableProps {
     portfolioName: string;
 }
 
-// Skeleton loader component
 const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
     <div className={`h-4 ${width} bg-pm-charcoal animate-pulse rounded`} />
 );
+
+const LoadingSpinner = ({ size = "w-4 h-4" }: { size?: string }) => (
+    <div className={`${size} border-2 border-pm-green/30 border-t-pm-green rounded-full animate-spin`} />
+);
+
+const SkeletonKPI = () => (
+    <div className="flex flex-col gap-2">
+        <div className="h-8 w-24 bg-pm-charcoal animate-pulse rounded" />
+    </div>
+);
+
+const formatPercent = (value: number): string => {
+    const rounded = Math.round(value * 100) / 100;
+    return rounded.toFixed(2);
+};
 
 export default function PortfolioTable({ portfolioId, portfolioName }: PortfolioTableProps) {
     const { isSubscribed } = useSubscription();
@@ -74,8 +88,8 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
             setIsRefreshing(true);
         }
         try {
-            const url = `/api/prices?tickers=${tickerList}${forceRefresh ? '&refresh=true' : ''}`;
-            const res = await fetch(url);
+            const url = `/api/prices?tickers=${tickerList}&ts=${Date.now()}`;
+            const res = await fetch(url, { cache: 'no-store' });
             if (res.ok) {
                 const data: PriceApiResponse = await res.json();
                 if (data && data.prices && !('error' in data)) {
@@ -219,9 +233,12 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                     </div>
                     <div className={`text-2xl font-bold ${weightedYTD >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
                         {isLoadingPrices ? (
-                            <SkeletonCell width="w-20" />
+                            <div className="flex items-center gap-2">
+                                <LoadingSpinner size="w-5 h-5" />
+                                <SkeletonKPI />
+                            </div>
                         ) : (
-                            <span>{weightedYTD >= 0 ? '+' : ''}{weightedYTD.toFixed(1)}%</span>
+                            <span>{weightedYTD >= 0 ? '+' : ''}{formatPercent(weightedYTD)}%</span>
                         )}
                     </div>
                     <div className="text-[10px] text-pm-muted mt-1">vs Dec 31, 2025</div>
@@ -233,9 +250,12 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                     </div>
                     <div className={`text-2xl font-bold ${weightedDayChange >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
                         {isLoadingPrices ? (
-                            <SkeletonCell width="w-20" />
+                            <div className="flex items-center gap-2">
+                                <LoadingSpinner size="w-5 h-5" />
+                                <SkeletonKPI />
+                            </div>
                         ) : (
-                            <span>{weightedDayChange >= 0 ? '+' : ''}{weightedDayChange.toFixed(2)}%</span>
+                            <span>{weightedDayChange >= 0 ? '+' : ''}{formatPercent(weightedDayChange)}%</span>
                         )}
                     </div>
                     <div className="text-[10px] text-pm-muted mt-1">Weighted Daily</div>
@@ -259,7 +279,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                         {positions.length}
                     </div>
                     <div className="text-[10px] text-pm-muted mt-1">
-                        {totalWeight === 100 ? 'Fully Allocated' : `${totalWeight.toFixed(1)}% Allocated`}
+                        {totalWeight === 100 ? 'Fully Allocated' : `${formatPercent(totalWeight)}% Allocated`}
                     </div>
                 </div>
             </div>
@@ -269,7 +289,13 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                 {quarterlyPerformance.map((q) => (
                     <div key={q.quarter} className={q.isCurrent ? "text-pm-green font-bold" : ""}>
                         <div className="mb-1">{q.quarter}</div>
-                        <div>{q.return > 0 ? "+" : ""}{q.return.toFixed(1)}%</div>
+                        {q.isCurrent && isLoadingPrices ? (
+                            <div className="flex justify-center">
+                                <LoadingSpinner size="w-3 h-3" />
+                            </div>
+                        ) : (
+                            <div>{q.return > 0 ? "+" : ""}{formatPercent(q.return)}%</div>
+                        )}
                     </div>
                 ))}
             </div>
@@ -357,14 +383,17 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                     </span>
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
-                                    {position.weight.toFixed(1)}%
+                                    {formatPercent(position.weight)}%
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
                                     ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
                                 <td className="p-4 text-right font-mono font-medium">
                                     {isLoadingPrices ? (
-                                        <SkeletonCell width="w-20" />
+                                        <div className="flex items-center justify-end gap-2">
+                                            <LoadingSpinner size="w-3 h-3" />
+                                            <SkeletonCell width="w-20" />
+                                        </div>
                                     ) : (
                                         <span className={`inline-flex items-center gap-1 ${position.isLive ? 'text-white' : 'text-gray-400'}`}>
                                             ${position.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -382,13 +411,16 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                 <td className={`p-4 text-right font-mono text-sm ${position.isStale ? "text-pm-muted" : position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
                                     }`}>
                                     {isLoadingPrices ? (
-                                        <SkeletonCell width="w-12" />
+                                        <div className="flex items-center justify-end gap-2">
+                                            <LoadingSpinner size="w-3 h-3" />
+                                            <SkeletonCell width="w-12" />
+                                        </div>
                                     ) : position.isStale ? (
                                         <span className="text-pm-muted">--</span>
                                     ) : (
                                         <span>
                                             {position.dayChange >= 0 ? "+" : ""}
-                                            {position.dayChange.toFixed(2)}%
+                                            {formatPercent(position.dayChange)}%
                                         </span>
                                     )}
                                 </td>
@@ -399,7 +431,10 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                         }`}
                                 >
                                     {isLoadingPrices ? (
-                                        <SkeletonCell width="w-16" />
+                                        <div className="flex items-center justify-end gap-2">
+                                            <LoadingSpinner size="w-3 h-3" />
+                                            <SkeletonCell width="w-16" />
+                                        </div>
                                     ) : (
                                         <>
                                             {position.returnPercent >= 0 ? (
@@ -408,7 +443,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                                 <TrendingDown className="w-3 h-3 inline mr-1" />
                                             )}
                                             {position.returnPercent > 0 ? "+" : ""}
-                                            {position.returnPercent.toFixed(1)}%
+                                            {formatPercent(position.returnPercent)}%
                                         </>
                                     )}
                                 </td>
