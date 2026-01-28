@@ -683,4 +683,23 @@ The packaging shortage just started.`,
         relatedTickers: ["TSM", "NVDA", "AMD", "AMAT"],
         author: "PM Research Alpha Desk"
     },
+    {
+        id: "r11",
+        title: "Actuator Economics: The Humanoid Bottleneck",
+        summary: "Figure's production logs reveal the real constraint on humanoid scale. It's not AI. It's precision manufacturing.",
+        fullContent: `Figure 02 teardown confirms 23 precision actuators per unit.
+Harmonic drives, cycloidal gearboxes, frameless torque motors.
+Global supply for that spec: 200K units per year.
+Tesla wants millions. So does everyone else.
+The actuator supply chain doesn't exist yet.
+Neither do the factories to build it.
+The robot bottleneck isn't intelligence.
+It's joints.`,
+        date: "2026-01-28",
+        pmScore: 88,
+        category: "Alpha Signal",
+        readTime: "2 min",
+        relatedTickers: ["TSLA", "ABB", "FANUY", "ROK"],
+        author: "PM Research Alpha Desk"
+    },
 ];

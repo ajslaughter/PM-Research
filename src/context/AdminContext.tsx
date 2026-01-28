@@ -47,7 +47,7 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 const STORAGE_KEYS = {
     PORTFOLIOS: "pm-portfolios-v3",
     STOCK_DB: "pm-stock-db",
-    RESEARCH: "pm-research",
+    RESEARCH: "pm-research-v2",
     ACTIVE_PORTFOLIO: "pm-active-portfolio",
 } as const;
 
