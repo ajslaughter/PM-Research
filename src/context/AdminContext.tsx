@@ -43,9 +43,9 @@ interface AdminContextType {
 // Create the context with default values
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-// LocalStorage keys
+// LocalStorage keys - bump version to force refresh of defaults
 const STORAGE_KEYS = {
-    PORTFOLIOS: "pm-portfolios-v2",
+    PORTFOLIOS: "pm-portfolios-v3",
     STOCK_DB: "pm-stock-db",
     RESEARCH: "pm-research",
     ACTIVE_PORTFOLIO: "pm-active-portfolio",
