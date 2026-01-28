@@ -5,11 +5,14 @@ export const dynamic = "force-dynamic";
 const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || process.env.POLYGON_API_KEY || '';
 const POLYGON_BASE_URL = 'https://api.polygon.io';
 
-async function getYearEndClose(ticker: string): Promise<number> {
-    // Fetch Dec 31, 2025 adjusted close from Polygon (or last trading day of 2025)
-    const from = '2025-12-29';
-    const to = '2025-12-31';
-    const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${from}/${to}?adjusted=true&sort=desc&limit=5&apiKey=${POLYGON_API_KEY}`;
+// YTD_START: January 2, 2026 - first trading day of 2026
+const YTD_START = '2026-01-02';
+
+async function getYTDBaselineClose(ticker: string): Promise<number> {
+    // Fetch January 2, 2026 adjusted close from Polygon (first trading day of 2026)
+    const from = '2026-01-02';
+    const to = '2026-01-03';
+    const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${from}/${to}?adjusted=true&sort=asc&limit=1&apiKey=${POLYGON_API_KEY}`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -21,15 +24,8 @@ async function getYearEndClose(ticker: string): Promise<number> {
         return 0;
     }
 
-    // Find the last trading day of 2025 and return its adjusted close
-    for (const bar of data.results) {
-        const barDate = new Date(bar.t);
-        if (barDate.getUTCFullYear() === 2025) {
-            return bar.c;
-        }
-    }
-
-    return 0;
+    // Return the January 2, 2026 close price
+    return data.results[0].c;
 }
 
 export async function GET(request: NextRequest) {
@@ -63,8 +59,8 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Invalid response' }, { status: 500 });
         }
 
-        // Get Dec 31, 2025 adjusted close from Polygon for YTD baseline
-        let yearlyClose = await getYearEndClose(ticker);
+        // Get January 2, 2026 adjusted close from Polygon for YTD baseline
+        let yearlyClose = await getYTDBaselineClose(ticker);
         if (yearlyClose === 0) {
             // Fallback to current price if Polygon fails
             yearlyClose = meta.regularMarketPrice;
