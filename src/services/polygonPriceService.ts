@@ -22,6 +22,9 @@ function isCacheValid(entry: CacheEntry | undefined): boolean {
   return Date.now() - entry.timestamp < CACHE_TTL_MS;
 }
 
+// YTD_START: January 2, 2026 - first trading day of 2026
+const YTD_START = '2026-01-02';
+
 export async function getYTDBaseline(ticker: string): Promise<number> {
   const upperTicker = ticker.toUpperCase();
   const cached = baselineCache.get(upperTicker);
@@ -29,9 +32,10 @@ export async function getYTDBaseline(ticker: string): Promise<number> {
     return cached!.value;
   }
 
-  const from = '2025-12-29';
-  const to = '2025-12-31';
-  const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${upperTicker}/range/1/day/${from}/${to}?adjusted=true&sort=desc&limit=5&apiKey=${POLYGON_API_KEY}`;
+  // Fetch January 2, 2026 close price as YTD baseline
+  const from = '2026-01-02';
+  const to = '2026-01-03';
+  const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${upperTicker}/range/1/day/${from}/${to}?adjusted=true&sort=asc&limit=1&apiKey=${POLYGON_API_KEY}`;
 
   const response = await fetch(url);
   if (!response.ok) {
@@ -43,15 +47,8 @@ export async function getYTDBaseline(ticker: string): Promise<number> {
     return 0;
   }
 
-  let baseline = 0;
-  for (const bar of data.results) {
-    const barDate = new Date(bar.t);
-    const year = barDate.getUTCFullYear();
-    if (year === 2025) {
-      baseline = sanitizePrice(bar.c);
-      break;
-    }
-  }
+  // Get the January 2, 2026 close price
+  const baseline = sanitizePrice(data.results[0].c);
 
   if (baseline > 0) {
     baselineCache.set(upperTicker, { value: baseline, timestamp: Date.now() });
