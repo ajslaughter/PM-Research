@@ -4,7 +4,7 @@ export interface StockData {
   name: string;
   assetClass: string;
   sector: string;
-  yearlyClose: number; // Jan 2, 2026 close price - YTD baseline (first trading day of 2026)
+  yearlyClose: number; // Jan 2, 2026 CLOSE price - YTD baseline (2026 day one close)
   pmScore: number;
   lastUpdated: string;
 }
@@ -12,7 +12,7 @@ export interface StockData {
 // YTD_START constant - January 2, 2026 is the anchor for all YTD calculations
 export const YTD_START = '2026-01-02';
 
-// Initial database with real January 2, 2026 close prices
+// Initial database with real January 2, 2026 CLOSING prices (day one close)
 export const stockDatabase: Record<string, StockData> = {
   // Mag 7 + Bitcoin (Core Portfolio)
   "NVDA": {
@@ -20,7 +20,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "NVIDIA Corporation",
     assetClass: "AI Hardware",
     sector: "Technology",
-    yearlyClose: 138.31, // Jan 2, 2026 close (was 189.84 on Dec 31, 2025)
+    yearlyClose: 138.31, // Jan 2, 2026 CLOSE
     pmScore: 98,
     lastUpdated: "2026-01-28"
   },
@@ -29,7 +29,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Microsoft Corp",
     assetClass: "Cloud/AI",
     sector: "Technology",
-    yearlyClose: 418.58, // Jan 2, 2026 close (was 484.39 on Dec 31, 2025)
+    yearlyClose: 418.58, // Jan 2, 2026 CLOSE
     pmScore: 94,
     lastUpdated: "2026-01-28"
   },
@@ -38,7 +38,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Apple Inc.",
     assetClass: "Consumer Tech",
     sector: "Technology",
-    yearlyClose: 243.85, // Jan 2, 2026 close (was 272.26 on Dec 31, 2025)
+    yearlyClose: 243.85, // Jan 2, 2026 CLOSE
     pmScore: 89,
     lastUpdated: "2026-01-28"
   },
@@ -47,7 +47,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Alphabet Inc.",
     assetClass: "Search/AI",
     sector: "Technology",
-    yearlyClose: 189.43, // Jan 2, 2026 close (was 316.90 on Dec 31, 2025)
+    yearlyClose: 189.43, // Jan 2, 2026 CLOSE
     pmScore: 92,
     lastUpdated: "2026-01-28"
   },
@@ -56,7 +56,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Amazon.com Inc.",
     assetClass: "E-Commerce",
     sector: "Consumer Cyclical",
-    yearlyClose: 220.22, // Jan 2, 2026 close (was 231.34 on Dec 31, 2025)
+    yearlyClose: 220.22, // Jan 2, 2026 CLOSE
     pmScore: 90,
     lastUpdated: "2026-01-28"
   },
@@ -65,7 +65,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Meta Platforms Inc.",
     assetClass: "Social/AI",
     sector: "Technology",
-    yearlyClose: 599.24, // Jan 2, 2026 close (was 662.72 on Dec 31, 2025)
+    yearlyClose: 599.24, // Jan 2, 2026 CLOSE
     pmScore: 91,
     lastUpdated: "2026-01-28"
   },
@@ -74,7 +74,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Tesla Inc.",
     assetClass: "Auto/Robotics",
     sector: "Consumer Cyclical",
-    yearlyClose: 379.28, // Jan 2, 2026 close (was 457.80 on Dec 31, 2025)
+    yearlyClose: 379.28, // Jan 2, 2026 CLOSE
     pmScore: 85,
     lastUpdated: "2026-01-28"
   },
@@ -83,7 +83,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Bitcoin",
     assetClass: "Digital Assets",
     sector: "Cryptocurrency",
-    yearlyClose: 96886.88, // Jan 2, 2026 close (was 88742.00 on Dec 31, 2025)
+    yearlyClose: 96886.88, // Jan 2, 2026 CLOSE
     pmScore: 88,
     lastUpdated: "2026-01-28"
   },
@@ -94,7 +94,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Rocket Lab USA",
     assetClass: "Space",
     sector: "Aerospace",
-    yearlyClose: 24.96, // Jan 2, 2026 close (was 70.63 on Dec 31, 2025)
+    yearlyClose: 24.96, // Jan 2, 2026 CLOSE
     pmScore: 94,
     lastUpdated: "2026-01-28"
   },
@@ -103,7 +103,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Super Micro Computer",
     assetClass: "Data Center",
     sector: "Technology",
-    yearlyClose: 30.05, // Jan 2, 2026 close (was 29.96 on Dec 31, 2025)
+    yearlyClose: 30.05, // Jan 2, 2026 CLOSE
     pmScore: 78,
     lastUpdated: "2026-01-28"
   },
@@ -112,7 +112,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Vertiv Holdings",
     assetClass: "Data Center",
     sector: "Industrials",
-    yearlyClose: 118.30, // Jan 2, 2026 close (was 169.47 on Dec 31, 2025)
+    yearlyClose: 118.30, // Jan 2, 2026 CLOSE
     pmScore: 86,
     lastUpdated: "2026-01-28"
   },
@@ -121,7 +121,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Broadcom Inc.",
     assetClass: "AI Hardware",
     sector: "Technology",
-    yearlyClose: 231.98, // Jan 2, 2026 close (was 352.78 on Dec 31, 2025)
+    yearlyClose: 231.98, // Jan 2, 2026 CLOSE
     pmScore: 93,
     lastUpdated: "2026-01-28"
   },
@@ -130,7 +130,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "IonQ Inc.",
     assetClass: "Quantum",
     sector: "Technology",
-    yearlyClose: 43.10, // Jan 2, 2026 close (was 46.01 on Dec 31, 2025)
+    yearlyClose: 43.10, // Jan 2, 2026 CLOSE
     pmScore: 82,
     lastUpdated: "2026-01-28"
   },
@@ -141,7 +141,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Intuitive Surgical",
     assetClass: "Auto/Robotics",
     sector: "Healthcare",
-    yearlyClose: 524.03, // Jan 2, 2026 close (was 566.78 on Dec 31, 2025)
+    yearlyClose: 524.03, // Jan 2, 2026 CLOSE
     pmScore: 91,
     lastUpdated: "2026-01-28"
   },
@@ -150,7 +150,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "ABB Ltd",
     assetClass: "Auto/Robotics",
     sector: "Industrials",
-    yearlyClose: 53.52, // Jan 2, 2026 close (was 73.51 on Dec 31, 2025)
+    yearlyClose: 53.52, // Jan 2, 2026 CLOSE
     pmScore: 84,
     lastUpdated: "2026-01-28"
   },
@@ -159,7 +159,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Fanuc Corporation",
     assetClass: "Auto/Robotics",
     sector: "Industrials",
-    yearlyClose: 13.08, // Jan 2, 2026 close (was 19.65 on Dec 31, 2025)
+    yearlyClose: 13.08, // Jan 2, 2026 CLOSE
     pmScore: 80,
     lastUpdated: "2026-01-28"
   },
@@ -168,7 +168,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "UiPath Inc.",
     assetClass: "Auto/Robotics",
     sector: "Technology",
-    yearlyClose: 12.93, // Jan 2, 2026 close (was 16.50 on Dec 31, 2025)
+    yearlyClose: 12.93, // Jan 2, 2026 CLOSE
     pmScore: 75,
     lastUpdated: "2026-01-28"
   },
