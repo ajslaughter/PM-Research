@@ -9,7 +9,6 @@ import {
     Lock,
     TrendingUp,
     TrendingDown,
-    Sparkles,
     RefreshCw,
     AlertCircle,
 } from "lucide-react";
@@ -342,7 +341,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                             <th className="p-4">Ticker</th>
                             <th className="p-4">Asset Class</th>
                             <th className="p-4 text-right">Weight</th>
-                            <th className="p-4 text-right">2025 Close</th>
+                            <th className="p-4 text-right">2026 Open</th>
                             <th className="p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
@@ -358,7 +357,6 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                             </th>
                             <th className="p-4 text-right">Day %</th>
                             <th className="p-4 text-right">YTD Return</th>
-                            <th className="p-4 text-center">PM Score</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-pm-border">
@@ -446,12 +444,6 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                             {formatPercent(position.returnPercent)}%
                                         </>
                                     )}
-                                </td>
-                                <td className="p-4 text-center">
-                                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded bg-pm-green/10 text-pm-green border border-pm-green/30 text-xs font-mono">
-                                        <Sparkles className="w-3 h-3" />
-                                        {position.pmScore}
-                                    </div>
                                 </td>
                             </tr>
                         ))}

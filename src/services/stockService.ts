@@ -1,6 +1,6 @@
 import { StockData, stockDatabase, YTD_START } from '@/data/stockDatabase';
 
-// YTD baseline: January 2, 2026 (first trading day of 2026)
+// YTD baseline: December 31, 2025 (aligned with TradingView standard)
 // All YTD returns calculated against this anchor date
 
 // Live price data structure
@@ -46,8 +46,8 @@ export function stockExists(ticker: string): boolean {
   return ticker.toUpperCase() in stockDatabase;
 }
 
-// Calculate YTD return: (current / jan_two_close - 1) * 100, rounded to 2 decimals
-// yearlyClose = Jan 2, 2026 close price (YTD baseline)
+// Calculate YTD return: (current / dec_31_close - 1) * 100, rounded to 2 decimals
+// yearlyClose = Dec 31, 2025 close price (YTD baseline - TradingView standard)
 export function calculateYTD(currentPrice: number, yearlyClose: number): number {
   if (!yearlyClose || yearlyClose === 0) return 0;
   const ytd = (currentPrice / yearlyClose - 1) * 100;
@@ -55,7 +55,7 @@ export function calculateYTD(currentPrice: number, yearlyClose: number): number 
 }
 
 // Calculate weighted portfolio YTD - sum of (weight * individual YTD), rounded to 2 decimals
-// Uses Jan 2, 2026 close prices as baseline for all positions
+// Uses Dec 31, 2025 close prices as baseline for all positions (TradingView standard)
 export function calculateWeightedYTD(
   positions: Array<{ ticker: string; weight: number }>,
   livePrices: Record<string, { price: number | null; changePercent: number }>,
