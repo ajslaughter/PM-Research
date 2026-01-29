@@ -12,7 +12,7 @@ export interface StockData {
 // YTD_START constant - December 31, 2025 is the anchor for all YTD calculations (TradingView standard)
 export const YTD_START = '2025-12-31';
 
-// Initial database with real December 31, 2025 close prices
+// Initial database with December 31, 2025 close prices
 export const stockDatabase: Record<string, StockData> = {
   // Mag 7 + Bitcoin (Core Portfolio)
   "NVDA": {
@@ -20,7 +20,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "NVIDIA Corporation",
     assetClass: "AI Hardware",
     sector: "Technology",
-    yearlyClose: 189.84, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 189.84, // Dec 31, 2025 close (TradingView standard)
     pmScore: 98,
     lastUpdated: "2026-01-29"
   },
@@ -29,7 +29,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Microsoft Corp",
     assetClass: "Cloud/AI",
     sector: "Technology",
-    yearlyClose: 484.39, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 484.39, // Dec 31, 2025 close (TradingView standard)
     pmScore: 94,
     lastUpdated: "2026-01-29"
   },
@@ -38,7 +38,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Apple Inc.",
     assetClass: "Consumer Tech",
     sector: "Technology",
-    yearlyClose: 272.26, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 272.26, // Dec 31, 2025 close (TradingView standard)
     pmScore: 89,
     lastUpdated: "2026-01-29"
   },
@@ -47,7 +47,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Alphabet Inc.",
     assetClass: "Search/AI",
     sector: "Technology",
-    yearlyClose: 316.90, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 316.90, // Dec 31, 2025 close (TradingView standard)
     pmScore: 92,
     lastUpdated: "2026-01-29"
   },
@@ -56,7 +56,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Amazon.com Inc.",
     assetClass: "E-Commerce",
     sector: "Consumer Cyclical",
-    yearlyClose: 231.34, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 231.34, // Dec 31, 2025 close (TradingView standard)
     pmScore: 90,
     lastUpdated: "2026-01-29"
   },
@@ -65,7 +65,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Meta Platforms Inc.",
     assetClass: "Social/AI",
     sector: "Technology",
-    yearlyClose: 662.72, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 662.72, // Dec 31, 2025 close (TradingView standard)
     pmScore: 91,
     lastUpdated: "2026-01-29"
   },
@@ -74,7 +74,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Tesla Inc.",
     assetClass: "Auto/Robotics",
     sector: "Consumer Cyclical",
-    yearlyClose: 457.80, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 457.80, // Dec 31, 2025 close (TradingView standard)
     pmScore: 85,
     lastUpdated: "2026-01-29"
   },
@@ -83,7 +83,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Bitcoin",
     assetClass: "Digital Assets",
     sector: "Cryptocurrency",
-    yearlyClose: 88742.00, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 88742.00, // Dec 31, 2025 close (TradingView standard)
     pmScore: 88,
     lastUpdated: "2026-01-29"
   },
@@ -94,7 +94,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Rocket Lab USA",
     assetClass: "Space",
     sector: "Aerospace",
-    yearlyClose: 70.63, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 70.63, // Dec 31, 2025 close (TradingView standard)
     pmScore: 94,
     lastUpdated: "2026-01-29"
   },
@@ -103,7 +103,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Super Micro Computer",
     assetClass: "Data Center",
     sector: "Technology",
-    yearlyClose: 29.96, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 29.96, // Dec 31, 2025 close (TradingView standard)
     pmScore: 78,
     lastUpdated: "2026-01-29"
   },
@@ -112,7 +112,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Vertiv Holdings",
     assetClass: "Data Center",
     sector: "Industrials",
-    yearlyClose: 169.47, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 169.47, // Dec 31, 2025 close (TradingView standard)
     pmScore: 86,
     lastUpdated: "2026-01-29"
   },
@@ -121,7 +121,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Broadcom Inc.",
     assetClass: "AI Hardware",
     sector: "Technology",
-    yearlyClose: 352.78, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 352.78, // Dec 31, 2025 close (TradingView standard)
     pmScore: 93,
     lastUpdated: "2026-01-29"
   },
@@ -130,7 +130,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "IonQ Inc.",
     assetClass: "Quantum",
     sector: "Technology",
-    yearlyClose: 46.01, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 46.01, // Dec 31, 2025 close (TradingView standard)
     pmScore: 82,
     lastUpdated: "2026-01-29"
   },
@@ -141,7 +141,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Intuitive Surgical",
     assetClass: "Auto/Robotics",
     sector: "Healthcare",
-    yearlyClose: 566.78, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 566.78, // Dec 31, 2025 close (TradingView standard)
     pmScore: 91,
     lastUpdated: "2026-01-29"
   },
@@ -150,7 +150,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "ABB Ltd",
     assetClass: "Auto/Robotics",
     sector: "Industrials",
-    yearlyClose: 73.51, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 73.51, // Dec 31, 2025 close (TradingView standard)
     pmScore: 84,
     lastUpdated: "2026-01-29"
   },
@@ -159,7 +159,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Fanuc Corporation",
     assetClass: "Auto/Robotics",
     sector: "Industrials",
-    yearlyClose: 19.65, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 19.65, // Dec 31, 2025 close (TradingView standard)
     pmScore: 80,
     lastUpdated: "2026-01-29"
   },
@@ -168,7 +168,7 @@ export const stockDatabase: Record<string, StockData> = {
     name: "UiPath Inc.",
     assetClass: "Auto/Robotics",
     sector: "Technology",
-    yearlyClose: 16.50, // Dec 31, 2025 close (TradingView YTD baseline)
+    yearlyClose: 16.50, // Dec 31, 2025 close (TradingView standard)
     pmScore: 75,
     lastUpdated: "2026-01-29"
   },
