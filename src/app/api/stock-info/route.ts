@@ -5,13 +5,13 @@ export const dynamic = "force-dynamic";
 const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || process.env.POLYGON_API_KEY || '';
 const POLYGON_BASE_URL = 'https://api.polygon.io';
 
-// YTD_START: January 2, 2026 - first trading day of 2026
-const YTD_START = '2026-01-02';
+// YTD_START: December 31, 2025 - TradingView standard for YTD baseline
+const YTD_START = '2025-12-31';
 
 async function getYTDBaselineClose(ticker: string): Promise<number> {
-    // Fetch January 2, 2026 adjusted close from Polygon (first trading day of 2026)
-    const from = '2026-01-02';
-    const to = '2026-01-03';
+    // Fetch December 31, 2025 adjusted close from Polygon (TradingView YTD standard)
+    const from = '2025-12-31';
+    const to = '2026-01-01';
     const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${from}/${to}?adjusted=true&sort=asc&limit=1&apiKey=${POLYGON_API_KEY}`;
 
     const response = await fetch(url);
@@ -24,7 +24,7 @@ async function getYTDBaselineClose(ticker: string): Promise<number> {
         return 0;
     }
 
-    // Return the January 2, 2026 close price
+    // Return the December 31, 2025 close price
     return data.results[0].c;
 }
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Invalid response' }, { status: 500 });
         }
 
-        // Get January 2, 2026 adjusted close from Polygon for YTD baseline
+        // Get December 31, 2025 adjusted close from Polygon for YTD baseline
         let yearlyClose = await getYTDBaselineClose(ticker);
         if (yearlyClose === 0) {
             // Fallback to current price if Polygon fails

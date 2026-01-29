@@ -1,73 +1,78 @@
 # YTD Baseline Audit Log
 
-**Date:** January 28, 2026
-**Change:** Updated YTD baseline from December 31, 2025 to January 2, 2026
+**Date:** January 29, 2026
+**Change:** Reverted YTD baseline to December 31, 2025 (TradingView standard)
 
 ## Summary
 
-All YTD calculations now use the **January 2, 2026 close price** as the anchor (first trading day of 2026).
+All YTD calculations now use the **December 31, 2025 close price** as the anchor, matching TradingView's YTD standard.
 
-Formula: `YTD Return = (current / jan_2_close - 1) * 100`, rounded to 2 decimals
+Formula: `YTD Return = (current / dec_31_close - 1) * 100`, rounded to 2 decimals
 
-## Price Changes by Symbol
+## Baseline Alignment
 
-| Symbol   | Old (Dec 31, 2025) | New (Jan 2, 2026) | Diff %   |
-|----------|-------------------|-------------------|----------|
-| NVDA     | 189.84            | 138.31            | -27.14%  |
-| MSFT     | 484.39            | 418.58            | -13.58%  |
-| AAPL     | 272.26            | 243.85            | -10.43%  |
-| GOOGL    | 316.90            | 189.43            | -40.22%  |
-| AMZN     | 231.34            | 220.22            | -4.80%   |
-| META     | 662.72            | 599.24            | -9.57%   |
-| TSLA     | 457.80            | 379.28            | -17.15%  |
-| BTC-USD  | 88742.00          | 96886.88          | +9.17%   |
-| RKLB     | 70.63             | 24.96             | -64.66%  |
-| SMCI     | 29.96             | 30.05             | +0.30%   |
-| VRT      | 169.47            | 118.30            | -30.19%  |
-| AVGO     | 352.78            | 231.98            | -34.24%  |
-| IONQ     | 46.01             | 43.10             | -6.32%   |
-| ISRG     | 566.78            | 524.03            | -7.54%   |
-| ABB      | 73.51             | 53.52             | -27.19%  |
-| FANUY    | 19.65             | 13.08             | -33.43%  |
-| PATH     | 16.50             | 12.93             | -21.63%  |
+This update aligns our YTD calculations with TradingView's methodology:
+- **TradingView Standard**: Uses December 31 close as the YTD starting price (displayed as "2026 Open" in their UI)
+- **Previous Implementation**: Used January 2, 2026 (first trading day)
+- **Current Implementation**: Uses December 31, 2025 close (TradingView-aligned)
+
+## Price Values by Symbol (Dec 31, 2025 Baseline)
+
+| Symbol   | Dec 31, 2025 Close |
+|----------|-------------------|
+| NVDA     | 189.84            |
+| MSFT     | 484.39            |
+| AAPL     | 272.26            |
+| GOOGL    | 316.90            |
+| AMZN     | 231.34            |
+| META     | 662.72            |
+| TSLA     | 457.80            |
+| BTC-USD  | 88742.00          |
+| RKLB     | 70.63             |
+| SMCI     | 29.96             |
+| VRT      | 169.47            |
+| AVGO     | 352.78            |
+| IONQ     | 46.01             |
+| ISRG     | 566.78            |
+| ABB      | 73.51             |
+| FANUY    | 19.65             |
+| PATH     | 16.50             |
 
 ## Files Modified
 
 1. **src/data/stockDatabase.ts**
-   - Added `YTD_START` constant: `'2026-01-02'`
-   - Updated all `yearlyClose` values to Jan 2, 2026 close prices
-   - Updated comments to reflect new baseline date
+   - Updated `YTD_START` constant: `'2025-12-31'`
+   - Reverted all `yearlyClose` values to Dec 31, 2025 close prices
+   - Updated comments to reflect TradingView alignment
 
-2. **src/services/stockService.ts**
-   - Imported `YTD_START` constant
-   - Updated `calculateYTD()` to use formula: `(current / jan_two_close - 1) * 100`
-   - Added rounding to 2 decimal places
-   - Updated `calculateWeightedYTD()` to round final result
+2. **src/services/polygonPriceService.ts**
+   - Updated `YTD_START` constant to `'2025-12-31'`
+   - Updated `getYTDBaseline()` date range to `2025-12-31` to `2026-01-01`
 
-3. **src/services/polygonPriceService.ts**
-   - Added `YTD_START` constant
-   - Updated `getYTDBaseline()` to fetch Jan 2, 2026 prices
-   - Changed date range from `2025-12-29 to 2025-12-31` to `2026-01-02 to 2026-01-03`
+3. **src/app/api/stock-info/route.ts**
+   - Updated `YTD_START` constant to `'2025-12-31'`
+   - Updated `getYTDBaselineClose()` date range to fetch Dec 31, 2025 prices
 
-4. **src/app/api/stock-info/route.ts**
-   - Added `YTD_START` constant
-   - Renamed `getYearEndClose()` to `getYTDBaselineClose()`
-   - Updated date range to Jan 2-3, 2026
+4. **src/components/PortfolioTable.tsx**
+   - Changed table header from "2025 Close" to "2026 Open" (TradingView terminology)
+   - Removed "PM Score" column from the table
 
 ## Impact Analysis
 
 ### Portfolio YTD Calculations
 
-With the new Jan 2, 2026 baseline, YTD returns will now be calculated from the first trading day of 2026 rather than the last trading day of 2025. This provides a more accurate representation of 2026 performance.
+With the Dec 31, 2025 baseline, YTD returns now match TradingView's methodology:
+- Uses the last trading day close of the previous year
+- Provides direct comparability with TradingView charts
 
 ### Example Calculation
 
-For NVDA with Jan 2, 2026 close = $138.31:
+For NVDA with Dec 31, 2025 close = $189.84:
 - If current price = $188.52
-- YTD Return = (188.52 / 138.31 - 1) * 100 = **36.30%**
+- YTD Return = (188.52 / 189.84 - 1) * 100 = **-0.70%**
 
-(Compared to old calculation using Dec 31 baseline of $189.84 which would show -0.70%)
+(This matches TradingView's YTD calculation for NVDA)
 
 ---
 
-*Generated by YTD Baseline Audit - January 28, 2026*
+*Generated by YTD Baseline Audit - January 29, 2026*
