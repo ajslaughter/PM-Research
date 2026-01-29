@@ -4,7 +4,7 @@ export interface StockData {
   name: string;
   assetClass: string;
   sector: string;
-  yearlyClose: number; // Dec 31, 2025 close price - YTD baseline (aligned with TradingView)
+  yearlyClose: number; // Dec 31, 2025 close price - YTD baseline (TradingView standard)
   pmScore: number;
   lastUpdated: string;
 }

@@ -22,8 +22,8 @@ function isCacheValid(entry: CacheEntry | undefined): boolean {
   return Date.now() - entry.timestamp < CACHE_TTL_MS;
 }
 
-// YTD_START: January 2, 2026 - first trading day of 2026
-const YTD_START = '2026-01-02';
+// YTD_START: December 31, 2025 - TradingView standard for YTD baseline
+const YTD_START = '2025-12-31';
 
 export async function getYTDBaseline(ticker: string): Promise<number> {
   const upperTicker = ticker.toUpperCase();
@@ -32,9 +32,9 @@ export async function getYTDBaseline(ticker: string): Promise<number> {
     return cached!.value;
   }
 
-  // Fetch January 2, 2026 close price as YTD baseline
-  const from = '2026-01-02';
-  const to = '2026-01-03';
+  // Fetch December 31, 2025 close price as YTD baseline (TradingView standard)
+  const from = '2025-12-31';
+  const to = '2026-01-01';
   const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${upperTicker}/range/1/day/${from}/${to}?adjusted=true&sort=asc&limit=1&apiKey=${POLYGON_API_KEY}`;
 
   const response = await fetch(url);
@@ -47,7 +47,7 @@ export async function getYTDBaseline(ticker: string): Promise<number> {
     return 0;
   }
 
-  // Get the January 2, 2026 close price
+  // Get the December 31, 2025 close price
   const baseline = sanitizePrice(data.results[0].c);
 
   if (baseline > 0) {
