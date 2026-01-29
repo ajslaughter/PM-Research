@@ -43,10 +43,10 @@ interface AdminContextType {
 // Create the context with default values
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-// LocalStorage keys
+// LocalStorage keys - bump version to clear stale cached data (IRBT removal)
 const STORAGE_KEYS = {
-    PORTFOLIOS: "pm-portfolios-v2",
-    STOCK_DB: "pm-stock-db",
+    PORTFOLIOS: "pm-portfolios-v3",
+    STOCK_DB: "pm-stock-db-v2",
     RESEARCH: "pm-research",
     ACTIVE_PORTFOLIO: "pm-active-portfolio",
 } as const;
