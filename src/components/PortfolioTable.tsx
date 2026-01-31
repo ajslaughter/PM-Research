@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
-import { assetClassColors } from "@/data/stockDatabase";
+import SectorBadge from "@/components/SectorBadge";
 import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
 import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
 import {
@@ -377,9 +377,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                     </div>
                                 </td>
                                 <td className="p-4">
-                                    <span className={`px-2 py-1 rounded text-xs font-mono border ${assetClassColors[position.assetClass] || "bg-white/5 border-white/10 text-pm-text"}`}>
-                                        {position.assetClass}
-                                    </span>
+                                    <SectorBadge sector={position.assetClass} size="sm" />
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
