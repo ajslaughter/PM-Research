@@ -30,6 +30,10 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 ```
 src/
 ├── app/
+│   ├── api/
+│   │   ├── prices/         # Live price fetching (Yahoo + CoinGecko)
+│   │   ├── polygon/        # Polygon.io API integration
+│   │   └── stock-info/     # Stock metadata endpoint
 │   ├── layout.tsx          # Root layout with providers
 │   ├── page.tsx            # Landing page
 │   ├── portfolio/page.tsx  # The Ledger (portfolio)
@@ -37,12 +41,28 @@ src/
 │   └── pricing/page.tsx    # Subscription tiers
 ├── components/
 │   ├── Navbar.tsx          # Navigation with toggle
-│   ├── PortfolioTable.tsx  # Data table component
-│   └── ResearchFeed.tsx    # Research cards
+│   ├── PortfolioTable.tsx  # Data table with live prices
+│   ├── ResearchFeed.tsx    # Research cards grid
+│   ├── SectorBadge.tsx     # Sector badge component
+│   ├── ErrorBoundary.tsx   # Error handling wrapper
+│   └── AdminPanel.tsx      # Admin controls
 ├── context/
-│   └── SubscriptionContext.tsx  # Global auth state
+│   ├── AdminContext.tsx    # Composed provider
+│   ├── PortfolioContext.tsx    # Portfolio CRUD
+│   ├── ResearchContext.tsx     # Research management
+│   ├── StockDatabaseContext.tsx # Stock metadata
+│   └── SubscriptionContext.tsx # Global auth state
+├── hooks/
+│   ├── usePrices.ts        # Price polling hook
+│   ├── usePortfolio.ts     # Portfolio utilities
+│   └── useResearch.ts      # Research utilities
+├── services/
+│   └── stockService.ts     # YTD calculations
+├── data/
+│   └── stockDatabase.ts    # Stock metadata registry
 └── lib/
-    └── mockData.ts         # Mock portfolio/research data
+    ├── dateUtils.ts        # YTD baseline utilities
+    └── portfolios.ts       # Default portfolios & research
 ```
 
 ## Features
@@ -51,8 +71,8 @@ src/
 Use the navbar button to toggle between **Guest** and **Subscriber** views.
 
 ### Live Market Data
-- **Real-Time Prices**: Integrated `yahoo-finance2` to fetch live data for portfolio assets every 60 seconds.
-- **Dynamic Returns**: Automatically calculates YTD return based on a fixed "2025 Close" entry price strategy.
+- **Real-Time Prices**: Integrated Yahoo Finance API to fetch live data for portfolio assets (30s polling when market open, 5min when closed).
+- **Dynamic Returns**: Automatically calculates YTD return based on the last trading day of the previous year (TradingView standard).
 
 ### Pages
 1. **Landing**: Hero section, features, and CTAs

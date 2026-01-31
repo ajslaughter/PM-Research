@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
-import { assetClassColors } from "@/data/stockDatabase";
 import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
 import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
+import SectorBadge from "@/components/SectorBadge";
 import {
     Lock,
     TrendingUp,
@@ -13,6 +13,9 @@ import {
     RefreshCw,
     AlertCircle,
 } from "lucide-react";
+
+// API timeout in milliseconds
+const API_TIMEOUT = 10000;
 
 // API response type
 interface PriceData {
@@ -63,6 +66,12 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [lastPriceFetch, setLastPriceFetch] = useState<Date | null>(null);
+    const [fetchError, setFetchError] = useState<string | null>(null);
+
+    // Refs for cleanup
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const isMountedRef = useRef(true);
 
     // Get current portfolio
     const currentPortfolio = useMemo(() => {
@@ -77,21 +86,53 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
         return positions.map((p) => p.ticker).join(',');
     }, [positions]);
 
-    // Fetch prices function
+    // Fetch prices function with AbortController and timeout
     const fetchPrices = useCallback(async (forceRefresh = false) => {
         if (!tickerList) {
             setIsLoadingPrices(false);
             return;
         }
 
+        // Cancel any pending request
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+
+        // Create new AbortController
+        abortControllerRef.current = new AbortController();
+
         if (forceRefresh) {
             setIsRefreshing(true);
         }
+
+        setFetchError(null);
+
         try {
             const url = `/api/prices?tickers=${tickerList}&ts=${Date.now()}`;
-            const res = await fetch(url, { cache: 'no-store' });
+
+            // Create timeout promise
+            const timeoutPromise = new Promise<never>((_, reject) => {
+                setTimeout(() => reject(new Error('Request timeout')), API_TIMEOUT);
+            });
+
+            // Race between fetch and timeout
+            const res = await Promise.race([
+                fetch(url, {
+                    cache: 'no-store',
+                    signal: abortControllerRef.current.signal,
+                }),
+                timeoutPromise,
+            ]);
+
+            // Check if component is still mounted
+            if (!isMountedRef.current) return;
+
             if (res.ok) {
                 const data: PriceApiResponse = await res.json();
+
+                // Check again after async operation
+                if (!isMountedRef.current) return;
+
                 if (data && data.prices && !('error' in data)) {
                     const newStaleTickers = new Set<string>();
 
@@ -105,25 +146,60 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                     setMarketOpen(data.marketOpen);
                     setStaleTickers(newStaleTickers);
                     setLastPriceFetch(new Date(data.timestamp));
+                    setFetchError(null);
                 }
+            } else {
+                setFetchError('Failed to fetch prices');
             }
         } catch (error) {
+            // Check if component is still mounted
+            if (!isMountedRef.current) return;
+
+            // Ignore abort errors
+            if (error instanceof Error && error.name === 'AbortError') {
+                return;
+            }
+
+            const errorMessage = error instanceof Error ? error.message : 'Failed to fetch prices';
+            setFetchError(errorMessage);
             console.error("Error fetching prices:", error);
         } finally {
-            setIsLoadingPrices(false);
-            setIsRefreshing(false);
+            if (isMountedRef.current) {
+                setIsLoadingPrices(false);
+                setIsRefreshing(false);
+            }
         }
     }, [tickerList]);
 
     // Fetch live prices on mount and poll based on market status
     useEffect(() => {
+        isMountedRef.current = true;
         setIsLoadingPrices(true);
+
+        // Initial fetch
         fetchPrices();
-        const interval = setInterval(
-            () => fetchPrices(),
-            marketOpen ? 30000 : 300000
-        );
-        return () => clearInterval(interval);
+
+        // Setup polling interval
+        const pollInterval = marketOpen ? 30000 : 300000;
+        intervalRef.current = setInterval(() => {
+            fetchPrices();
+        }, pollInterval);
+
+        // Cleanup function
+        return () => {
+            isMountedRef.current = false;
+
+            // Cancel any pending request
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+
+            // Clear polling interval
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
     }, [fetchPrices, marketOpen]);
 
     // Handle refresh button click
@@ -312,9 +388,15 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                     </div>
                     {/* Data Status */}
                     <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${isLoadingPrices || isRefreshing ? 'bg-yellow-500' : staleTickers.size > 0 ? 'bg-orange-500' : 'bg-pm-green'} animate-pulse`} />
+                        <div className={`w-2 h-2 rounded-full ${
+                            fetchError ? 'bg-red-500' :
+                            isLoadingPrices || isRefreshing ? 'bg-yellow-500' :
+                            staleTickers.size > 0 ? 'bg-orange-500' : 'bg-pm-green'
+                        } animate-pulse`} />
                         <span>
-                            {isLoadingPrices || isRefreshing ? "Syncing..." : staleTickers.size > 0 ? `${staleTickers.size} stale` : "Live"}
+                            {fetchError ? "Data unavailable" :
+                             isLoadingPrices || isRefreshing ? "Syncing..." :
+                             staleTickers.size > 0 ? `${staleTickers.size} stale` : "Live"}
                         </span>
                     </div>
                     {/* Last Update */}
@@ -377,9 +459,11 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                     </div>
                                 </td>
                                 <td className="p-4">
-                                    <span className={`px-2 py-1 rounded text-xs font-mono border ${assetClassColors[position.assetClass] || "bg-white/5 border-white/10 text-pm-text"}`}>
-                                        {position.assetClass}
-                                    </span>
+                                    <SectorBadge
+                                        sector={position.assetClass}
+                                        size="sm"
+                                        interactive={false}
+                                    />
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
