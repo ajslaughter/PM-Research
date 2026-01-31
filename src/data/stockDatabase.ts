@@ -7,6 +7,7 @@ export interface StockData {
   yearlyClose: number; // Dec 31, 2025 close price - YTD baseline (TradingView standard)
   pmScore: number;
   lastUpdated: string;
+  ipoDate?: string; // IPO or first trading date (YYYY-MM-DD) - used for CAGR eligibility
 }
 
 // YTD_START constant - December 31, 2025 is the anchor for all YTD calculations (TradingView standard)
@@ -22,7 +23,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 189.84, // Dec 31, 2025 close (TradingView standard)
     pmScore: 98,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "1999-01-22"
   },
   "MSFT": {
     ticker: "MSFT",
@@ -31,7 +33,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 484.39, // Dec 31, 2025 close (TradingView standard)
     pmScore: 94,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "1986-03-13"
   },
   "AAPL": {
     ticker: "AAPL",
@@ -40,7 +43,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 272.26, // Dec 31, 2025 close (TradingView standard)
     pmScore: 89,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "1980-12-12"
   },
   "GOOGL": {
     ticker: "GOOGL",
@@ -49,7 +53,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 316.90, // Dec 31, 2025 close (TradingView standard)
     pmScore: 92,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2004-08-19"
   },
   "AMZN": {
     ticker: "AMZN",
@@ -58,7 +63,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Consumer Cyclical",
     yearlyClose: 231.34, // Dec 31, 2025 close (TradingView standard)
     pmScore: 90,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "1997-05-15"
   },
   "META": {
     ticker: "META",
@@ -67,7 +73,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 662.72, // Dec 31, 2025 close (TradingView standard)
     pmScore: 91,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2012-05-18"
   },
   "TSLA": {
     ticker: "TSLA",
@@ -76,7 +83,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Consumer Cyclical",
     yearlyClose: 457.80, // Dec 31, 2025 close (TradingView standard)
     pmScore: 85,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2010-06-29"
   },
   "BTC-USD": {
     ticker: "BTC-USD",
@@ -85,7 +93,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Cryptocurrency",
     yearlyClose: 88742.00, // Dec 31, 2025 close (TradingView standard)
     pmScore: 88,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2009-01-03" // Bitcoin genesis block
   },
 
   // Innovation Portfolio
@@ -96,7 +105,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Aerospace",
     yearlyClose: 70.63, // Dec 31, 2025 close (TradingView standard)
     pmScore: 94,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2021-08-25" // SPAC merger - less than 10 years
   },
   "SMCI": {
     ticker: "SMCI",
@@ -105,7 +115,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 29.96, // Dec 31, 2025 close (TradingView standard)
     pmScore: 78,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2007-03-29"
   },
   "VRT": {
     ticker: "VRT",
@@ -114,7 +125,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Industrials",
     yearlyClose: 169.47, // Dec 31, 2025 close (TradingView standard)
     pmScore: 86,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2020-02-07" // SPAC merger - less than 10 years
   },
   "AVGO": {
     ticker: "AVGO",
@@ -123,7 +135,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 352.78, // Dec 31, 2025 close (TradingView standard)
     pmScore: 93,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2009-08-06" // IPO as Avago Technologies
   },
   "IONQ": {
     ticker: "IONQ",
@@ -132,7 +145,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 46.01, // Dec 31, 2025 close (TradingView standard)
     pmScore: 82,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2021-10-01" // SPAC merger - less than 10 years
   },
 
   // Robotics Portfolio
@@ -143,7 +157,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Healthcare",
     yearlyClose: 566.78, // Dec 31, 2025 close (TradingView standard)
     pmScore: 91,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2000-06-13"
   },
   "ABB": {
     ticker: "ABB",
@@ -152,7 +167,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Industrials",
     yearlyClose: 73.51, // Dec 31, 2025 close (TradingView standard)
     pmScore: 84,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "1988-01-01" // NYSE listing
   },
   "FANUY": {
     ticker: "FANUY",
@@ -161,7 +177,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Industrials",
     yearlyClose: 19.65, // Dec 31, 2025 close (TradingView standard)
     pmScore: 80,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "1990-01-01" // ADR trading since early 1990s
   },
   "PATH": {
     ticker: "PATH",
@@ -170,7 +187,8 @@ export const stockDatabase: Record<string, StockData> = {
     sector: "Technology",
     yearlyClose: 16.50, // Dec 31, 2025 close (TradingView standard)
     pmScore: 75,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-29",
+    ipoDate: "2021-04-21" // IPO - less than 10 years
   },
 };
 

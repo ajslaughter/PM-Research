@@ -126,3 +126,48 @@ export function calculateAvgPmScore(
 
   return count > 0 ? totalScore / count : 0;
 }
+
+// Calculate CAGR (Compound Annual Growth Rate)
+// Formula: (endValue / startValue)^(1/years) - 1
+export function calculateCAGR(currentPrice: number, historicalPrice: number, years: number): number {
+  if (!historicalPrice || historicalPrice <= 0 || !currentPrice || currentPrice <= 0 || years <= 0) {
+    return 0;
+  }
+
+  const cagr = (Math.pow(currentPrice / historicalPrice, 1 / years) - 1) * 100;
+  return Math.round(cagr * 100) / 100; // Round to 2 decimal places
+}
+
+// Check if a stock has at least the required years of price history
+export function hasMinimumHistory(ipoDate: string | undefined, requiredYears: number): boolean {
+  if (!ipoDate) return false;
+
+  const ipo = new Date(ipoDate);
+  const now = new Date();
+  const yearsOfHistory = (now.getTime() - ipo.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+
+  return yearsOfHistory >= requiredYears;
+}
+
+// Get the date N years ago from today (for historical price fetching)
+export function getDateYearsAgo(years: number): string {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() - years);
+  return date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+}
+
+// Fetch historical prices for 10-year CAGR calculation
+export async function fetchHistoricalPrices(
+  tickers: string[],
+  date: string
+): Promise<Record<string, { price: number | null; date: string }>> {
+  try {
+    const response = await fetch(`/api/historical-price?tickers=${tickers.join(',')}&date=${date}`);
+    if (!response.ok) throw new Error('Failed to fetch historical prices');
+    const data = await response.json();
+    return data.prices;
+  } catch (error) {
+    console.error('Error fetching historical prices:', error);
+    return {};
+  }
+}

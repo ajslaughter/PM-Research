@@ -4,7 +4,15 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { assetClassColors } from "@/data/stockDatabase";
-import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
+import {
+    calculateYTD,
+    calculateWeightedYTD,
+    calculateWeightedDayChange,
+    calculateAvgPmScore,
+    calculateCAGR,
+    hasMinimumHistory,
+    getDateYearsAgo
+} from "@/services/stockService";
 import {
     Lock,
     TrendingUp,
@@ -62,6 +70,8 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
     const [isLoadingPrices, setIsLoadingPrices] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [lastPriceFetch, setLastPriceFetch] = useState<Date | null>(null);
+    const [historicalPrices, setHistoricalPrices] = useState<Record<string, number | null>>({});
+    const [isLoadingHistorical, setIsLoadingHistorical] = useState(true);
 
     // Get current portfolio
     const currentPortfolio = useMemo(() => {
@@ -75,6 +85,45 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
     const tickerList = useMemo(() => {
         return positions.map((p) => p.ticker).join(',');
     }, [positions]);
+
+    // Get tickers eligible for 10-year CAGR (at least 10 years of history)
+    const eligibleForCagr = useMemo(() => {
+        return positions
+            .filter((p) => {
+                const stock = stockDb[p.ticker.toUpperCase()];
+                return stock?.ipoDate && hasMinimumHistory(stock.ipoDate, 10);
+            })
+            .map((p) => p.ticker);
+    }, [positions, stockDb]);
+
+    // Fetch historical prices for 10-year CAGR calculation
+    const fetchHistoricalPrices = useCallback(async () => {
+        if (eligibleForCagr.length === 0) {
+            setIsLoadingHistorical(false);
+            return;
+        }
+
+        try {
+            const date10YearsAgo = getDateYearsAgo(10);
+            const url = `/api/historical-price?tickers=${eligibleForCagr.join(',')}&date=${date10YearsAgo}`;
+            const res = await fetch(url, { cache: 'default' });
+
+            if (res.ok) {
+                const data = await res.json();
+                const priceMap: Record<string, number | null> = {};
+
+                for (const ticker of eligibleForCagr) {
+                    priceMap[ticker] = data.prices?.[ticker]?.price ?? null;
+                }
+
+                setHistoricalPrices(priceMap);
+            }
+        } catch (error) {
+            console.error("Error fetching historical prices:", error);
+        } finally {
+            setIsLoadingHistorical(false);
+        }
+    }, [eligibleForCagr]);
 
     // Fetch prices function
     const fetchPrices = useCallback(async (forceRefresh = false) => {
@@ -125,6 +174,11 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
         return () => clearInterval(interval);
     }, [fetchPrices, marketOpen]);
 
+    // Fetch historical prices for 10-year CAGR on mount (only once)
+    useEffect(() => {
+        fetchHistoricalPrices();
+    }, [fetchHistoricalPrices]);
+
     // Handle refresh button click
     const handleRefresh = useCallback(() => {
         fetchPrices(true);
@@ -146,6 +200,13 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
         // Use daily change from API
         const dayChange = liveData?.changePercent ?? 0;
 
+        // Calculate 10-year CAGR if eligible
+        const isEligibleForCagr = eligibleForCagr.includes(position.ticker);
+        const historicalPrice = historicalPrices[position.ticker];
+        const cagr10Year = isEligibleForCagr && historicalPrice && currentPrice > 0
+            ? calculateCAGR(currentPrice, historicalPrice, 10)
+            : null;
+
         return {
             ticker: position.ticker,
             name: stock?.name || position.ticker,
@@ -158,6 +219,8 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
             pmScore: stock?.pmScore || 0,
             isStale,
             isLive: liveData?.isLive ?? false,
+            isEligibleForCagr,
+            cagr10Year,
         };
     });
 
@@ -357,6 +420,12 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                             </th>
                             <th className="p-4 text-right">Day %</th>
                             <th className="p-4 text-right">YTD Return</th>
+                            <th className="p-4 text-right">
+                                10Y CAGR
+                                <span className="block text-[9px] normal-case font-normal opacity-60">
+                                    Annualized
+                                </span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-pm-border">
@@ -443,6 +512,27 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                                             {position.returnPercent > 0 ? "+" : ""}
                                             {formatPercent(position.returnPercent)}%
                                         </>
+                                    )}
+                                </td>
+                                <td className="p-4 text-right font-mono">
+                                    {!position.isEligibleForCagr ? (
+                                        <span className="text-pm-muted text-xs" title="Less than 10 years of trading history">
+                                            --
+                                        </span>
+                                    ) : isLoadingHistorical || isLoadingPrices ? (
+                                        <div className="flex items-center justify-end gap-2">
+                                            <LoadingSpinner size="w-3 h-3" />
+                                            <SkeletonCell width="w-14" />
+                                        </div>
+                                    ) : position.cagr10Year === null ? (
+                                        <span className="text-pm-muted text-xs" title="Historical data unavailable">
+                                            N/A
+                                        </span>
+                                    ) : (
+                                        <span className={`font-semibold ${position.cagr10Year >= 0 ? 'text-cyan-400' : 'text-pm-red'}`}>
+                                            {position.cagr10Year >= 0 ? '+' : ''}
+                                            {formatPercent(position.cagr10Year)}%
+                                        </span>
                                     )}
                                 </td>
                             </tr>
