@@ -1,7 +1,15 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
-import { Portfolio, PortfolioPosition, defaultPortfolios } from "@/lib/portfolios";
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback, useRef } from "react";
+import { Portfolio, defaultPortfolios } from "@/lib/portfolios";
+import {
+    loadWithMigration,
+    saveWithCleanup,
+    cleanupLegacyKeys,
+    isValidPortfolioArray,
+    portfolioMigrations,
+    MigrationConfig,
+} from "@/lib/migrationUtils";
 
 interface PortfolioContextType {
     portfolios: Portfolio[];
@@ -18,37 +26,69 @@ interface PortfolioContextType {
     updatePosition: (portfolioId: string, ticker: string, weight: number) => void;
     removePosition: (portfolioId: string, ticker: string) => void;
     rebalanceWeights: (portfolioId: string) => void;
+
+    // Persistence callback registration
+    onPersist: (callback: () => void) => () => void;
 }
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
+// Storage configuration
 const STORAGE_KEY = "pm-portfolios-v3";
 const ACTIVE_PORTFOLIO_KEY = "pm-active-portfolio";
+const LEGACY_KEYS = ["pm-portfolios", "pm-portfolios-v1", "pm-portfolios-v2"];
+
+const portfolioMigrationConfig: MigrationConfig<Portfolio[]> = {
+    currentKey: STORAGE_KEY,
+    currentVersion: 3,
+    legacyKeys: LEGACY_KEYS,
+    defaultValue: defaultPortfolios,
+    validate: isValidPortfolioArray as (data: unknown) => data is Portfolio[],
+    migrations: portfolioMigrations,
+};
 
 export function PortfolioProvider({ children }: { children: ReactNode }) {
     const [isHydrated, setIsHydrated] = useState(false);
     const [portfolios, setPortfolios] = useState<Portfolio[]>(defaultPortfolios);
     const [activePortfolioId, setActivePortfolioId] = useState<string>("pm-research");
 
-    // Load from localStorage on mount
+    // Persistence callbacks for notifying parent context of changes
+    const persistCallbacksRef = useRef<Set<() => void>>(new Set());
+
+    // Register a callback to be called when data is persisted
+    const onPersist = useCallback((callback: () => void) => {
+        persistCallbacksRef.current.add(callback);
+        return () => {
+            persistCallbacksRef.current.delete(callback);
+        };
+    }, []);
+
+    // Notify all registered callbacks
+    const notifyPersist = useCallback(() => {
+        persistCallbacksRef.current.forEach(callback => callback());
+    }, []);
+
+    // Load from localStorage with migration support
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        try {
-            const savedPortfolios = localStorage.getItem(STORAGE_KEY);
-            if (savedPortfolios) {
-                const parsed = JSON.parse(savedPortfolios);
-                if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].positions) {
-                    setPortfolios(parsed);
-                }
-            }
+        const result = loadWithMigration(portfolioMigrationConfig);
+        setPortfolios(result.data);
 
+        // Clean up legacy keys if migration occurred
+        if (result.didMigrate) {
+            console.log(`Portfolios migrated from ${result.sourceKey} (v${result.sourceVersion}) to ${STORAGE_KEY}`);
+            cleanupLegacyKeys(LEGACY_KEYS);
+        }
+
+        // Load active portfolio
+        try {
             const savedActivePortfolio = localStorage.getItem(ACTIVE_PORTFOLIO_KEY);
             if (savedActivePortfolio) {
                 setActivePortfolioId(savedActivePortfolio);
             }
         } catch (error) {
-            console.error("Failed to load portfolios from localStorage:", error);
+            console.error("Failed to load active portfolio from localStorage:", error);
         }
 
         setIsHydrated(true);
@@ -57,12 +97,12 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     // Persist portfolios to localStorage
     useEffect(() => {
         if (!isHydrated || typeof window === "undefined") return;
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolios));
-        } catch (error) {
-            console.error("Failed to save portfolios to localStorage:", error);
+
+        const success = saveWithCleanup(STORAGE_KEY, portfolios, LEGACY_KEYS);
+        if (success) {
+            notifyPersist();
         }
-    }, [portfolios, isHydrated]);
+    }, [portfolios, isHydrated, notifyPersist]);
 
     // Persist active portfolio
     useEffect(() => {
@@ -152,6 +192,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
                 updatePosition,
                 removePosition,
                 rebalanceWeights,
+                onPersist,
             }}
         >
             {children}
