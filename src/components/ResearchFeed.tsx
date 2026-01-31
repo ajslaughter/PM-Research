@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
@@ -20,6 +20,41 @@ import {
 import Link from "next/link";
 import PremiumModal from "@/components/PremiumModal";
 import React from "react";
+
+// Skeleton loading component for research cards
+function ResearchCardSkeleton() {
+    return (
+        <div className="pm-card flex flex-col h-full animate-pulse">
+            {/* Header skeleton */}
+            <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="h-5 w-24 bg-pm-charcoal rounded" />
+                <div className="h-4 w-16 bg-pm-charcoal rounded" />
+            </div>
+
+            {/* Title skeleton */}
+            <div className="space-y-2 mb-4">
+                <div className="h-5 w-full bg-pm-charcoal rounded" />
+                <div className="h-5 w-3/4 bg-pm-charcoal rounded" />
+            </div>
+
+            {/* Summary skeleton */}
+            <div className="space-y-2 mb-4 flex-grow">
+                <div className="h-3 w-full bg-pm-charcoal rounded" />
+                <div className="h-3 w-full bg-pm-charcoal rounded" />
+                <div className="h-3 w-2/3 bg-pm-charcoal rounded" />
+            </div>
+
+            {/* Footer skeleton */}
+            <div className="flex items-center justify-between pt-4 border-t border-pm-border">
+                <div className="flex items-center gap-2">
+                    <div className="h-6 w-12 bg-pm-charcoal rounded" />
+                    <div className="h-4 w-20 bg-pm-charcoal rounded" />
+                </div>
+                <div className="h-4 w-16 bg-pm-charcoal rounded" />
+            </div>
+        </div>
+    );
+}
 
 // Props interfaces
 interface FullContentModalProps {
@@ -248,6 +283,16 @@ export default function ResearchFeed() {
     const { researchNotes } = useAdmin();
     const [showPremiumModal, setShowPremiumModal] = useState(false);
     const [selectedNote, setSelectedNote] = useState<ResearchNote | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Simulate hydration/loading state
+    useEffect(() => {
+        // Short delay to allow context hydration
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleReadClick = (note: ResearchNote) => {
         if (isSubscribed) {
@@ -256,6 +301,34 @@ export default function ResearchFeed() {
             setShowPremiumModal(true);
         }
     };
+
+    // Show skeleton while loading
+    if (isLoading) {
+        return (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, index) => (
+                    <ResearchCardSkeleton key={index} />
+                ))}
+            </div>
+        );
+    }
+
+    // Show empty state if no research notes
+    if (researchNotes.length === 0) {
+        return (
+            <div className="pm-card p-12 text-center">
+                <div className="flex flex-col items-center gap-4">
+                    <Search className="w-12 h-12 text-pm-muted opacity-50" />
+                    <div>
+                        <h3 className="text-lg font-bold text-white mb-2">No Research Notes</h3>
+                        <p className="text-sm text-pm-muted">
+                            Research notes will appear here once published.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>

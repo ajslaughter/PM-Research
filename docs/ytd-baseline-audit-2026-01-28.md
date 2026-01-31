@@ -45,15 +45,11 @@ This update aligns our YTD calculations with TradingView's methodology:
    - Reverted all `yearlyClose` values to Dec 31, 2025 close prices
    - Updated comments to reflect TradingView alignment
 
-2. **src/services/polygonPriceService.ts**
-   - Updated `YTD_START` constant to `'2025-12-31'`
-   - Updated `getYTDBaseline()` date range to `2025-12-31` to `2026-01-01`
-
-3. **src/app/api/stock-info/route.ts**
+2. **src/app/api/stock-info/route.ts**
    - Updated `YTD_START` constant to `'2025-12-31'`
    - Updated `getYTDBaselineClose()` date range to fetch Dec 31, 2025 prices
 
-4. **src/components/PortfolioTable.tsx**
+3. **src/components/PortfolioTable.tsx**
    - Changed table header from "2025 Close" to "2026 Open" (TradingView terminology)
    - Removed "PM Score" column from the table
 

@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { YTD_BASELINE_DATE, formatDateISO } from '@/lib/dateUtils';
 
 export const dynamic = "force-dynamic";
 
-const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || process.env.POLYGON_API_KEY || '';
+// Server-side only - never expose to client
+const POLYGON_API_KEY = process.env.POLYGON_API_KEY || '';
 const POLYGON_BASE_URL = 'https://api.polygon.io';
 
-// YTD_START: December 31, 2025 - TradingView standard for YTD baseline
-const YTD_START = '2025-12-31';
-
 async function getYTDBaselineClose(ticker: string): Promise<number> {
-    // Fetch December 31, 2025 adjusted close from Polygon (TradingView YTD standard)
-    const from = '2025-12-31';
-    const to = '2026-01-01';
+    // Fetch YTD baseline close from Polygon (TradingView standard: last trading day of previous year)
+    const baselineDate = new Date(YTD_BASELINE_DATE);
+    const nextDay = new Date(baselineDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    const from = YTD_BASELINE_DATE;
+    const to = formatDateISO(nextDay);
     const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${from}/${to}?adjusted=true&sort=asc&limit=1&apiKey=${POLYGON_API_KEY}`;
 
     const response = await fetch(url);
