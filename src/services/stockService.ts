@@ -1,7 +1,9 @@
 import { StockData, stockDatabase, YTD_START } from '@/data/stockDatabase';
+import { getBaselinePrice, hasBaseline, BASELINE_DATE } from '@/data/baselines';
 
 // YTD baseline: December 31, 2025 (aligned with TradingView standard)
 // All YTD returns calculated against this anchor date
+// IMPORTANT: baselines.ts is the single source of truth for YTD denominators
 
 // Live price data structure
 export interface LivePrice {
@@ -54,8 +56,17 @@ export function calculateYTD(currentPrice: number, yearlyClose: number): number 
   return Math.round(ytd * 100) / 100; // Round to 2 decimal places
 }
 
+// Calculate YTD return using baseline from baselines.ts (single source of truth)
+// This is the preferred method for YTD calculations
+export function calculateYTDFromBaseline(ticker: string, currentPrice: number): number {
+  const baseline = getBaselinePrice(ticker);
+  if (!baseline || baseline === 0) return 0;
+  const ytd = (currentPrice / baseline - 1) * 100;
+  return Math.round(ytd * 100) / 100;
+}
+
 // Calculate weighted portfolio YTD - sum of (weight * individual YTD), rounded to 2 decimals
-// Uses Dec 31, 2025 close prices as baseline for all positions (TradingView standard)
+// Uses Dec 31, 2025 close prices from baselines.ts as the single source of truth
 export function calculateWeightedYTD(
   positions: Array<{ ticker: string; weight: number }>,
   livePrices: Record<string, { price: number | null; changePercent: number }>,
@@ -65,13 +76,21 @@ export function calculateWeightedYTD(
   let totalWeight = 0;
 
   for (const position of positions) {
-    const stock = stockDb[position.ticker.toUpperCase()];
+    const ticker = position.ticker.toUpperCase();
     const livePrice = livePrices[position.ticker]?.price;
 
-    if (stock && livePrice && livePrice > 0) {
-      const ytd = calculateYTD(livePrice, stock.yearlyClose);
-      weightedYTD += (position.weight / 100) * ytd;
-      totalWeight += position.weight;
+    if (livePrice && livePrice > 0) {
+      // Primary: Use baselines.ts (single source of truth)
+      // Fallback: Use stockDatabase.yearlyClose for backward compatibility
+      const baseline = hasBaseline(ticker)
+        ? getBaselinePrice(ticker)
+        : stockDb[ticker]?.yearlyClose;
+
+      if (baseline && baseline > 0) {
+        const ytd = calculateYTD(livePrice, baseline);
+        weightedYTD += (position.weight / 100) * ytd;
+        totalWeight += position.weight;
+      }
     }
   }
 
