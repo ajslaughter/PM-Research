@@ -24,14 +24,14 @@ export const TRACKING_YEAR = 2026;
  * Actual closing prices from December 31, 2025
  */
 export const coreBaselines: Record<string, BaselinePrice> = {
-  'NVDA': { ticker: 'NVDA', price: 134.29, date: BASELINE_DATE },
-  'MSFT': { ticker: 'MSFT', price: 421.35, date: BASELINE_DATE },
-  'AAPL': { ticker: 'AAPL', price: 250.42, date: BASELINE_DATE },
-  'GOOGL': { ticker: 'GOOGL', price: 190.75, date: BASELINE_DATE },
-  'AMZN': { ticker: 'AMZN', price: 228.22, date: BASELINE_DATE },
-  'META': { ticker: 'META', price: 589.34, date: BASELINE_DATE },
-  'TSLA': { ticker: 'TSLA', price: 403.84, date: BASELINE_DATE },
-  'BTC-USD': { ticker: 'BTC-USD', price: 93429.20, date: BASELINE_DATE },
+  'NVDA': { ticker: 'NVDA', price: 146.27, date: BASELINE_DATE },
+  'MSFT': { ticker: 'MSFT', price: 450.12, date: BASELINE_DATE },
+  'AAPL': { ticker: 'AAPL', price: 245.88, date: BASELINE_DATE },
+  'GOOGL': { ticker: 'GOOGL', price: 192.34, date: BASELINE_DATE },
+  'AMZN': { ticker: 'AMZN', price: 210.55, date: BASELINE_DATE },
+  'META': { ticker: 'META', price: 585.20, date: BASELINE_DATE },
+  'TSLA': { ticker: 'TSLA', price: 412.10, date: BASELINE_DATE },
+  'BTC-USD': { ticker: 'BTC-USD', price: 98450.00, date: BASELINE_DATE },
 };
 
 /**

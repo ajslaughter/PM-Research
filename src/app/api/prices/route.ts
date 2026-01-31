@@ -48,8 +48,8 @@ async function fetchAlpacaStocks(tickers: string[]): Promise<Record<string, Pric
 
   if (tickers.length === 0) return results;
 
-  const apiKey = process.env.ALPACA_API_KEY;
-  const apiSecret = process.env.ALPACA_SECRET_KEY;
+  const apiKey = process.env.ALPACA_API_KEY_ID;
+  const apiSecret = process.env.ALPACA_API_SECRET_KEY;
 
   if (!apiKey || !apiSecret) {
     console.error('Alpaca API credentials not configured');
@@ -174,11 +174,18 @@ async function fetchYahooFallback(tickers: string[]): Promise<Record<string, Pri
  * Falls back to Coinbase if CoinGecko fails
  */
 async function fetchBitcoin(): Promise<PriceResult | null> {
-  // Try CoinGecko first
+  const coinGeckoApiKey = process.env.COINGECKO_API_KEY;
+
+  // Try CoinGecko first (with API key for better rate limits)
   try {
+    const headers: HeadersInit = { 'Accept': 'application/json' };
+    if (coinGeckoApiKey) {
+      headers['x-cg-demo-api-key'] = coinGeckoApiKey;
+    }
+
     const res = await fetch(
       'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true',
-      { cache: 'no-store' }
+      { cache: 'no-store', headers }
     );
 
     if (res.ok) {
