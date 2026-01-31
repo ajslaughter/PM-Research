@@ -50,7 +50,7 @@ export const defaultPortfolios: Portfolio[] = [
         description: "Automation & Robotics",
         positions: [
             { ticker: "ISRG", weight: 25 },
-            { ticker: "ABBNY", weight: 25 },
+            { ticker: "ABB", weight: 25 },  // NYSE ticker (corrected from ABBNY)
             { ticker: "FANUY", weight: 25 },
             { ticker: "PATH", weight: 25 },
         ],

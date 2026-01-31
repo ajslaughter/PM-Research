@@ -55,7 +55,7 @@ export const innovationBaselines: Record<string, BaselinePrice> = {
  */
 export const roboticsBaselines: Record<string, BaselinePrice> = {
   'ISRG': { ticker: 'ISRG', price: 566.78, date: BASELINE_DATE },
-  'ABBNY': { ticker: 'ABBNY', price: 73.51, date: BASELINE_DATE },
+  'ABB': { ticker: 'ABB', price: 52.18, date: BASELINE_DATE },  // ABB Ltd - NYSE (corrected from ABBNY)
   'FANUY': { ticker: 'FANUY', price: 19.65, date: BASELINE_DATE },
   'PATH': { ticker: 'PATH', price: 16.50, date: BASELINE_DATE },
 };
