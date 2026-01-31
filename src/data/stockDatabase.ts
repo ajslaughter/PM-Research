@@ -23,9 +23,9 @@ export const stockDatabase: Record<string, StockData> = {
     name: "NVIDIA Corporation",
     assetClass: "AI Hardware",
     sector: "Technology",
-    yearlyClose: 189.84, // Dec 31, 2025 close (TradingView standard)
+    yearlyClose: 186.50, // Dec 31, 2025 close (TradingView standard)
     pmScore: 98,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-31"
   },
   "MSFT": {
     ticker: "MSFT",
@@ -86,9 +86,9 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Bitcoin",
     assetClass: "Digital Assets",
     sector: "Cryptocurrency",
-    yearlyClose: 88742.00, // Dec 31, 2025 close (TradingView standard)
+    yearlyClose: 87508.83, // Dec 31, 2025 close (TradingView standard)
     pmScore: 88,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-31"
   },
 
   // Innovation Portfolio
@@ -106,9 +106,9 @@ export const stockDatabase: Record<string, StockData> = {
     name: "Super Micro Computer",
     assetClass: "Data Center",
     sector: "Technology",
-    yearlyClose: 29.96, // Dec 31, 2025 close (TradingView standard)
+    yearlyClose: 29.27, // Dec 31, 2025 close (TradingView standard)
     pmScore: 78,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-31"
   },
   "VRT": {
     ticker: "VRT",
@@ -133,9 +133,9 @@ export const stockDatabase: Record<string, StockData> = {
     name: "IonQ Inc.",
     assetClass: "Quantum",
     sector: "Technology",
-    yearlyClose: 46.01, // Dec 31, 2025 close (TradingView standard)
+    yearlyClose: 44.87, // Dec 31, 2025 close (TradingView standard)
     pmScore: 82,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-31"
   },
 
   // Robotics Portfolio
@@ -148,14 +148,14 @@ export const stockDatabase: Record<string, StockData> = {
     pmScore: 91,
     lastUpdated: "2026-01-29"
   },
-  "ABB": {
-    ticker: "ABB",
+  "ABBNY": {
+    ticker: "ABBNY",
     name: "ABB Ltd",
     assetClass: "Auto/Robotics",
     sector: "Industrials",
     yearlyClose: 73.51, // Dec 31, 2025 close (TradingView standard)
     pmScore: 84,
-    lastUpdated: "2026-01-29"
+    lastUpdated: "2026-01-31"
   },
   "FANUY": {
     ticker: "FANUY",

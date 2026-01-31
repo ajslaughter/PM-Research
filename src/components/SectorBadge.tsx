@@ -144,7 +144,7 @@ export function getTickerSector(ticker: string): string {
         "IONQ": "Quantum",
         // Robotics Portfolio
         "ISRG": "Robotics/Automation",
-        "ABB": "Auto/Robotics",
+        "ABBNY": "Auto/Robotics",
         "FANUY": "Auto/Robotics",
         "PATH": "Enterprise Software",
         // Additional common tickers
