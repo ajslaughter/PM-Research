@@ -21,40 +21,43 @@ export const TRACKING_YEAR = 2026;
 
 /**
  * Core Portfolio - Mag 7 + Bitcoin
- * Actual closing prices from December 31, 2025
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
 export const coreBaselines: Record<string, BaselinePrice> = {
-  'NVDA': { ticker: 'NVDA', price: 146.27, date: BASELINE_DATE },
-  'MSFT': { ticker: 'MSFT', price: 450.12, date: BASELINE_DATE },
-  'AAPL': { ticker: 'AAPL', price: 245.88, date: BASELINE_DATE },
-  'GOOGL': { ticker: 'GOOGL', price: 192.34, date: BASELINE_DATE },
-  'AMZN': { ticker: 'AMZN', price: 210.55, date: BASELINE_DATE },
-  'META': { ticker: 'META', price: 585.20, date: BASELINE_DATE },
-  'TSLA': { ticker: 'TSLA', price: 412.10, date: BASELINE_DATE },
-  'BTC-USD': { ticker: 'BTC-USD', price: 98450.00, date: BASELINE_DATE },
+  'NVDA': { ticker: 'NVDA', price: 186.50, date: BASELINE_DATE },
+  'MSFT': { ticker: 'MSFT', price: 484.39, date: BASELINE_DATE },
+  'AAPL': { ticker: 'AAPL', price: 272.26, date: BASELINE_DATE },
+  'GOOGL': { ticker: 'GOOGL', price: 316.90, date: BASELINE_DATE },
+  'AMZN': { ticker: 'AMZN', price: 231.34, date: BASELINE_DATE },
+  'META': { ticker: 'META', price: 662.72, date: BASELINE_DATE },
+  'TSLA': { ticker: 'TSLA', price: 457.80, date: BASELINE_DATE },
+  'BTC-USD': { ticker: 'BTC-USD', price: 87508.83, date: BASELINE_DATE },
 };
 
 /**
  * Innovation Portfolio
- * Actual closing prices from December 31, 2025
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
 export const innovationBaselines: Record<string, BaselinePrice> = {
-  'RKLB': { ticker: 'RKLB', price: 27.32, date: BASELINE_DATE },
-  'SMCI': { ticker: 'SMCI', price: 32.19, date: BASELINE_DATE },
-  'VRT': { ticker: 'VRT', price: 132.21, date: BASELINE_DATE },
-  'AVGO': { ticker: 'AVGO', price: 231.58, date: BASELINE_DATE },
-  'IONQ': { ticker: 'IONQ', price: 43.75, date: BASELINE_DATE },
+  'RKLB': { ticker: 'RKLB', price: 70.63, date: BASELINE_DATE },
+  'SMCI': { ticker: 'SMCI', price: 29.27, date: BASELINE_DATE },
+  'VRT': { ticker: 'VRT', price: 169.47, date: BASELINE_DATE },
+  'AVGO': { ticker: 'AVGO', price: 352.78, date: BASELINE_DATE },
+  'IONQ': { ticker: 'IONQ', price: 44.87, date: BASELINE_DATE },
 };
 
 /**
  * Robotics Portfolio
- * Actual closing prices from December 31, 2025
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
 export const roboticsBaselines: Record<string, BaselinePrice> = {
-  'ISRG': { ticker: 'ISRG', price: 542.60, date: BASELINE_DATE },
-  'ABBNY': { ticker: 'ABBNY', price: 51.97, date: BASELINE_DATE },
-  'FANUY': { ticker: 'FANUY', price: 14.37, date: BASELINE_DATE },
-  'PATH': { ticker: 'PATH', price: 13.55, date: BASELINE_DATE },
+  'ISRG': { ticker: 'ISRG', price: 566.78, date: BASELINE_DATE },
+  'ABBNY': { ticker: 'ABBNY', price: 73.51, date: BASELINE_DATE },
+  'FANUY': { ticker: 'FANUY', price: 19.65, date: BASELINE_DATE },
+  'PATH': { ticker: 'PATH', price: 16.50, date: BASELINE_DATE },
 };
 
 /**

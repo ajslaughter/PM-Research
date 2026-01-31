@@ -1,9 +1,15 @@
-import { StockData, stockDatabase, YTD_START } from '@/data/stockDatabase';
+import { StockData, stockDatabase } from '@/data/stockDatabase';
 import { getBaselinePrice, hasBaseline, BASELINE_DATE } from '@/data/baselines';
 
-// YTD baseline: December 31, 2025 (aligned with TradingView standard)
-// All YTD returns calculated against this anchor date
-// IMPORTANT: baselines.ts is the single source of truth for YTD denominators
+/**
+ * YTD Calculation Standards
+ * -------------------------
+ * Baseline: December 31, 2025 (TradingView standard - last trading day of previous year)
+ * Formula: ((Current - Baseline) / Baseline) * 100
+ *
+ * IMPORTANT: baselines.ts is the SINGLE SOURCE OF TRUTH for all YTD denominators.
+ * No fallback calculations or rolling 365-day math - strict baseline approach.
+ */
 
 // Live price data structure
 export interface LivePrice {
@@ -48,29 +54,56 @@ export function stockExists(ticker: string): boolean {
   return ticker.toUpperCase() in stockDatabase;
 }
 
-// Calculate YTD return: (current / dec_31_close - 1) * 100, rounded to 2 decimals
-// yearlyClose = Dec 31, 2025 close price (YTD baseline - TradingView standard)
-export function calculateYTD(currentPrice: number, yearlyClose: number): number {
-  if (!yearlyClose || yearlyClose === 0) return 0;
-  const ytd = (currentPrice / yearlyClose - 1) * 100;
-  return Math.round(ytd * 100) / 100; // Round to 2 decimal places
-}
-
-// Calculate YTD return using baseline from baselines.ts (single source of truth)
-// This is the preferred method for YTD calculations
-export function calculateYTDFromBaseline(ticker: string, currentPrice: number): number {
-  const baseline = getBaselinePrice(ticker);
+/**
+ * Calculate YTD return using the standard formula:
+ * YTD = ((Current - Baseline) / Baseline) * 100
+ *
+ * @param currentPrice - Current market price
+ * @param baseline - December 31, 2025 closing price (from baselines.ts)
+ * @returns YTD percentage rounded to 2 decimal places
+ */
+export function calculateYTD(currentPrice: number, baseline: number): number {
   if (!baseline || baseline === 0) return 0;
-  const ytd = (currentPrice / baseline - 1) * 100;
+  if (!currentPrice || currentPrice === 0) return 0;
+
+  // Standard YTD formula: ((Current - Baseline) / Baseline) * 100
+  const ytd = ((currentPrice - baseline) / baseline) * 100;
   return Math.round(ytd * 100) / 100;
 }
 
-// Calculate weighted portfolio YTD - sum of (weight * individual YTD), rounded to 2 decimals
-// Uses Dec 31, 2025 close prices from baselines.ts as the single source of truth
+/**
+ * Calculate YTD return for a ticker using baselines.ts as single source of truth.
+ * This is the PREFERRED method for all YTD calculations.
+ *
+ * @param ticker - Stock/crypto ticker symbol
+ * @param currentPrice - Current market price
+ * @returns YTD percentage rounded to 2 decimal places
+ */
+export function calculateYTDFromBaseline(ticker: string, currentPrice: number): number {
+  const baseline = getBaselinePrice(ticker);
+  if (!baseline || baseline === 0) {
+    console.warn(`No baseline found for ticker: ${ticker}`);
+    return 0;
+  }
+  return calculateYTD(currentPrice, baseline);
+}
+
+/**
+ * Calculate weighted portfolio YTD return.
+ * Formula: Sum of (weight * individual YTD) for all positions
+ *
+ * IMPORTANT: Uses baselines.ts as the SINGLE SOURCE OF TRUTH.
+ * No fallback to stockDatabase - if baseline is missing, position is skipped.
+ *
+ * @param positions - Array of portfolio positions with ticker and weight
+ * @param livePrices - Current live prices from API
+ * @param _stockDb - Unused, kept for API compatibility (baselines.ts is source of truth)
+ * @returns Weighted YTD percentage rounded to 2 decimal places
+ */
 export function calculateWeightedYTD(
   positions: Array<{ ticker: string; weight: number }>,
   livePrices: Record<string, { price: number | null; changePercent: number }>,
-  stockDb: Record<string, StockData>
+  _stockDb: Record<string, StockData>
 ): number {
   let weightedYTD = 0;
   let totalWeight = 0;
@@ -80,17 +113,16 @@ export function calculateWeightedYTD(
     const livePrice = livePrices[position.ticker]?.price;
 
     if (livePrice && livePrice > 0) {
-      // Primary: Use baselines.ts (single source of truth)
-      // Fallback: Use stockDatabase.yearlyClose for backward compatibility
-      const baseline = hasBaseline(ticker)
-        ? getBaselinePrice(ticker)
-        : stockDb[ticker]?.yearlyClose;
-
-      if (baseline && baseline > 0) {
-        const ytd = calculateYTD(livePrice, baseline);
-        weightedYTD += (position.weight / 100) * ytd;
-        totalWeight += position.weight;
+      // STRICT: Use only baselines.ts - no fallbacks
+      if (!hasBaseline(ticker)) {
+        console.warn(`Skipping ${ticker} in weighted YTD - no baseline defined`);
+        continue;
       }
+
+      const baseline = getBaselinePrice(ticker);
+      const ytd = calculateYTD(livePrice, baseline);
+      weightedYTD += (position.weight / 100) * ytd;
+      totalWeight += position.weight;
     }
   }
 
@@ -99,7 +131,6 @@ export function calculateWeightedYTD(
     weightedYTD = (weightedYTD / totalWeight) * 100;
   }
 
-  // Round to 2 decimal places
   return Math.round(weightedYTD * 100) / 100;
 }
 
