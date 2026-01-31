@@ -3,7 +3,12 @@
  *
  * TradingView Standard: YTD calculations use December 31 of the previous year
  * as the baseline (displayed as "2026 Open" in their UI terminology).
+ *
+ * IMPORTANT: This module aligns with baselines.ts for institutional-grade accuracy.
+ * The baseline date is December 31, 2025 for all 2026 YTD calculations.
  */
+
+import { BASELINE_DATE, BASELINE_YEAR, TRACKING_YEAR } from '@/data/baselines';
 
 /**
  * US Market holidays (NYSE/NASDAQ) - static list for common holidays
@@ -93,15 +98,19 @@ export function getYTDOpenYear(): number {
 
 /**
  * Format a display string for the baseline date (e.g., "vs Dec 31, 2025")
+ * Uses BASELINE_DATE from baselines.ts for institutional-grade accuracy.
  */
 export function getYTDBaselineDisplayString(): string {
-  const date = getYTDBaselineDate();
+  // Parse BASELINE_DATE from baselines.ts (format: YYYY-MM-DD)
+  const [year, month, day] = BASELINE_DATE.split('-').map(Number);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `vs ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+  return `vs ${months[month - 1]} ${day}, ${year}`;
 }
 
-// Export a computed constant for the current YTD baseline
-// This will be evaluated at module load time and cached
-export const YTD_BASELINE_DATE = getYTDBaselineDateString();
-export const YTD_BASELINE_YEAR = getYTDBaselineYear();
-export const YTD_OPEN_YEAR = getYTDOpenYear();
+/**
+ * Exported constants for YTD baseline - sourced from baselines.ts
+ * These constants ensure consistency across the application.
+ */
+export const YTD_BASELINE_DATE = BASELINE_DATE;
+export const YTD_BASELINE_YEAR = BASELINE_YEAR;
+export const YTD_OPEN_YEAR = TRACKING_YEAR;

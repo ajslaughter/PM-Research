@@ -1,180 +1,72 @@
 import { YTD_BASELINE_DATE, YTD_BASELINE_YEAR } from '@/lib/dateUtils';
+import { getBaselinePrice, BASELINE_DATE } from '@/data/baselines';
 
-// Central registry for all stock metadata - Single source of truth
+// Central registry for all stock metadata
+// NOTE: yearlyClose values are derived from baselines.ts (single source of truth)
 export interface StockData {
   ticker: string;
   name: string;
   assetClass: string;
   sector: string;
-  yearlyClose: number; // YTD baseline close price (TradingView standard: last trading day of previous year)
+  yearlyClose: number; // Derived from baselines.ts - Dec 31, 2025 close (TradingView standard)
   pmScore: number;
   lastUpdated: string;
 }
 
-// Re-export dynamic YTD_START for backward compatibility
-// Automatically calculated as December 31 (or last trading day) of previous year
+// Re-export for backward compatibility
 export const YTD_START = YTD_BASELINE_DATE;
 
-// Initial database with December 31, 2025 close prices
+/**
+ * Helper to create stock entry with baseline from baselines.ts
+ */
+function createStock(
+  ticker: string,
+  name: string,
+  assetClass: string,
+  sector: string,
+  pmScore: number,
+  lastUpdated: string
+): StockData {
+  return {
+    ticker,
+    name,
+    assetClass,
+    sector,
+    yearlyClose: getBaselinePrice(ticker), // From baselines.ts
+    pmScore,
+    lastUpdated,
+  };
+}
+
+/**
+ * Stock Database - Central registry for all stock metadata
+ *
+ * yearlyClose values are automatically derived from baselines.ts
+ * to ensure a single source of truth for YTD calculations.
+ */
 export const stockDatabase: Record<string, StockData> = {
   // Mag 7 + Bitcoin (Core Portfolio)
-  "NVDA": {
-    ticker: "NVDA",
-    name: "NVIDIA Corporation",
-    assetClass: "AI Hardware",
-    sector: "Technology",
-    yearlyClose: 186.50, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 98,
-    lastUpdated: "2026-01-31"
-  },
-  "MSFT": {
-    ticker: "MSFT",
-    name: "Microsoft Corp",
-    assetClass: "Cloud/AI",
-    sector: "Technology",
-    yearlyClose: 484.39, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 94,
-    lastUpdated: "2026-01-29"
-  },
-  "AAPL": {
-    ticker: "AAPL",
-    name: "Apple Inc.",
-    assetClass: "Consumer Tech",
-    sector: "Technology",
-    yearlyClose: 272.26, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 89,
-    lastUpdated: "2026-01-29"
-  },
-  "GOOGL": {
-    ticker: "GOOGL",
-    name: "Alphabet Inc.",
-    assetClass: "Search/AI",
-    sector: "Technology",
-    yearlyClose: 316.90, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 92,
-    lastUpdated: "2026-01-29"
-  },
-  "AMZN": {
-    ticker: "AMZN",
-    name: "Amazon.com Inc.",
-    assetClass: "E-Commerce",
-    sector: "Consumer Cyclical",
-    yearlyClose: 231.34, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 90,
-    lastUpdated: "2026-01-29"
-  },
-  "META": {
-    ticker: "META",
-    name: "Meta Platforms Inc.",
-    assetClass: "Social/AI",
-    sector: "Technology",
-    yearlyClose: 662.72, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 91,
-    lastUpdated: "2026-01-29"
-  },
-  "TSLA": {
-    ticker: "TSLA",
-    name: "Tesla Inc.",
-    assetClass: "Auto/Robotics",
-    sector: "Consumer Cyclical",
-    yearlyClose: 457.80, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 85,
-    lastUpdated: "2026-01-29"
-  },
-  "BTC-USD": {
-    ticker: "BTC-USD",
-    name: "Bitcoin",
-    assetClass: "Digital Assets",
-    sector: "Cryptocurrency",
-    yearlyClose: 87508.83, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 88,
-    lastUpdated: "2026-01-31"
-  },
+  "NVDA": createStock("NVDA", "NVIDIA Corporation", "AI Hardware", "Technology", 98, "2026-01-31"),
+  "MSFT": createStock("MSFT", "Microsoft Corp", "Cloud/AI", "Technology", 94, "2026-01-29"),
+  "AAPL": createStock("AAPL", "Apple Inc.", "Consumer Tech", "Technology", 89, "2026-01-29"),
+  "GOOGL": createStock("GOOGL", "Alphabet Inc.", "Search/AI", "Technology", 92, "2026-01-29"),
+  "AMZN": createStock("AMZN", "Amazon.com Inc.", "E-Commerce", "Consumer Cyclical", 90, "2026-01-29"),
+  "META": createStock("META", "Meta Platforms Inc.", "Social/AI", "Technology", 91, "2026-01-29"),
+  "TSLA": createStock("TSLA", "Tesla Inc.", "Auto/Robotics", "Consumer Cyclical", 85, "2026-01-29"),
+  "BTC-USD": createStock("BTC-USD", "Bitcoin", "Digital Assets", "Cryptocurrency", 88, "2026-01-31"),
 
   // Innovation Portfolio
-  "RKLB": {
-    ticker: "RKLB",
-    name: "Rocket Lab USA",
-    assetClass: "Space",
-    sector: "Aerospace",
-    yearlyClose: 70.63, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 94,
-    lastUpdated: "2026-01-29"
-  },
-  "SMCI": {
-    ticker: "SMCI",
-    name: "Super Micro Computer",
-    assetClass: "Data Center",
-    sector: "Technology",
-    yearlyClose: 29.27, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 78,
-    lastUpdated: "2026-01-31"
-  },
-  "VRT": {
-    ticker: "VRT",
-    name: "Vertiv Holdings",
-    assetClass: "Data Center",
-    sector: "Industrials",
-    yearlyClose: 169.47, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 86,
-    lastUpdated: "2026-01-29"
-  },
-  "AVGO": {
-    ticker: "AVGO",
-    name: "Broadcom Inc.",
-    assetClass: "AI Hardware",
-    sector: "Technology",
-    yearlyClose: 352.78, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 93,
-    lastUpdated: "2026-01-29"
-  },
-  "IONQ": {
-    ticker: "IONQ",
-    name: "IonQ Inc.",
-    assetClass: "Quantum",
-    sector: "Technology",
-    yearlyClose: 44.87, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 82,
-    lastUpdated: "2026-01-31"
-  },
+  "RKLB": createStock("RKLB", "Rocket Lab USA", "Space", "Aerospace", 94, "2026-01-29"),
+  "SMCI": createStock("SMCI", "Super Micro Computer", "Data Center", "Technology", 78, "2026-01-31"),
+  "VRT": createStock("VRT", "Vertiv Holdings", "Data Center", "Industrials", 86, "2026-01-29"),
+  "AVGO": createStock("AVGO", "Broadcom Inc.", "AI Hardware", "Technology", 93, "2026-01-29"),
+  "IONQ": createStock("IONQ", "IonQ Inc.", "Quantum", "Technology", 82, "2026-01-31"),
 
   // Robotics Portfolio
-  "ISRG": {
-    ticker: "ISRG",
-    name: "Intuitive Surgical",
-    assetClass: "Auto/Robotics",
-    sector: "Healthcare",
-    yearlyClose: 566.78, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 91,
-    lastUpdated: "2026-01-29"
-  },
-  "ABBNY": {
-    ticker: "ABBNY",
-    name: "ABB Ltd",
-    assetClass: "Auto/Robotics",
-    sector: "Industrials",
-    yearlyClose: 73.51, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 84,
-    lastUpdated: "2026-01-31"
-  },
-  "FANUY": {
-    ticker: "FANUY",
-    name: "Fanuc Corporation",
-    assetClass: "Auto/Robotics",
-    sector: "Industrials",
-    yearlyClose: 19.65, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 80,
-    lastUpdated: "2026-01-29"
-  },
-  "PATH": {
-    ticker: "PATH",
-    name: "UiPath Inc.",
-    assetClass: "Auto/Robotics",
-    sector: "Technology",
-    yearlyClose: 16.50, // Dec 31, 2025 close (TradingView standard)
-    pmScore: 75,
-    lastUpdated: "2026-01-29"
-  },
+  "ISRG": createStock("ISRG", "Intuitive Surgical", "Auto/Robotics", "Healthcare", 91, "2026-01-29"),
+  "ABBNY": createStock("ABBNY", "ABB Ltd", "Auto/Robotics", "Industrials", 84, "2026-01-31"),
+  "FANUY": createStock("FANUY", "Fanuc Corporation", "Auto/Robotics", "Industrials", 80, "2026-01-29"),
+  "PATH": createStock("PATH", "UiPath Inc.", "Auto/Robotics", "Technology", 75, "2026-01-29"),
 };
 
 // Asset class color mapping for UI
