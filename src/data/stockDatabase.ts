@@ -1,16 +1,19 @@
+import { YTD_BASELINE_DATE, YTD_BASELINE_YEAR } from '@/lib/dateUtils';
+
 // Central registry for all stock metadata - Single source of truth
 export interface StockData {
   ticker: string;
   name: string;
   assetClass: string;
   sector: string;
-  yearlyClose: number; // Dec 31, 2025 close price - YTD baseline (TradingView standard)
+  yearlyClose: number; // YTD baseline close price (TradingView standard: last trading day of previous year)
   pmScore: number;
   lastUpdated: string;
 }
 
-// YTD_START constant - December 31, 2025 is the anchor for all YTD calculations (TradingView standard)
-export const YTD_START = '2025-12-31';
+// Re-export dynamic YTD_START for backward compatibility
+// Automatically calculated as December 31 (or last trading day) of previous year
+export const YTD_START = YTD_BASELINE_DATE;
 
 // Initial database with December 31, 2025 close prices
 export const stockDatabase: Record<string, StockData> = {

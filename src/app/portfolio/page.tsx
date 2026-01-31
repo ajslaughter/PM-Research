@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import PortfolioTable from "@/components/PortfolioTable";
+import { PortfolioErrorBoundary } from "@/components/ErrorBoundary";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { Lock, Unlock, ChevronDown } from "lucide-react";
@@ -114,10 +115,12 @@ export default function PortfolioPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
-                    <PortfolioTable
-                        portfolioId={selectedPortfolio.id}
-                        portfolioName={selectedPortfolio.name}
-                    />
+                    <PortfolioErrorBoundary>
+                        <PortfolioTable
+                            portfolioId={selectedPortfolio.id}
+                            portfolioName={selectedPortfolio.name}
+                        />
+                    </PortfolioErrorBoundary>
                 </motion.div>
 
                 {/* Disclaimer */}

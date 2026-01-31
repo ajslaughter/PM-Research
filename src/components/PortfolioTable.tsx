@@ -5,6 +5,7 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { assetClassColors } from "@/data/stockDatabase";
 import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
+import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
 import {
     Lock,
     TrendingUp,
@@ -240,7 +241,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                             <span>{weightedYTD >= 0 ? '+' : ''}{formatPercent(weightedYTD)}%</span>
                         )}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">vs Dec 31, 2025</div>
+                    <div className="text-[10px] text-pm-muted mt-1">{getYTDBaselineDisplayString()}</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-pm-purple">
@@ -341,7 +342,7 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
                             <th className="p-4">Ticker</th>
                             <th className="p-4">Asset Class</th>
                             <th className="p-4 text-right">Weight</th>
-                            <th className="p-4 text-right">2026 Open</th>
+                            <th className="p-4 text-right">{YTD_OPEN_YEAR} Open</th>
                             <th className="p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
