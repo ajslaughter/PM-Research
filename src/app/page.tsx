@@ -17,29 +17,29 @@ export default function LandingPage() {
     const features = [
         {
             icon: Brain,
-            title: "Predictive Modeling",
+            title: "Predictive Analytics",
             description:
                 "Machine learning algorithms trained on decades of market data to identify asymmetric opportunities.",
             color: "pm-purple",
         },
         {
             icon: Target,
-            title: "Pure Alpha",
+            title: "Concentrated Positions",
             description:
-                "Signal generation focused on uncorrelated returns. No market beta, just edge.",
+                "High-conviction model portfolios with real-time position tracking and performance metrics.",
             color: "pm-green",
         },
         {
             icon: Shield,
-            title: "Custom Requests",
+            title: "Research on Demand",
             description:
-                "Direct access to our research team for bespoke analysis on any ticker or sector.",
+                "Deep-dive sector analysis and AI-powered research reports when you need them.",
             color: "pm-green",
         },
     ];
 
     const stats = [
-        { value: "147%", label: "2025 Portfolio Return" },
+        { value: "147%", label: "2025 Model Return" },
         { value: "89", label: "Average PM Score" },
         { value: "2.4x", label: "Alpha vs. S&P 500" },
         { value: "12", label: "Active Positions" },
@@ -67,7 +67,7 @@ export default function LandingPage() {
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full">
                             <Sparkles className="w-4 h-4 text-pm-purple" />
                             <span className="text-sm font-mono text-pm-muted">
-                                Institutional Grade Analytics
+                                Institutional-Grade Research
                             </span>
                         </div>
 
@@ -81,8 +81,8 @@ export default function LandingPage() {
                         {/* Subheadline */}
                         <p className="text-xl text-pm-muted max-w-2xl mx-auto leading-relaxed">
                             PM Research delivers{" "}
-                            <span className="text-pm-text">institutional-grade portfolio analytics</span> and{" "}
-                            <span className="text-pm-text">sector research</span>{" "}
+                            <span className="text-pm-text">institutional-grade research</span> and{" "}
+                            <span className="text-pm-text">model portfolios</span>{" "}
                             for investors who demand an edge.
                         </p>
 
@@ -90,7 +90,7 @@ export default function LandingPage() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                             <Link href="/portfolio" className="btn-primary flex items-center gap-2">
                                 <Zap className="w-5 h-5" />
-                                Unlock the Portfolio
+                                Access the Portfolio
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
                             <Link href="/research" className="btn-secondary flex items-center gap-2">
@@ -147,7 +147,7 @@ export default function LandingPage() {
                                 className="pm-card-hover group"
                             >
                                 <div
-                                    className={`w-12 h-12 rounded-lg bg-${feature.color}/10 flex items-center justify-center mb-4 
+                                    className={`w-12 h-12 rounded-lg bg-${feature.color}/10 flex items-center justify-center mb-4
                     group-hover:scale-110 transition-transform`}
                                 >
                                     <feature.icon className={`w-6 h-6 text-${feature.color}`} />
@@ -174,10 +174,10 @@ export default function LandingPage() {
                         <div className="relative z-10">
                             <TrendingUp className="w-12 h-12 text-pm-green mx-auto mb-6" />
                             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                                Ready to Access the <span className="text-pm-green">Alpha</span>?
+                                Ready to Access the <span className="text-pm-green">Edge</span>?
                             </h2>
                             <p className="text-pm-muted max-w-lg mx-auto mb-8">
-                                Join the investors who are already using PM Research to identify
+                                Join serious investors using PM Research to identify
                                 asymmetric opportunities before the market catches on.
                             </p>
                             <Link href="/pricing" className="btn-primary inline-flex items-center gap-2">
@@ -186,6 +186,16 @@ export default function LandingPage() {
                             </Link>
                         </div>
                     </motion.div>
+                </div>
+            </section>
+
+            {/* Disclaimer */}
+            <section className="relative py-8 px-6 border-t border-pm-border">
+                <div className="max-w-4xl mx-auto text-center">
+                    <p className="text-xs text-pm-muted leading-relaxed">
+                        Model portfolio  performance shown is hypothetical. Past performance does not guarantee future results.
+                        PM Research provides research content and model portfolios—not personalized investment advice.
+                    </p>
                 </div>
             </section>
         </div>
