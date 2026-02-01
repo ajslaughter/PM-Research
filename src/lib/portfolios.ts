@@ -7,13 +7,26 @@ export interface PortfolioPosition {
     weight: number; // Percentage (0-100), should sum to 100 per portfolio
 }
 
+// Portfolio category for filtering
+export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Physical AI';
+
 // Portfolio structure
 export interface Portfolio {
     id: string;
     name: string;
     description: string;
+    category: PortfolioCategory;
     positions: PortfolioPosition[];
 }
+
+// AI Infrastructure Portfolio Tickers
+export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS'];
+
+// Energy Renaissance Portfolio Tickers
+export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT'];
+
+// Physical AI Portfolio Tickers
+export const Physical_AI_Portfolio = ['ISRG', 'TER', 'RKLB', 'TSLA'];
 
 // Default portfolios
 export const defaultPortfolios: Portfolio[] = [
@@ -21,6 +34,7 @@ export const defaultPortfolios: Portfolio[] = [
         id: "pm-research",
         name: "PM Research Portfolio",
         description: "Mag 7 + Bitcoin - Core Holdings",
+        category: "Magnificent 7",
         positions: [
             { ticker: "NVDA", weight: 12.5 },
             { ticker: "MSFT", weight: 12.5 },
@@ -36,6 +50,7 @@ export const defaultPortfolios: Portfolio[] = [
         id: "innovation",
         name: "Innovation Portfolio",
         description: "High-Growth Tech & Space",
+        category: "Magnificent 7",
         positions: [
             { ticker: "RKLB", weight: 20 },
             { ticker: "SMCI", weight: 20 },
@@ -48,11 +63,49 @@ export const defaultPortfolios: Portfolio[] = [
         id: "robotics",
         name: "Robotics Portfolio",
         description: "Automation & Robotics",
+        category: "Magnificent 7",
         positions: [
             { ticker: "ISRG", weight: 25 },
             { ticker: "ABB", weight: 25 },  // NYSE ticker (corrected from ABBNY)
             { ticker: "FANUY", weight: 25 },
             { ticker: "PATH", weight: 25 },
+        ],
+    },
+    {
+        id: "ai-infrastructure",
+        name: "AI Infrastructure Portfolio",
+        description: "Data Centers, Mining & Compute Infrastructure",
+        category: "AI Infrastructure",
+        positions: [
+            { ticker: "IREN", weight: 20 },
+            { ticker: "CORZ", weight: 20 },
+            { ticker: "CRWV", weight: 20 },
+            { ticker: "APLD", weight: 20 },
+            { ticker: "NBIS", weight: 20 },
+        ],
+    },
+    {
+        id: "energy-renaissance",
+        name: "Energy Renaissance Portfolio",
+        description: "Nuclear, Grid & Power Infrastructure",
+        category: "Energy Renaissance",
+        positions: [
+            { ticker: "CEG", weight: 25 },
+            { ticker: "OKLO", weight: 25 },
+            { ticker: "VRT", weight: 25 },
+            { ticker: "BWXT", weight: 25 },
+        ],
+    },
+    {
+        id: "physical-ai",
+        name: "Physical AI Portfolio",
+        description: "Robotics, Automation & Embodied AI",
+        category: "Physical AI",
+        positions: [
+            { ticker: "ISRG", weight: 25 },
+            { ticker: "TER", weight: 25 },
+            { ticker: "RKLB", weight: 25 },
+            { ticker: "TSLA", weight: 25 },
         ],
     },
 ];

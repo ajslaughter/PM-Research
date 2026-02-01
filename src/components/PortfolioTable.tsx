@@ -5,6 +5,7 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
 import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
+import { PortfolioCategory } from "@/lib/portfolios";
 import SectorBadge from "@/components/SectorBadge";
 import {
     Lock,
@@ -12,6 +13,7 @@ import {
     TrendingDown,
     RefreshCw,
     AlertCircle,
+    Filter,
 } from "lucide-react";
 
 // API timeout in milliseconds
@@ -31,10 +33,21 @@ interface PriceApiResponse {
     timestamp: string;
 }
 
+// Available categories for filtering
+const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
+    'Magnificent 7',
+    'AI Infrastructure',
+    'Energy Renaissance',
+    'Physical AI',
+];
+
 // Props for the component
 interface PortfolioTableProps {
     portfolioId: string;
     portfolioName: string;
+    category?: PortfolioCategory;
+    onCategoryChange?: (category: PortfolioCategory) => void;
+    showCategoryFilter?: boolean;
 }
 
 const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
@@ -56,9 +69,27 @@ const formatPercent = (value: number): string => {
     return rounded.toFixed(2);
 };
 
-export default function PortfolioTable({ portfolioId, portfolioName }: PortfolioTableProps) {
+export default function PortfolioTable({
+    portfolioId,
+    portfolioName,
+    category,
+    onCategoryChange,
+    showCategoryFilter = false
+}: PortfolioTableProps) {
     const { isSubscribed } = useSubscription();
     const { portfolios, stockDb } = useAdmin();
+
+    // Internal category state if not controlled externally
+    const [internalCategory, setInternalCategory] = useState<PortfolioCategory>(category || 'Magnificent 7');
+    const activeCategory = category ?? internalCategory;
+
+    const handleCategoryChange = useCallback((newCategory: PortfolioCategory) => {
+        if (onCategoryChange) {
+            onCategoryChange(newCategory);
+        } else {
+            setInternalCategory(newCategory);
+        }
+    }, [onCategoryChange]);
 
     const [prices, setPrices] = useState<Record<string, PriceData>>({});
     const [marketOpen, setMarketOpen] = useState(false);
@@ -73,10 +104,21 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const isMountedRef = useRef(true);
 
-    // Get current portfolio
+    // Get portfolios filtered by category
+    const filteredPortfolios = useMemo(() => {
+        if (!showCategoryFilter) return portfolios;
+        return portfolios.filter((p) => p.category === activeCategory);
+    }, [portfolios, activeCategory, showCategoryFilter]);
+
+    // Get current portfolio (respecting category filter)
     const currentPortfolio = useMemo(() => {
+        if (showCategoryFilter && filteredPortfolios.length > 0) {
+            // When filtering, use the first portfolio in the filtered list if current doesn't match
+            const found = filteredPortfolios.find((p) => p.id === portfolioId);
+            return found || filteredPortfolios[0];
+        }
         return portfolios.find((p) => p.id === portfolioId);
-    }, [portfolios, portfolioId]);
+    }, [portfolios, filteredPortfolios, portfolioId, showCategoryFilter]);
 
     // Get positions from current portfolio
     const positions = currentPortfolio?.positions || [];
@@ -301,6 +343,57 @@ export default function PortfolioTable({ portfolioId, portfolioName }: Portfolio
 
     return (
         <div className="space-y-8">
+            {/* Category Filter */}
+            {showCategoryFilter && (
+                <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex items-center gap-2 text-pm-muted">
+                        <Filter className="w-4 h-4" />
+                        <span className="text-xs uppercase tracking-wider">Category:</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {PORTFOLIO_CATEGORIES.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => handleCategoryChange(cat)}
+                                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                                    activeCategory === cat
+                                        ? 'bg-pm-green text-pm-black'
+                                        : 'bg-pm-charcoal text-pm-muted hover:bg-pm-charcoal/80 hover:text-white border border-pm-border'
+                                }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Portfolio Name (when category filter is active) */}
+            {showCategoryFilter && currentPortfolio && (
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-xl font-bold text-white">{currentPortfolio.name}</h2>
+                        <p className="text-sm text-pm-muted">{currentPortfolio.description}</p>
+                    </div>
+                    {filteredPortfolios.length > 1 && (
+                        <div className="flex gap-2">
+                            {filteredPortfolios.map((p) => (
+                                <span
+                                    key={p.id}
+                                    className={`px-2 py-1 text-xs rounded ${
+                                        p.id === currentPortfolio.id
+                                            ? 'bg-pm-green/20 text-pm-green'
+                                            : 'bg-pm-charcoal text-pm-muted'
+                                    }`}
+                                >
+                                    {p.name.split(' ')[0]}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
             {/* KPI Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="pm-card p-4 border-l-4 border-l-pm-green">

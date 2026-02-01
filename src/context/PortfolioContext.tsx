@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
-import { Portfolio, PortfolioPosition, defaultPortfolios } from "@/lib/portfolios";
+import { Portfolio, PortfolioPosition, PortfolioCategory, defaultPortfolios } from "@/lib/portfolios";
 
 interface PortfolioContextType {
     portfolios: Portfolio[];
@@ -9,7 +9,7 @@ interface PortfolioContextType {
     setActivePortfolioId: (id: string) => void;
 
     // Portfolio CRUD
-    addPortfolio: (name: string, description: string) => void;
+    addPortfolio: (name: string, description: string, category?: PortfolioCategory) => void;
     updatePortfolio: (id: string, updates: Partial<Portfolio>) => void;
     deletePortfolio: (id: string) => void;
 
@@ -39,7 +39,12 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
             if (savedPortfolios) {
                 const parsed = JSON.parse(savedPortfolios);
                 if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].positions) {
-                    setPortfolios(parsed);
+                    // Ensure backwards compatibility - add category if missing
+                    const portfoliosWithCategory = parsed.map((p: Portfolio) => ({
+                        ...p,
+                        category: p.category || 'Magnificent 7' as PortfolioCategory
+                    }));
+                    setPortfolios(portfoliosWithCategory);
                 }
             }
 
@@ -75,9 +80,9 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     }, [activePortfolioId, isHydrated]);
 
     // Portfolio CRUD operations
-    const addPortfolio = useCallback((name: string, description: string) => {
+    const addPortfolio = useCallback((name: string, description: string, category: PortfolioCategory = 'Magnificent 7') => {
         const id = name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
-        setPortfolios((prev) => [...prev, { id, name, description, positions: [] }]);
+        setPortfolios((prev) => [...prev, { id, name, description, category, positions: [] }]);
     }, []);
 
     const updatePortfolio = useCallback((id: string, updates: Partial<Portfolio>) => {
