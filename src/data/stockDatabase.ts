@@ -67,6 +67,21 @@ export const stockDatabase: Record<string, StockData> = {
   "ABB": createStock("ABB", "ABB Ltd", "Auto/Robotics", "Industrials", 84, "2026-01-31"),  // NYSE ticker (corrected from ABBNY)
   "FANUY": createStock("FANUY", "Fanuc Corporation", "Auto/Robotics", "Industrials", 80, "2026-01-29"),
   "PATH": createStock("PATH", "UiPath Inc.", "Auto/Robotics", "Technology", 75, "2026-01-29"),
+
+  // AI Infrastructure Portfolio
+  "IREN": createStock("IREN", "Iris Energy Limited", "AI Infrastructure", "Technology", 85, "2026-01-31"),
+  "CORZ": createStock("CORZ", "Core Scientific Inc.", "AI Infrastructure", "Technology", 82, "2026-01-31"),
+  "CRWV": createStock("CRWV", "CoreWeave Inc.", "AI Infrastructure", "Technology", 88, "2026-01-31"),
+  "APLD": createStock("APLD", "Applied Digital Corp", "AI Infrastructure", "Technology", 79, "2026-01-31"),
+  "NBIS": createStock("NBIS", "Nebius Group N.V.", "AI Infrastructure", "Technology", 84, "2026-01-31"),
+
+  // Energy Renaissance Portfolio
+  "CEG": createStock("CEG", "Constellation Energy", "Nuclear", "Energy", 90, "2026-01-31"),
+  "OKLO": createStock("OKLO", "Oklo Inc.", "Nuclear", "Energy", 86, "2026-01-31"),
+  "BWXT": createStock("BWXT", "BWX Technologies", "Nuclear", "Industrials", 87, "2026-01-31"),
+
+  // Physical AI Portfolio (additional tickers)
+  "TER": createStock("TER", "Teradyne Inc.", "Auto/Robotics", "Technology", 83, "2026-01-31"),
 };
 
 // Asset class color mapping for UI
@@ -83,4 +98,6 @@ export const assetClassColors: Record<string, string> = {
   "Quantum": "bg-violet-500/20 text-violet-400 border-violet-500/30",
   "Grid Infrastructure": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   "Data Center": "bg-teal-500/20 text-teal-400 border-teal-500/30",
+  "AI Infrastructure": "bg-amber-500/20 text-amber-400 border-amber-500/30",
+  "Nuclear": "bg-lime-500/20 text-lime-400 border-lime-500/30",
 };

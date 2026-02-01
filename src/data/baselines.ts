@@ -61,13 +61,54 @@ export const roboticsBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
+ * AI Infrastructure Portfolio
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
+ */
+export const aiInfraBaselines: Record<string, BaselinePrice> = {
+  'IREN': { ticker: 'IREN', price: 37.77, date: BASELINE_DATE },
+  'CORZ': { ticker: 'CORZ', price: 14.56, date: BASELINE_DATE },
+  'CRWV': { ticker: 'CRWV', price: 71.61, date: BASELINE_DATE },
+  'APLD': { ticker: 'APLD', price: 24.52, date: BASELINE_DATE },
+  'NBIS': { ticker: 'NBIS', price: 83.71, date: BASELINE_DATE },
+};
+
+/**
+ * Energy Renaissance Portfolio
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
+ */
+export const energyBaselines: Record<string, BaselinePrice> = {
+  'CEG': { ticker: 'CEG', price: 353.27, date: BASELINE_DATE },
+  'OKLO': { ticker: 'OKLO', price: 71.76, date: BASELINE_DATE },
+  'VRT': { ticker: 'VRT', price: 162.01, date: BASELINE_DATE },
+  'BWXT': { ticker: 'BWXT', price: 172.84, date: BASELINE_DATE },
+};
+
+/**
+ * Physical AI Portfolio
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
+ */
+export const physicalAIBaselines: Record<string, BaselinePrice> = {
+  'ISRG': { ticker: 'ISRG', price: 566.36, date: BASELINE_DATE },
+  'TER': { ticker: 'TER', price: 193.56, date: BASELINE_DATE },
+  'RKLB': { ticker: 'RKLB', price: 69.76, date: BASELINE_DATE },
+  'TSLA': { ticker: 'TSLA', price: 412.10, date: BASELINE_DATE },
+};
+
+/**
  * Combined baseline lookup - All tracked assets
  * Use this for YTD calculations throughout the application
+ * Note: For overlapping tickers, the last spread wins (physicalAIBaselines has priority)
  */
 export const baselines: Record<string, BaselinePrice> = {
   ...coreBaselines,
   ...innovationBaselines,
   ...roboticsBaselines,
+  ...aiInfraBaselines,
+  ...energyBaselines,
+  ...physicalAIBaselines,
 };
 
 /**
