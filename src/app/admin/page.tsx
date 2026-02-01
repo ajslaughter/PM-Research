@@ -50,8 +50,10 @@ export default function AdminPage() {
             }
 
             setGeneratedArticle(data.article);
+            setError(null); // Ensure error is cleared on success
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to generate article");
+            setGeneratedArticle(null); // Clear any stale article on error
         } finally {
             setIsGenerating(false);
         }
