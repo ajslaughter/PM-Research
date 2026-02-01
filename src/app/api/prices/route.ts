@@ -48,8 +48,9 @@ async function fetchAlpacaStocks(tickers: string[]): Promise<Record<string, Pric
 
   if (tickers.length === 0) return results;
 
-  const apiKey = process.env.ALPACA_API_KEY_ID;
-  const apiSecret = process.env.ALPACA_API_SECRET_KEY;
+  // Sanitize API keys to prevent Headers errors from newlines/whitespace
+  const apiKey = (process.env.ALPACA_API_KEY_ID || '').trim().replace(/[\r\n]/g, '');
+  const apiSecret = (process.env.ALPACA_API_SECRET_KEY || '').trim().replace(/[\r\n]/g, '');
 
   if (!apiKey || !apiSecret) {
     console.error('Alpaca API credentials not configured');
@@ -174,7 +175,8 @@ async function fetchYahooFallback(tickers: string[]): Promise<Record<string, Pri
  * Falls back to Coinbase if CoinGecko fails
  */
 async function fetchBitcoin(): Promise<PriceResult | null> {
-  const coinGeckoApiKey = process.env.COINGECKO_API_KEY;
+  // Sanitize API key to prevent Headers errors
+  const coinGeckoApiKey = (process.env.COINGECKO_API_KEY || '').trim().replace(/[\r\n]/g, '');
 
   // Try CoinGecko first (with API key for better rate limits)
   try {

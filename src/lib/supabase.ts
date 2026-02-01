@@ -1,19 +1,45 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ResearchNote } from './portfolios';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Get and sanitize environment variables (remove any whitespace/newlines that could cause Headers errors)
+const rawSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const rawSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// Validate that environment variables are properly configured
-const isConfigured = supabaseUrl.length > 0 && supabaseAnonKey.length > 0;
+// Sanitize: trim whitespace and remove any newlines/carriage returns
+const supabaseUrl = rawSupabaseUrl.trim().replace(/[\r\n]/g, '');
+const supabaseAnonKey = rawSupabaseAnonKey.trim().replace(/[\r\n]/g, '');
 
-if (!isConfigured && typeof window !== 'undefined') {
-    console.warn('Supabase environment variables not configured. Database operations will fail.');
+// Validate URL format
+function isValidUrl(url: string): boolean {
+    if (!url) return false;
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
+// Validate that environment variables are properly configured
+// - URL must be valid
+// - Anon key must be a non-empty string that looks like a JWT (starts with "ey")
+const isConfigured =
+    isValidUrl(supabaseUrl) &&
+    supabaseAnonKey.length > 0 &&
+    supabaseAnonKey.startsWith('ey');
+
+if (!isConfigured && typeof window !== 'undefined') {
+    console.warn('Supabase environment variables not configured or invalid. Database operations will be disabled.');
+}
+
+// Create Supabase client with valid placeholder if not configured
+// The placeholder uses a valid JWT-like format to prevent Headers API errors
+const PLACEHOLDER_URL = 'https://placeholder.supabase.co';
+const PLACEHOLDER_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDY2Mzk0MDAsImV4cCI6MTk2MjIxNTQwMH0.placeholder';
+
 export const supabase: SupabaseClient = createClient(
-    supabaseUrl || 'https://placeholder.supabase.co',
-    supabaseAnonKey || 'placeholder-key'
+    isConfigured ? supabaseUrl : PLACEHOLDER_URL,
+    isConfigured ? supabaseAnonKey : PLACEHOLDER_KEY
 );
 
 // Database types
