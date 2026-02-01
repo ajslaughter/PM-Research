@@ -71,8 +71,8 @@ export async function saveResearchNote(note: Omit<ResearchNote, 'id' | 'readTime
         .single();
 
     if (error) {
-        console.error('Error saving research note:', error);
-        return null;
+        console.error('Error saving research note:', error.message, error.details, error.hint);
+        throw new Error(error.message || 'Failed to save to database');
     }
 
     return dbToResearchNote(data);
