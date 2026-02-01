@@ -64,6 +64,7 @@ export default function AdminPage() {
         setError(null);
 
         try {
+            console.log('Saving article:', generatedArticle);
             const saved = await saveResearchNote(generatedArticle as Omit<ResearchNote, 'id' | 'readTime'>);
 
             if (saved) {
@@ -73,10 +74,12 @@ export default function AdminPage() {
                 setCategory("");
                 setTimeout(() => setSuccess(null), 3000);
             } else {
-                throw new Error("Failed to save article");
+                throw new Error("Failed to save article - no data returned");
             }
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to save article");
+            console.error('Save error:', err);
+            const errorMessage = err instanceof Error ? err.message : "Failed to save article";
+            setError(errorMessage);
         } finally {
             setIsSaving(false);
         }
