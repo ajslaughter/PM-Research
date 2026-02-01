@@ -23,7 +23,7 @@ export default function PricingPage() {
         {
             name: "Observer",
             price: 25,
-            description: "Essential research access for educational purposes",
+            description: "Core research access for serious investors",
             icon: <Zap className="w-7 h-7 text-pm-purple" />,
             features: [
                 { text: "Full Research Hub Access", included: true },
@@ -38,13 +38,13 @@ export default function PricingPage() {
         {
             name: "Operator",
             price: 150,
-            description: "Complete research and model portfolio access",
+            description: "Full access for investors who demand an edge",
             icon: <Crown className="w-7 h-7 text-pm-green" />,
             highlighted: true,
             features: [
                 { text: "Everything in Observer", included: true },
                 { text: "Full Model Portfolio Access", included: true },
-                { text: "Model Portfolio Tracking", included: true },
+                { text: "Real-Time Position Tracking", included: true },
                 { text: "PM Research Bot Access", included: true },
                 { text: "Automated Research Reports", included: true },
                 { text: "Quarterly Portfolio Reviews", included: true },
@@ -77,11 +77,11 @@ export default function PricingPage() {
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        Research & Model Portfolio <span className="text-pm-green">Access</span>
+                        Choose Your <span className="text-pm-green">Edge</span>
                     </h1>
                     <p className="text-xl text-pm-muted max-w-2xl mx-auto">
-                        Access educational research and model portfolio tracking tools
-                        for informational purposes only.
+                        Institutional-grade research and model portfolios.
+                        Built for investors who take markets seriously.
                     </p>
                 </motion.div>
 
@@ -142,27 +142,27 @@ export default function PricingPage() {
                         {[
                             {
                                 q: "What is the PM Score?",
-                                a: "The PM Score is our proprietary ranking system that combines momentum, fundamental, and predictive signals into a single 0-100 score for educational and informational purposes.",
+                                a: "The PM Score is our proprietary ranking system that combines momentum, fundamental, and predictive signals into a single 0-100 score. Higher scores indicate stronger conviction based on our models.",
                             },
                             {
                                 q: "What is the PM Research Bot?",
-                                a: "The PM Research Bot is a fully automated AI system that generates research reports and analysis. It operates without any human involvement - all outputs are algorithmically generated. The bot does not provide personalized investment advice.",
+                                a: "The PM Research Bot is an AI-powered system that generates research reports and analysis on demand. All outputs are algorithmically generated—no human analysts involved.",
                             },
                             {
-                                q: "Is this investment advice?",
-                                a: "No. PM Research provides educational research content and model portfolio tracking for informational purposes only. We do not provide personalized investment advice. All content is for educational use and should not be construed as a recommendation to buy or sell any security.",
+                                q: "Is this personalized investment advice?",
+                                a: "No. PM Research provides general research content and model portfolios. We don't know your financial situation, so nothing here constitutes personalized advice or recommendations to buy or sell specific securities.",
                             },
                             {
                                 q: "How does the model portfolio work?",
-                                a: "The model portfolio is a hypothetical portfolio for educational demonstration purposes. Position updates and performance metrics are provided for informational and educational purposes only, not as trading recommendations.",
+                                a: "The model portfolio tracks our high-conviction positions with real-time updates and performance metrics. It represents our research views—you decide how to use that information.",
                             },
                             {
                                 q: "What are Automated Research Reports?",
-                                a: "Automated Research Reports are AI-generated analyses produced by our PM Research Bot. These reports are algorithmically created without human analyst involvement and are provided for educational purposes only.",
+                                a: "Deep-dive analyses generated by our PM Research Bot covering sectors, individual tickers, and market themes. Available on-demand for Operator subscribers.",
                             },
                             {
                                 q: "Is there a refund policy?",
-                                a: "We offer a 7-day money-back guarantee. If you're not satisfied with the research content, contact us for a full refund.",
+                                a: "Yes. 7-day money-back guarantee, no questions asked. If PM Research isn't for you, we'll refund in full.",
                             },
                         ].map((faq, index) => (
                             <div key={index} className="pm-card">
@@ -180,19 +180,10 @@ export default function PricingPage() {
                     transition={{ delay: 0.5 }}
                     className="mt-16 text-center"
                 >
-                    <div className="pm-card bg-pm-charcoal/50 p-6 max-w-3xl mx-auto">
-                        <div className="flex items-center justify-center gap-2 mb-3">
-                            <Bot className="w-5 h-5 text-pm-purple" />
-                            <span className="font-semibold text-sm">Important Disclosure</span>
-                        </div>
-                        <p className="text-xs text-pm-muted leading-relaxed">
-                            PM Research provides educational content and model portfolio tracking for informational purposes only.
-                            The PM Research Bot is a fully automated AI system with no human involvement in content generation.
-                            Nothing on this platform constitutes personalized investment advice, a recommendation, or an offer to buy or sell securities.
-                            Past performance of model portfolios does not guarantee future results.
-                            Always consult with a qualified financial advisor before making investment decisions.
-                        </p>
-                    </div>
+                    <p className="text-xs text-pm-muted leading-relaxed max-w-2xl mx-auto">
+                        Model portfolio performance is hypothetical. Past performance does not guarantee future results.
+                        PM Research provides research content and model portfolios—not personalized investment advice.
+                    </p>
                 </motion.div>
             </div>
         </div>
