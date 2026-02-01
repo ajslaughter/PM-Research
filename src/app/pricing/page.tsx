@@ -44,7 +44,6 @@ export default function PricingPage() {
             features: [
                 { text: "Everything in Observer", included: true },
                 { text: "Full Model Portfolio Access", included: true },
-                { text: "Real-Time Position Tracking", included: true },
                 { text: "PM Research Bot Access", included: true },
                 { text: "Automated Research Reports", included: true },
                 { text: "Quarterly Portfolio Reviews", included: true },
