@@ -65,10 +65,9 @@ export const defaultPortfolios: Portfolio[] = [
         description: "Automation & Robotics",
         category: "Magnificent 7",
         positions: [
-            { ticker: "ISRG", weight: 25 },
-            { ticker: "ABB", weight: 25 },  // NYSE ticker (corrected from ABBNY)
-            { ticker: "FANUY", weight: 25 },
-            { ticker: "PATH", weight: 25 },
+            { ticker: "ISRG", weight: 33.33 },
+            { ticker: "FANUY", weight: 33.33 },
+            { ticker: "PATH", weight: 33.34 },
         ],
     },
     {

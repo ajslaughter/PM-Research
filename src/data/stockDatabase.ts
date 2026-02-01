@@ -64,7 +64,6 @@ export const stockDatabase: Record<string, StockData> = {
 
   // Robotics Portfolio
   "ISRG": createStock("ISRG", "Intuitive Surgical", "Auto/Robotics", "Healthcare", 91, "2026-01-29"),
-  "ABB": createStock("ABB", "ABB Ltd", "Auto/Robotics", "Industrials", 84, "2026-01-31"),  // NYSE ticker (corrected from ABBNY)
   "FANUY": createStock("FANUY", "Fanuc Corporation", "Auto/Robotics", "Industrials", 80, "2026-01-29"),
   "PATH": createStock("PATH", "UiPath Inc.", "Auto/Robotics", "Technology", 75, "2026-01-29"),
 
