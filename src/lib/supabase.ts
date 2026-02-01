@@ -1,10 +1,20 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ResearchNote } from './portfolios';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Validate that environment variables are properly configured
+const isConfigured = supabaseUrl.length > 0 && supabaseAnonKey.length > 0;
+
+if (!isConfigured && typeof window !== 'undefined') {
+    console.warn('Supabase environment variables not configured. Database operations will fail.');
+}
+
+export const supabase: SupabaseClient = createClient(
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseAnonKey || 'placeholder-key'
+);
 
 // Database types
 export interface DbResearchNote {
@@ -38,6 +48,11 @@ export function dbToResearchNote(db: DbResearchNote): ResearchNote {
 
 // Fetch all research notes
 export async function fetchResearchNotes(): Promise<ResearchNote[]> {
+    if (!isConfigured) {
+        console.error('Supabase not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.');
+        return [];
+    }
+
     const { data, error } = await supabase
         .from('research_notes')
         .select('*')
@@ -53,6 +68,10 @@ export async function fetchResearchNotes(): Promise<ResearchNote[]> {
 
 // Save a new research note
 export async function saveResearchNote(note: Omit<ResearchNote, 'id' | 'readTime'>): Promise<ResearchNote | null> {
+    if (!isConfigured) {
+        throw new Error('Database not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.');
+    }
+
     const dbNote = {
         title: note.title,
         summary: note.summary,
@@ -80,6 +99,11 @@ export async function saveResearchNote(note: Omit<ResearchNote, 'id' | 'readTime
 
 // Delete a research note
 export async function deleteResearchNote(id: string): Promise<boolean> {
+    if (!isConfigured) {
+        console.error('Supabase not configured. Cannot delete research note.');
+        return false;
+    }
+
     const { error } = await supabase
         .from('research_notes')
         .delete()
