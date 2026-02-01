@@ -44,7 +44,6 @@ export default function PricingPage() {
             features: [
                 { text: "Everything in Observer", included: true },
                 { text: "Full Model Portfolio Access", included: true },
-                { text: "Real-Time Position Tracking", included: true },
                 { text: "PM Research Bot Access", included: true },
                 { text: "Automated Research Reports", included: true },
                 { text: "Quarterly Portfolio Reviews", included: true },
@@ -154,7 +153,7 @@ export default function PricingPage() {
                             },
                             {
                                 q: "How does the model portfolio work?",
-                                a: "The model portfolio tracks our high-conviction positions with real-time updates and performance metrics. It represents our research views—you decide how to use that information.",
+                                a: "The model portfolio displays hypothetical positions based on our research. Performance metrics reflect how these model positions would have performed—not actual trades.",
                             },
                             {
                                 q: "What are Automated Research Reports?",
