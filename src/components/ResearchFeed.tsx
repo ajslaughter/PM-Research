@@ -330,11 +330,16 @@ export default function ResearchFeed() {
         );
     }
 
+    // Sort notes by date (newest first)
+    const sortedNotes = [...researchNotes].sort((a, b) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+
     return (
         <>
             {/* Research Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {researchNotes.map((note, index) => (
+                {sortedNotes.map((note, index) => (
                     <motion.div
                         key={note.id}
                         initial={{ opacity: 0, y: 20 }}
