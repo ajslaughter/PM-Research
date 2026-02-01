@@ -77,11 +77,26 @@ Return ONLY valid JSON, no other text.`;
         });
 
         if (!response.ok) {
-            const error = await response.text();
-            console.error('Anthropic API error:', error);
+            const errorText = await response.text();
+            console.error('Anthropic API error:', errorText);
+
+            // Try to parse error message from Anthropic
+            let errorMessage = 'Failed to generate article';
+            try {
+                const errorJson = JSON.parse(errorText);
+                if (errorJson.error?.message) {
+                    errorMessage = errorJson.error.message;
+                }
+            } catch {
+                // Use raw text if not JSON
+                if (errorText.includes('invalid')) {
+                    errorMessage = 'Invalid API key - please check ANTHROPIC_API_KEY in Vercel';
+                }
+            }
+
             return NextResponse.json(
-                { error: 'Failed to generate article' },
-                { status: 500 }
+                { error: errorMessage },
+                { status: response.status }
             );
         }
 
