@@ -77,11 +77,11 @@ export const aiInfraBaselines: Record<string, BaselinePrice> = {
  * Energy Renaissance Portfolio
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
+ * Note: VRT baseline is in innovationBaselines (169.47)
  */
 export const energyBaselines: Record<string, BaselinePrice> = {
   'CEG': { ticker: 'CEG', price: 353.27, date: BASELINE_DATE },
   'OKLO': { ticker: 'OKLO', price: 71.76, date: BASELINE_DATE },
-  'VRT': { ticker: 'VRT', price: 162.01, date: BASELINE_DATE },
   'BWXT': { ticker: 'BWXT', price: 172.84, date: BASELINE_DATE },
 };
 
@@ -89,12 +89,10 @@ export const energyBaselines: Record<string, BaselinePrice> = {
  * Physical AI Portfolio
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
+ * Note: ISRG, RKLB, TSLA baselines are in their respective original portfolios
  */
 export const physicalAIBaselines: Record<string, BaselinePrice> = {
-  'ISRG': { ticker: 'ISRG', price: 566.36, date: BASELINE_DATE },
   'TER': { ticker: 'TER', price: 193.56, date: BASELINE_DATE },
-  'RKLB': { ticker: 'RKLB', price: 69.76, date: BASELINE_DATE },
-  'TSLA': { ticker: 'TSLA', price: 412.10, date: BASELINE_DATE },
 };
 
 /**
