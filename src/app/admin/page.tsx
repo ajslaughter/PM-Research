@@ -177,8 +177,8 @@ export default function AdminPage() {
                     </div>
                 </motion.div>
 
-                {/* Error Message */}
-                {error && (
+                {/* Error Message - only show if no article generated */}
+                {error && !generatedArticle && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
