@@ -6,7 +6,6 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { ResearchNote } from "@/lib/portfolios";
 import {
-    Clock,
     Sparkles,
     ArrowRight,
     Lock,
@@ -95,10 +94,6 @@ function ResearchCard({ note, onReadClick, isSubscribed }: ResearchCardProps) {
                     {categoryIcons[note.category]}
                     {note.category}
                 </span>
-                <div className="flex items-center gap-1 text-pm-muted text-xs">
-                    <Clock className="w-3 h-3" />
-                    <span>{note.readTime}</span>
-                </div>
             </div>
 
             {/* Title */}
