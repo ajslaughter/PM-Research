@@ -13,7 +13,7 @@ import {
     Trash2,
 } from "lucide-react";
 import { ResearchNote } from "@/lib/portfolios";
-import { saveResearchNote } from "@/lib/supabase";
+import { useResearch } from "@/context/ResearchContext";
 
 const categories = ["Alpha Signal", "Sector Analysis", "Risk Alert", "Deep Dive"];
 
@@ -25,6 +25,7 @@ export default function AdminPage() {
     const [generatedArticle, setGeneratedArticle] = useState<Partial<ResearchNote> | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const { addResearchNote } = useResearch();
 
     const handleGenerate = async () => {
         if (!topic.trim()) {
@@ -67,17 +68,14 @@ export default function AdminPage() {
 
         try {
             console.log('Saving article:', generatedArticle);
-            const saved = await saveResearchNote(generatedArticle as Omit<ResearchNote, 'id' | 'readTime'>);
+            // Use ResearchContext which saves to both Supabase AND local state
+            await addResearchNote(generatedArticle as Omit<ResearchNote, 'id'>);
 
-            if (saved) {
-                setSuccess("Article saved successfully!");
-                setGeneratedArticle(null);
-                setTopic("");
-                setCategory("");
-                setTimeout(() => setSuccess(null), 3000);
-            } else {
-                throw new Error("Failed to save article - no data returned");
-            }
+            setSuccess("Article saved and published!");
+            setGeneratedArticle(null);
+            setTopic("");
+            setCategory("");
+            setTimeout(() => setSuccess(null), 3000);
         } catch (err) {
             console.error('Save error:', err);
             const errorMessage = err instanceof Error ? err.message : "Failed to save article";
