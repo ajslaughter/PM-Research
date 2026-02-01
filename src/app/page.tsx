@@ -24,9 +24,9 @@ export default function LandingPage() {
         },
         {
             icon: Target,
-            title: "Concentrated Positions",
+            title: "Model Portfolio Tracking",
             description:
-                "High-conviction model portfolios with real-time position tracking and performance metrics.",
+                "High-conviction model portfolios with position updates and YTD performance metrics.",
             color: "pm-green",
         },
         {
