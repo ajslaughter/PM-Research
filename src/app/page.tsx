@@ -11,38 +11,39 @@ import {
     Shield,
     LineChart,
     Sparkles,
+    BookOpen,
 } from "lucide-react";
 
 export default function LandingPage() {
     const features = [
         {
             icon: Brain,
-            title: "Predictive Modeling",
+            title: "Educational Analytics",
             description:
-                "Machine learning algorithms trained on decades of market data to identify asymmetric opportunities.",
+                "Machine learning models and research tools for educational analysis of market data and trends.",
             color: "pm-purple",
         },
         {
             icon: Target,
-            title: "Pure Alpha",
+            title: "Model Portfolio Tracking",
             description:
-                "Signal generation focused on uncorrelated returns. No market beta, just edge.",
+                "Track hypothetical model portfolios with position updates and YTD performance metrics for educational purposes.",
             color: "pm-green",
         },
         {
-            icon: Shield,
-            title: "Custom Requests",
+            icon: BookOpen,
+            title: "Research Library",
             description:
-                "Direct access to our research team for bespoke analysis on any ticker or sector.",
+                "Access our library of AI-generated research reports and sector analysis for informational use.",
             color: "pm-green",
         },
     ];
 
     const stats = [
-        { value: "147%", label: "2025 Portfolio Return" },
+        { value: "147%", label: "2025 Model Portfolio Return" },
         { value: "89", label: "Average PM Score" },
-        { value: "2.4x", label: "Alpha vs. S&P 500" },
-        { value: "12", label: "Active Positions" },
+        { value: "2.4x", label: "vs. S&P 500 Benchmark" },
+        { value: "12", label: "Model Positions" },
     ];
 
     return (
@@ -67,7 +68,7 @@ export default function LandingPage() {
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full">
                             <Sparkles className="w-4 h-4 text-pm-purple" />
                             <span className="text-sm font-mono text-pm-muted">
-                                Institutional Grade Analytics
+                                Educational Model Portfolio Tracking
                             </span>
                         </div>
 
@@ -83,19 +84,19 @@ export default function LandingPage() {
                             PM Research delivers{" "}
                             <span className="text-pm-text">institutional-grade portfolio analytics</span> and{" "}
                             <span className="text-pm-text">sector research</span>{" "}
-                            for investors who demand an edge.
+                            for educational and informational purposes.
                         </p>
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                             <Link href="/portfolio" className="btn-primary flex items-center gap-2">
                                 <Zap className="w-5 h-5" />
-                                Unlock the Portfolio
+                                View Model Portfolio
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
                             <Link href="/research" className="btn-secondary flex items-center gap-2">
                                 <LineChart className="w-5 h-5" />
-                                View Research
+                                Browse Research
                             </Link>
                         </div>
                     </motion.div>
@@ -121,6 +122,9 @@ export default function LandingPage() {
                             </motion.div>
                         ))}
                     </div>
+                    <p className="text-xs text-pm-muted text-center mt-4">
+                        *Model portfolio performance shown for educational purposes only. Past performance does not guarantee future results.
+                    </p>
                 </div>
             </section>
 
@@ -129,11 +133,11 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            <span className="text-pm-purple">Research</span> That Moves Markets
+                            <span className="text-pm-purple">Research</span> for Education
                         </h2>
                         <p className="text-pm-muted max-w-xl mx-auto">
                             Our proprietary PM Score system ranks opportunities based on momentum,
-                            fundamentals, and predictive signals.
+                            fundamentals, and predictive signals for educational analysis.
                         </p>
                     </div>
 
@@ -147,7 +151,7 @@ export default function LandingPage() {
                                 className="pm-card-hover group"
                             >
                                 <div
-                                    className={`w-12 h-12 rounded-lg bg-${feature.color}/10 flex items-center justify-center mb-4 
+                                    className={`w-12 h-12 rounded-lg bg-${feature.color}/10 flex items-center justify-center mb-4
                     group-hover:scale-110 transition-transform`}
                                 >
                                     <feature.icon className={`w-6 h-6 text-${feature.color}`} />
@@ -174,18 +178,30 @@ export default function LandingPage() {
                         <div className="relative z-10">
                             <TrendingUp className="w-12 h-12 text-pm-green mx-auto mb-6" />
                             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                                Ready to Access the <span className="text-pm-green">Alpha</span>?
+                                Ready to Explore <span className="text-pm-green">Model Portfolios</span>?
                             </h2>
                             <p className="text-pm-muted max-w-lg mx-auto mb-8">
-                                Join the investors who are already using PM Research to identify
-                                asymmetric opportunities before the market catches on.
+                                Access our educational research and model portfolio tracking tools
+                                for informational purposes.
                             </p>
                             <Link href="/pricing" className="btn-primary inline-flex items-center gap-2">
-                                View Subscription Plans
+                                View Research Plans
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
                         </div>
                     </motion.div>
+                </div>
+            </section>
+
+            {/* Disclaimer */}
+            <section className="relative py-8 px-6 border-t border-pm-border">
+                <div className="max-w-4xl mx-auto text-center">
+                    <p className="text-xs text-pm-muted leading-relaxed">
+                        PM Research provides educational content and model portfolio tracking for informational purposes only.
+                        Nothing on this platform constitutes personalized investment advice, a recommendation, or an offer to buy or sell securities.
+                        Model portfolio performance is hypothetical and does not guarantee future results.
+                        Always consult with a qualified financial advisor before making investment decisions.
+                    </p>
                 </div>
             </section>
         </div>
