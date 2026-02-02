@@ -1,13 +1,35 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ResearchNote } from './portfolios';
 
-// Get and sanitize environment variables (remove any whitespace/newlines that could cause Headers errors)
+// Get raw environment variables
 const rawSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const rawSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// Sanitize: trim whitespace and remove any newlines/carriage returns
-const supabaseUrl = rawSupabaseUrl.trim().replace(/[\r\n]/g, '');
-const supabaseAnonKey = rawSupabaseAnonKey.trim().replace(/[\r\n]/g, '');
+// Diagnostic logging for debugging env var issues
+console.log('[Supabase Config] NEXT_PUBLIC_SUPABASE_URL:', {
+    defined: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    length: rawSupabaseUrl.length,
+    preview: rawSupabaseUrl.slice(0, 10) || '(empty)',
+});
+console.log('[Supabase Config] NEXT_PUBLIC_SUPABASE_ANON_KEY:', {
+    defined: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    length: rawSupabaseAnonKey.length,
+    preview: rawSupabaseAnonKey.slice(0, 10) || '(empty)',
+});
+
+// Sanitize: trim whitespace, remove newlines, and strip surrounding quotes (in case Vercel wrapped them)
+function sanitizeEnvVar(value: string): string {
+    let sanitized = value.trim().replace(/[\r\n]/g, '');
+    // Strip surrounding single or double quotes
+    if ((sanitized.startsWith('"') && sanitized.endsWith('"')) ||
+        (sanitized.startsWith("'") && sanitized.endsWith("'"))) {
+        sanitized = sanitized.slice(1, -1);
+    }
+    return sanitized;
+}
+
+const supabaseUrl = sanitizeEnvVar(rawSupabaseUrl);
+const supabaseAnonKey = sanitizeEnvVar(rawSupabaseAnonKey);
 
 // Validate URL format
 function isValidUrl(url: string): boolean {
