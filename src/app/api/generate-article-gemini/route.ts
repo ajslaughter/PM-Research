@@ -20,7 +20,7 @@ When generating research, you MUST return valid JSON with this exact structure:
 {
   "title": "Compelling research title",
   "summary": "2-3 sentence executive summary",
-  "fullContent": "Full markdown article with ## headers, bullet points, and analysis (800-1200 words)",
+  "fullContent": "Full markdown article with ## headers, bullet points, and analysis (800-1200 words). Do NOT use bold (**) formatting.",
   "pmScore": 75,
   "category": "Alpha Signal | Sector Analysis | Risk Alert | Deep Dive",
   "relatedTickers": ["TICKER1", "TICKER2"],
