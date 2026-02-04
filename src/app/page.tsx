@@ -17,9 +17,9 @@ export default function LandingPage() {
     const features = [
         {
             icon: Brain,
-            title: "Predictive Analytics",
+            title: "AI-Powered Analysis",
             description:
-                "Machine learning algorithms trained on decades of market data to identify asymmetric opportunities.",
+                "Large language models with comprehensive market knowledge to identify asymmetric opportunities.",
             color: "pm-purple",
         },
         {
