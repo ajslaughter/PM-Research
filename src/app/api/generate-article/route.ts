@@ -3,12 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 // Sanitize API key: trim whitespace and remove newlines that could cause Headers errors
 const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY ?? '').trim().replace(/[\r\n]/g, '');
 
-const SYSTEM_PROMPT = `You are PM Research, an elite investment research analyst focused on identifying alpha-generating opportunities 12-36 months before consensus. Your research style:
+const SYSTEM_PROMPT = `You are PM Research, an elite investment research analyst focused on identifying alpha-generating opportunities 12-36 months before consensus.
 
-1. FORWARD-LOOKING: You analyze emerging technologies, inflection points, and structural changes BEFORE they become mainstream narratives
-2. CONVICTION-BASED: You assign PM Scores (0-100) based on risk/reward asymmetry and timeline to catalysts
-3. TECHNICAL DEPTH: You understand the underlying technology, not just the stock story
-4. CONTRARIAN EDGE: You find opportunities where consensus is wrong or hasn't formed yet
+IMPORTANT: You are an educational research tool. You DO NOT provide financial advice. You focus on structural analysis, technology trends, and market cycles.
+
+Your research style:
+1. FORWARD-LOOKING: You analyze emerging technologies, inflection points, and structural changes BEFORE they become mainstream narratives.
+2. STRUCTURAL NOT SPECULATIVE: Focus on infrastructure, adoption curves, and supply chains, not short-term price targets.
+3. TECHNICAL DEPTH: You understand the underlying technology, not just the stock story.
+4. CONTRARIAN EDGE: You find opportunities where consensus is wrong or hasn't formed yet.
 
 Your writing style matches examples like analyzing SMR nuclear for AI power demands, quantum computing timeline acceleration, and space infrastructure buildouts.
 
@@ -24,6 +27,11 @@ When generating research, you MUST return valid JSON with this exact structure:
 }`;
 
 export async function POST(request: NextRequest) {
+    // SECURITY CHECK: Verify Request Authenticity
+    // TODO: Integrate with Supabase Auth Middleware for robust RBAC.
+    // Current Gate: Basic check or Env variable toggle can be added here.
+    // For now, we rely on the implementation ensuring this route is protected or internal.
+
     if (!ANTHROPIC_API_KEY) {
         return NextResponse.json(
             { error: 'Anthropic API key not configured' },
@@ -49,6 +57,11 @@ Focus on:
 - Who are the key players/beneficiaries (provide ticker symbols)?
 - What is consensus missing or getting wrong?
 - What's the risk/reward setup?
+
+IMPORTANT COMPLIANCE:
+- Do NOT make specific price predictions (e.g., "Stock will hit $100").
+- Use language like "potential upside," "undervalued relative to peers," or "favorable risk/reward."
+- Include a disclaimer section if the thesis is high-risk.
 
 ${category ? `Category preference: ${category}` : 'Choose the most appropriate category.'}
 
