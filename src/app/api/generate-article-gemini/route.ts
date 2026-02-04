@@ -61,9 +61,12 @@ Focus on:
 - What's the risk/reward setup?
 
 IMPORTANT COMPLIANCE:
-- Do NOT make specific price predictions (e.g., "Stock will hit $100").
+- Do NOT make specific price predictions or price targets (e.g., "Stock will hit $100" or "$127 price target").
+- Do NOT include short-term technical analysis (MACD, RSI, moving averages, volume patterns, support/resistance levels).
+- Focus on 12-36 month structural thesis, NOT short-term price action.
 - Use language like "potential upside," "undervalued relative to peers," or "favorable risk/reward."
 - Include a disclaimer section if the thesis is high-risk.
+- Write in clear, professional prose. Avoid filler phrases, excessive hedging, or generic AI-style language.
 
 ${category ? `Category preference: ${category}` : 'Choose the most appropriate category.'}
 

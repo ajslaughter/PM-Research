@@ -16,11 +16,12 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(
 );
 
 // Provider component that wraps the app
+// NOTE: Website is now 100% free - all users are treated as subscribed
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
-    const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+    const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
     const [subscriptionTier, setSubscriptionTier] = useState<
         "guest" | "observer" | "operator"
-    >("guest");
+    >("operator");
 
     // Toggle function for testing subscriber views
     const toggleSubscription = () => {

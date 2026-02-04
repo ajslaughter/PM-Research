@@ -482,7 +482,7 @@ The SMR market is projected to reach **$7B in 2026** and accelerate to **$18.7B 
 ## Hyperscaler Validation
 
 ### Meta-Oklo Partnership (1.2 GW)
-The definitive signal arrived in late 2025: Meta committed to purchasing up to **1.2 gigawatts** of nuclear capacity from Oklo Inc. This is not a press release—it is an anchor customer providing capital commitment visibility that de-risks the entire Oklo business model. BofA upgraded OKLO to Buy with a $127 price target following this announcement.
+The definitive signal arrived in late 2025: Meta committed to purchasing up to **1.2 gigawatts** of nuclear capacity from Oklo Inc. This is not a press release—it is an anchor customer providing capital commitment visibility that de-risks the entire Oklo business model.
 
 ### NuScale-Entra1 Strategic Alliance
 NuScale Power, holder of the *only* NRC-certified SMR design, entered a global partnership with Entra1 Energy. The catalyst: up to **$25 billion in capital** from Japan's $550B U.S. investment initiative, targeting SMR deployments for AI data centers, manufacturing, and defense. NuScale is also collaborating with the Tennessee Valley Authority on a **6-gigawatt SMR program**—the largest announced SMR initiative in U.S. history.
@@ -687,15 +687,7 @@ The total addressable market for satellite-to-cell connectivity is projected at 
 
 ASTS has first-mover advantage in the highest-value segment (standard device connectivity), while competitors focus on modified devices or emergency-only messaging.
 
-## Technical Analysis
-
-ASTS exhibits strong technical momentum:
-
-*   **MACD**: Bullish crossover confirmed, indicating sustained buying pressure.
-*   **Relative Strength**: Trading **44% above 100-day SMA**, reflecting institutional accumulation.
-*   **Volume Profile**: Elevated volume on up days versus down days confirms trend strength.
-
-### Launch Roadmap
+## Deployment Roadmap
 
 Management has outlined plans for **45-60 additional satellite launches** by year-end 2026, which would complete global coverage and unlock the full revenue potential of carrier partnerships.
 

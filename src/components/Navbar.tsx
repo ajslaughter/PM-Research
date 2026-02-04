@@ -8,7 +8,6 @@ import {
     Activity,
     BookOpen,
     Briefcase,
-    CreditCard,
     Zap,
     Eye,
     EyeOff,
@@ -22,7 +21,6 @@ export default function Navbar() {
         { href: "/", label: "Home", icon: Activity },
         { href: "/portfolio", label: "Portfolio", icon: Briefcase },
         { href: "/research", label: "Research", icon: BookOpen },
-        { href: "/pricing", label: "Pricing", icon: CreditCard },
     ];
 
     return (
@@ -37,7 +35,7 @@ export default function Navbar() {
                         </div>
                         <span className="font-mono text-xl font-bold tracking-tight">
                             <span className="text-pm-green">PM</span>
-                            <span className="text-pm-text">Research</span>
+                            <span className="text-pm-text">bot</span>
                         </span>
                     </Link>
 
