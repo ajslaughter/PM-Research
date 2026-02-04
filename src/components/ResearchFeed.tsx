@@ -67,6 +67,10 @@ interface ResearchCardProps {
     isSubscribed: boolean;
 }
 
+interface ResearchFeedProps {
+    category?: string;
+}
+
 // Category styling maps
 const categoryStyles: Record<string, string> = {
     "Alpha Signal": "bg-pm-green/10 text-pm-green border-pm-green/30",
@@ -273,7 +277,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
     );
 }
 
-export default function ResearchFeed() {
+export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
     const { isSubscribed } = useSubscription();
     const { researchNotes } = useAdmin();
     const [showPremiumModal, setShowPremiumModal] = useState(false);
@@ -282,7 +286,6 @@ export default function ResearchFeed() {
 
     // Simulate hydration/loading state
     useEffect(() => {
-        // Short delay to allow context hydration
         const timer = setTimeout(() => {
             setIsLoading(false);
         }, 100);
@@ -297,6 +300,11 @@ export default function ResearchFeed() {
         }
     };
 
+    // Filter and Sort notes
+    const filteredNotes = researchNotes
+        .filter(note => category === "All" || note.category === category)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
     // Show skeleton while loading
     if (isLoading) {
         return (
@@ -308,16 +316,19 @@ export default function ResearchFeed() {
         );
     }
 
-    // Show empty state if no research notes
-    if (researchNotes.length === 0) {
+    // Show empty state if no research notes match filter
+    if (filteredNotes.length === 0) {
         return (
             <div className="pm-card p-12 text-center">
                 <div className="flex flex-col items-center gap-4">
                     <Search className="w-12 h-12 text-pm-muted opacity-50" />
                     <div>
-                        <h3 className="text-lg font-bold text-white mb-2">No Research Notes</h3>
+                        <h3 className="text-lg font-bold text-white mb-2">No Research Found</h3>
                         <p className="text-sm text-pm-muted">
-                            Research notes will appear here once published.
+                            {category === "All"
+                                ? "Research notes will appear here once published."
+                                : <>No research notes found for category: <span className="text-pm-green">{category}</span></>
+                            }
                         </p>
                     </div>
                 </div>
@@ -325,16 +336,11 @@ export default function ResearchFeed() {
         );
     }
 
-    // Sort notes by date (newest first)
-    const sortedNotes = [...researchNotes].sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-
     return (
         <>
             {/* Research Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {sortedNotes.map((note, index) => (
+                {filteredNotes.map((note, index) => (
                     <motion.div
                         key={note.id}
                         initial={{ opacity: 0, y: 20 }}

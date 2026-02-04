@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import ResearchFeed from "@/components/ResearchFeed";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { BookOpen, Lock, Unlock, Filter } from "lucide-react";
+import { BookOpen, Lock, Unlock, Filter, Info } from "lucide-react";
 
 export default function ResearchPage() {
     const { isSubscribed } = useSubscription();
+    const [activeCategory, setActiveCategory] = useState("All");
 
     return (
         <div className="relative min-h-screen">
@@ -71,10 +73,11 @@ export default function ResearchPage() {
                     className="flex flex-wrap gap-2 mb-8"
                 >
                     {["All", "Alpha Signal", "Sector Analysis", "Risk Alert", "Deep Dive"].map(
-                        (category, index) => (
+                        (category) => (
                             <button
                                 key={category}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${index === 0
+                                onClick={() => setActiveCategory(category)}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeCategory === category
                                         ? "bg-pm-green text-pm-black"
                                         : "bg-pm-charcoal border border-pm-border text-pm-muted hover:text-pm-text hover:border-pm-green/30"
                                     }`}
@@ -91,7 +94,7 @@ export default function ResearchPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <ResearchFeed />
+                    <ResearchFeed category={activeCategory} />
                 </motion.div>
 
                 {/* Subscription CTA for Guests */}
@@ -119,6 +122,14 @@ export default function ResearchPage() {
                         </div>
                     </motion.div>
                 )}
+
+                {/* Disclaimer */}
+                <div className="mt-16 pt-8 border-t border-pm-border text-center">
+                    <p className="text-xs text-pm-muted flex items-center justify-center gap-2">
+                        <Info className="w-4 h-4" />
+                        DISCLAIMER: Content is for informational and educational purposes only. PM Research does not provide financial advice.
+                    </p>
+                </div>
             </div>
         </div>
     );
