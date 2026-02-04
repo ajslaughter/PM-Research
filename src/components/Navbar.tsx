@@ -2,25 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSubscription } from "@/context/SubscriptionContext";
 import { motion } from "framer-motion";
 import {
     Activity,
     BookOpen,
     Briefcase,
+    Bot,
     Zap,
-    Eye,
-    EyeOff,
 } from "lucide-react";
 
 export default function Navbar() {
     const pathname = usePathname();
-    const { isSubscribed, toggleSubscription } = useSubscription();
 
     const navLinks = [
         { href: "/", label: "Home", icon: Activity },
         { href: "/portfolio", label: "Portfolio", icon: Briefcase },
         { href: "/research", label: "Research", icon: BookOpen },
+        { href: "/pmbot", label: "PMbot", icon: Bot },
     ];
 
     return (
@@ -35,7 +33,7 @@ export default function Navbar() {
                         </div>
                         <span className="font-mono text-xl font-bold tracking-tight">
                             <span className="text-pm-green">PM</span>
-                            <span className="text-pm-text">bot</span>
+                            <span className="text-pm-text">Research</span>
                         </span>
                     </Link>
 
@@ -67,28 +65,6 @@ export default function Navbar() {
                             );
                         })}
                     </div>
-
-                    {/* Subscription Toggle */}
-                    <button
-                        onClick={toggleSubscription}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-sm font-medium transition-all duration-300
-              ${isSubscribed
-                                ? "bg-pm-green text-pm-black shadow-neon-green"
-                                : "border border-pm-border text-pm-muted hover:border-pm-green/50 hover:text-pm-green"
-                            }`}
-                    >
-                        {isSubscribed ? (
-                            <>
-                                <Eye className="w-4 h-4" />
-                                <span>SUBSCRIBER</span>
-                            </>
-                        ) : (
-                            <>
-                                <EyeOff className="w-4 h-4" />
-                                <span>GUEST</span>
-                            </>
-                        )}
-                    </button>
                 </div>
             </div>
         </nav>

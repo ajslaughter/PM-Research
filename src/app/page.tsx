@@ -177,11 +177,10 @@ export default function LandingPage() {
                                 Ready to Access the <span className="text-pm-green">Edge</span>?
                             </h2>
                             <p className="text-pm-muted max-w-lg mx-auto mb-8">
-                                Join serious investors using PM Research to identify
-                                asymmetric opportunities before the market catches on.
+                                Explore our model portfolios and AI-powered research—completely free.
                             </p>
-                            <Link href="/pricing" className="btn-primary inline-flex items-center gap-2">
-                                View Subscription Plans
+                            <Link href="/research" className="btn-primary inline-flex items-center gap-2">
+                                Explore Research
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
                         </div>
