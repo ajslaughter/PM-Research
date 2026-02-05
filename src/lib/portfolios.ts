@@ -117,7 +117,7 @@ export interface ResearchNote {
     fullContent: string;
     date: string;
     pmScore: number;
-    category: "Alpha Signal" | "Sector Analysis" | "Risk Alert" | "Deep Dive";
+    category: "Emerging Trend" | "Sector Analysis" | "Risk Assessment" | "Deep Dive";
     readTime: string;
     relatedTickers?: string[];
     author?: string;
@@ -234,15 +234,15 @@ This vertical integration enables RKLB to capture value across the satellite sup
 RKLB represents the highest-quality pure-play space investment available in public markets. The 85% manifest booking through 2027, combined with Neutron development progress, creates a clear path to revenue growth. We maintain our PM Score of 95—the strongest conviction rating outside of AI infrastructure.`,
         date: "2026-01-12",
         pmScore: 95,
-        category: "Alpha Signal",
+        category: "Emerging Trend",
         readTime: "10 min",
         relatedTickers: ["RKLB"],
         author: "PM Research Alpha Desk"
     },
     {
         id: "r3",
-        title: "Quantum Computing: Timeline Acceleration",
-        summary: "Error correction breakthroughs suggest commercial viability sooner than consensus expects.",
+        title: "Quantum Computing: Error Correction Breakthroughs and What They Mean",
+        summary: "This report examines recent quantum error correction advances, their technical implications, and the evolving timeline for commercial applications.",
         fullContent: `## Thesis Update
 
 Recent breakthroughs in quantum error correction have materially changed our timeline thesis. The quantum computing investment case has shifted from "science project" to "infrastructure buildout"—and the market has not fully repriced this transition.
@@ -328,11 +328,11 @@ The quantum computing investment thesis has transitioned from "technology bet" t
     },
     {
         id: "r4",
-        title: "Risk Alert: Automation Sector Headwinds",
+        title: "Risk Assessment: Automation Sector Headwinds",
         summary: "Enterprise software spending deceleration impacting automation valuations.",
         fullContent: `
-## Alert Summary
-We're issuing a risk alert for the automation sector based on our enterprise spending analysis.
+## Assessment Summary
+This report analyzes risk factors for the automation sector based on our enterprise spending analysis.
 
 ## Key Concerns
 1. Budget cycles extending from Q1 to Q3
@@ -348,7 +348,7 @@ Trim automation exposure, rotate to AI infrastructure.
     `,
         date: "2026-01-08",
         pmScore: 72,
-        category: "Risk Alert",
+        category: "Risk Assessment",
         readTime: "5 min",
     },
     {
@@ -461,14 +461,14 @@ The grid infrastructure thesis offers a rare combination: visible multi-decade d
     },
     {
         id: "r6",
-        title: "SMR Nuclear: The AI Power Renaissance",
-        summary: "Small Modular Reactors emerge as the definitive solution for hyperscaler energy demands. Meta-Oklo and NuScale-Entra1 partnerships signal a new nuclear supercycle.",
+        title: "SMR Nuclear: The Infrastructure Behind AI's Energy Demands",
+        summary: "This report examines Small Modular Reactor technology, the regulatory landscape, and adoption timelines as hyperscalers pursue baseload power solutions.",
         fullContent: `
 ## The AI Energy Crisis
 
 The artificial intelligence revolution has created an unprecedented energy paradox: the most valuable companies on Earth cannot find enough electricity to power their growth. Global data center power demand is projected to surge 165% by 2030, with the IEA forecasting annual consumption of 945 terawatt-hours—equivalent to Japan's entire national electricity usage. This is not a distant concern; it is a present-tense capital allocation crisis.
 
-Traditional grid infrastructure cannot scale fast enough. Renewable intermittency creates reliability gaps incompatible with 99.999% uptime requirements. The market is mispricing the urgency—and the solution.
+Traditional grid infrastructure cannot scale fast enough. Renewable intermittency creates reliability gaps incompatible with 99.999% uptime requirements. This creates structural demand for baseload power alternatives.
 
 ### The SMR Thesis
 
@@ -501,7 +501,7 @@ The SMR sector is transitioning from "speculative technology bet" to "contracted
 ### The Trade
 *   OKLO: Pre-revenue but now with anchor customer. First commercial operations expected late 2027. Current valuation prices in execution risk, but the Meta deal fundamentally changes the risk/reward calculus.
 *   SMR (NuScale): First-mover regulatory advantage. The Entra1 partnership and TVA program provide multiple shots on goal. Oak Ridge National Laboratory validation confirms technical readiness.
-*   CEG (Constellation Energy): The "picks and shovels" play. Largest U.S. nuclear operator with existing fleet optionality and SMR integration capabilities.
+*   CEG (Constellation Energy): Infrastructure exposure as the largest U.S. nuclear operator with existing fleet optionality and SMR integration capabilities.
 
 ### Technical Moat Analysis
 NuScale's NRC certification represents a 5-7 year head start on competitors. This is not easily replicated. The regulatory barrier creates a natural oligopoly structure that investors systematically undervalue.
@@ -522,7 +522,7 @@ This is a barbell trade: combine the high-beta pure-plays (OKLO, SMR) with the s
     `,
         date: "2026-01-26",
         pmScore: 91,
-        category: "Alpha Signal",
+        category: "Emerging Trend",
         readTime: "14 min",
         relatedTickers: ["OKLO", "SMR", "CEG"],
         author: "PM Research Alpha Desk"
@@ -576,7 +576,7 @@ The Cowork architecture demonstrates Anthropic's strategic vision: own the agent
 Claude Cowork represents the first mass-market implementation of autonomous AI agents for non-developers. The Mac Mini repurposing trend validates our thesis that AI infrastructure will decentralize into homes and small offices. We are adding AAPL to our Innovation Watchlist based on this catalyst.`,
         date: "2026-01-25",
         pmScore: 94,
-        category: "Alpha Signal",
+        category: "Emerging Trend",
         readTime: "11 min",
         relatedTickers: ["NVDA", "AAPL"],
         author: "PM Research Alpha Desk"
@@ -621,7 +621,7 @@ The CHIPS Act has fundamentally altered the semiconductor investment thesis. Int
 
 ## Technical Analysis
 
-Intel's stock remains significantly discounted versus its technical progress. The market is pricing in past execution failures while ignoring forward indicators:
+Intel's stock valuation reflects past execution challenges. Key forward indicators to monitor include:
 
 *   Process Roadmap: Intel 18A (1.8nm) is already in production with positive yield commentary. 14A builds on this foundation.
 *   Customer Pipeline: The AWS and Microsoft wins de-risk the foundry business model.
@@ -703,7 +703,7 @@ Management has outlined plans for 45-60 additional satellite launches by year-en
 ASTS represents a rare "infrastructure monopoly in formation" opportunity. The combination of carrier partnerships, technical moat, and contract wins creates a defensible position in a $151B market. The 45-60 satellite launch roadmap provides clear catalysts through 2026. We are initiating coverage with a PM Score of 89 and adding ASTS to the Innovation Watchlist.`,
         date: "2026-01-25",
         pmScore: 89,
-        category: "Alpha Signal",
+        category: "Emerging Trend",
         readTime: "10 min",
         relatedTickers: ["ASTS", "T", "VZ"],
         author: "PM Research Alpha Desk"
@@ -722,7 +722,7 @@ The GPU shortage ended.
 The packaging shortage just started.`,
         date: "2026-01-28",
         pmScore: 91,
-        category: "Alpha Signal",
+        category: "Emerging Trend",
         readTime: "2 min",
         relatedTickers: ["TSM", "NVDA", "AMD", "AMAT"],
         author: "PM Research Alpha Desk"

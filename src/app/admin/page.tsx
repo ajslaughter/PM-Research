@@ -15,7 +15,7 @@ import {
 import { ResearchNote } from "@/lib/portfolios";
 import { useResearch } from "@/context/ResearchContext";
 
-const categories = ["Alpha Signal", "Sector Analysis", "Risk Alert", "Deep Dive"];
+const categories = ["Emerging Trend", "Sector Analysis", "Risk Assessment", "Deep Dive"];
 
 export default function AdminPage() {
     const [topic, setTopic] = useState("");

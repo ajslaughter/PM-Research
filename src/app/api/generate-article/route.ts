@@ -21,7 +21,7 @@ When generating research, you MUST return valid JSON with this exact structure:
   "summary": "One-sentence thesis (under 200 chars)",
   "fullContent": "Full markdown article with ## headers, ### subheaders, and * bullet points. Do NOT use bold (**) formatting.",
   "pmScore": 75-98 (higher = more conviction),
-  "category": "Alpha Signal" | "Sector Analysis" | "Risk Alert" | "Deep Dive",
+  "category": "Emerging Trend" | "Sector Analysis" | "Risk Assessment" | "Deep Dive",
   "relatedTickers": ["TICK1", "TICK2"],
   "author": "PM Research Alpha Desk"
 }`;

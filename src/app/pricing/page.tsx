@@ -182,6 +182,7 @@ export default function PricingPage() {
                     <p className="text-xs text-pm-muted leading-relaxed max-w-2xl mx-auto">
                         Model portfolio performance is hypothetical. Past performance does not guarantee future results.
                         PM Research provides research content and model portfolios—not personalized investment advice.
+                        PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
                     </p>
                 </motion.div>
             </div>

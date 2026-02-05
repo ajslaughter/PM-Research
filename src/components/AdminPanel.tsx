@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 
 // Types for forms
-type ResearchCategory = "Alpha Signal" | "Sector Analysis" | "Risk Alert" | "Deep Dive";
+type ResearchCategory = "Emerging Trend" | "Sector Analysis" | "Risk Assessment" | "Deep Dive";
 
 interface ResearchFormData {
     title: string;
@@ -66,7 +66,7 @@ export default function AdminPanel() {
         title: "",
         summary: "",
         fullContent: "",
-        category: "Alpha Signal",
+        category: "Emerging Trend",
         pmScore: 85,
         readTime: "5 min",
         author: "",
@@ -100,7 +100,7 @@ export default function AdminPanel() {
             title: "",
             summary: "",
             fullContent: "",
-            category: "Alpha Signal",
+            category: "Emerging Trend",
             pmScore: 85,
             readTime: "5 min",
             author: "",
@@ -567,9 +567,9 @@ export default function AdminPanel() {
                                                     onChange={(e) => setResearchForm({ ...researchForm, category: e.target.value as ResearchCategory })}
                                                     className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
                                                 >
-                                                    <option value="Alpha Signal">Alpha Signal</option>
+                                                    <option value="Emerging Trend">Emerging Trend</option>
                                                     <option value="Sector Analysis">Sector Analysis</option>
-                                                    <option value="Risk Alert">Risk Alert</option>
+                                                    <option value="Risk Assessment">Risk Assessment</option>
                                                     <option value="Deep Dive">Deep Dive</option>
                                                 </select>
 

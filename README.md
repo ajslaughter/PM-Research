@@ -49,9 +49,9 @@ Proprietary ranking system (0-100) combining momentum, fundamentals, and predict
 
 ### Research Hub ("The Feed")
 Institutional-grade research notes categorized as:
-- **Alpha Signal**: High-conviction opportunity alerts
+- **Emerging Trend**: Structural trend and opportunity analysis
 - **Sector Analysis**: Deep industry coverage
-- **Risk Alert**: Position warnings and risk management
+- **Risk Assessment**: Position evaluation and risk analysis
 - **Deep Dive**: Comprehensive thesis reports
 
 ### PM Research Bot
@@ -127,4 +127,4 @@ src/
 
 ## Disclaimer
 
-Model portfolio performance is hypothetical. Past performance does not guarantee future results. PM Research provides research content and model portfolios—not personalized investment advice.
+Model portfolio performance is hypothetical. Past performance does not guarantee future results. PM Research provides research content and model portfolios—not personalized investment advice. PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.

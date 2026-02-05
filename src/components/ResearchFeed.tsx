@@ -73,16 +73,16 @@ interface ResearchFeedProps {
 
 // Category styling maps
 const categoryStyles: Record<string, string> = {
-    "Alpha Signal": "bg-pm-green/10 text-pm-green border-pm-green/30",
+    "Emerging Trend": "bg-pm-green/10 text-pm-green border-pm-green/30",
     "Sector Analysis": "bg-pm-purple/10 text-pm-purple border-pm-purple/30",
-    "Risk Alert": "bg-red-500/10 text-red-400 border-red-500/30",
+    "Risk Assessment": "bg-red-500/10 text-red-400 border-red-500/30",
     "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
 };
 
 const categoryIcons: Record<string, React.ReactNode> = {
-    "Alpha Signal": <TrendingUp className="w-3 h-3" />,
+    "Emerging Trend": <TrendingUp className="w-3 h-3" />,
     "Sector Analysis": <LineChart className="w-3 h-3" />,
-    "Risk Alert": <AlertTriangle className="w-3 h-3" />,
+    "Risk Assessment": <AlertTriangle className="w-3 h-3" />,
     "Deep Dive": <Search className="w-3 h-3" />,
 };
 
@@ -236,7 +236,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                                     </div>
                                     <div className="text-xs text-pm-muted leading-tight">
                                         Out of 100<br />
-                                        <span className="text-white">High Conviction</span>
+                                        <span className="text-white">Strong Thesis</span>
                                     </div>
                                 </div>
                                 <div className="w-full bg-pm-border h-1.5 rounded-full mt-3 overflow-hidden">
