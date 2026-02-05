@@ -328,11 +328,11 @@ The quantum computing investment thesis has transitioned from "technology bet" t
     },
     {
         id: "r4",
-        title: "Risk Alert: Automation Sector Headwinds",
+        title: "Risk Assessment: Automation Sector Headwinds",
         summary: "Enterprise software spending deceleration impacting automation valuations.",
         fullContent: `
-## Alert Summary
-We're issuing a risk alert for the automation sector based on our enterprise spending analysis.
+## Assessment Summary
+This report analyzes risk factors for the automation sector based on our enterprise spending analysis.
 
 ## Key Concerns
 1. Budget cycles extending from Q1 to Q3
