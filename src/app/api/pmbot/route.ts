@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sanitizeMessage, verifyOrigin } from '@/lib/security';
 
 // Sanitize API key
 const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY ?? '').trim().replace(/[\r\n]/g, '');
+
+// Allowed hosts for origin verification
+const ALLOWED_HOSTS = [
+    'pm-research.vercel.app',
+    'localhost:3000',
+    '127.0.0.1:3000',
+];
 
 const SYSTEM_PROMPT = `You are PM Bot, the AI research assistant for PM Research. You answer questions about PM Research's model portfolios, sector analysis, and research methodology.
 
@@ -133,6 +141,14 @@ function checkRateLimit(ip: string): { allowed: boolean; message?: string } {
 }
 
 export async function POST(request: NextRequest) {
+    // Security: Verify request origin
+    if (!verifyOrigin(request, ALLOWED_HOSTS)) {
+        return NextResponse.json(
+            { error: 'Invalid request origin' },
+            { status: 403 }
+        );
+    }
+
     // Check rate limit first (before API key check)
     const clientIP = getClientIP(request);
     const rateLimitResult = checkRateLimit(clientIP);
@@ -154,12 +170,15 @@ export async function POST(request: NextRequest) {
     try {
         const { message, history } = await request.json();
 
-        if (!message || typeof message !== 'string') {
+        // Security: Input sanitization
+        const messageResult = sanitizeMessage(message);
+        if (!messageResult.valid) {
             return NextResponse.json(
-                { error: 'Message is required' },
+                { error: messageResult.error },
                 { status: 400 }
             );
         }
+        const sanitizedMessage = messageResult.sanitized;
 
         // Build messages array for Claude API
         // Convert from Gemini format (role: "model") to Claude format (role: "assistant")
@@ -176,8 +195,8 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Add current user message
-        messages.push({ role: 'user', content: message });
+        // Add current user message (sanitized)
+        messages.push({ role: 'user', content: sanitizedMessage });
 
         // Call Claude API with streaming
         const response = await fetch('https://api.anthropic.com/v1/messages', {

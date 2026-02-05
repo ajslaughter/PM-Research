@@ -28,7 +28,8 @@ const isConfigured =
     supabaseAnonKey.length > 0 &&
     supabaseAnonKey.startsWith('ey');
 
-if (!isConfigured && typeof window !== 'undefined') {
+// Only log configuration warnings in development
+if (!isConfigured && typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     console.warn('Supabase environment variables not configured or invalid. Database operations will be disabled.');
 }
 
@@ -75,7 +76,9 @@ export function dbToResearchNote(db: DbResearchNote): ResearchNote {
 // Fetch all research notes
 export async function fetchResearchNotes(): Promise<ResearchNote[]> {
     if (!isConfigured) {
-        console.error('Supabase not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.');
+        if (process.env.NODE_ENV === 'development') {
+            console.error('Supabase not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.');
+        }
         return [];
     }
 
@@ -85,7 +88,9 @@ export async function fetchResearchNotes(): Promise<ResearchNote[]> {
         .order('date', { ascending: false });
 
     if (error) {
-        console.error('Error fetching research notes:', error);
+        if (process.env.NODE_ENV === 'development') {
+            console.error('Error fetching research notes:', error);
+        }
         return [];
     }
 
@@ -116,7 +121,9 @@ export async function saveResearchNote(note: Omit<ResearchNote, 'id' | 'readTime
         .single();
 
     if (error) {
-        console.error('Error saving research note:', error.message, error.details, error.hint);
+        if (process.env.NODE_ENV === 'development') {
+            console.error('Error saving research note:', error.message);
+        }
         throw new Error(error.message || 'Failed to save to database');
     }
 
@@ -126,7 +133,9 @@ export async function saveResearchNote(note: Omit<ResearchNote, 'id' | 'readTime
 // Delete a research note
 export async function deleteResearchNote(id: string): Promise<boolean> {
     if (!isConfigured) {
-        console.error('Supabase not configured. Cannot delete research note.');
+        if (process.env.NODE_ENV === 'development') {
+            console.error('Supabase not configured. Cannot delete research note.');
+        }
         return false;
     }
 
@@ -136,7 +145,9 @@ export async function deleteResearchNote(id: string): Promise<boolean> {
         .eq('id', id);
 
     if (error) {
-        console.error('Error deleting research note:', error);
+        if (process.env.NODE_ENV === 'development') {
+            console.error('Error deleting research note:', error);
+        }
         return false;
     }
 
