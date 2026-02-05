@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Sanitize API key
-const GEMINI_API_KEY = (process.env.GEMINI_API_KEY ?? '').trim().replace(/[\r\n]/g, '');
+const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY ?? '').trim().replace(/[\r\n]/g, '');
 
 const SYSTEM_PROMPT = `You are PM Bot, the AI research assistant for PM Research. You answer questions about PM Research's model portfolios, sector analysis, and research methodology.
 
@@ -144,9 +144,9 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    if (!GEMINI_API_KEY) {
+    if (!ANTHROPIC_API_KEY) {
         return NextResponse.json(
-            { error: 'Gemini API key not configured' },
+            { error: 'API key not configured' },
             { status: 500 }
         );
     }
@@ -161,49 +161,44 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Build contents array with history
-        const contents = [];
+        // Build messages array for Claude API
+        // Convert from Gemini format (role: "model") to Claude format (role: "assistant")
+        const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
 
         // Add history if provided
         if (history && Array.isArray(history)) {
             for (const msg of history) {
-                contents.push({
-                    role: msg.role,
-                    parts: msg.parts,
-                });
+                const role = msg.role === 'model' ? 'assistant' : 'user';
+                const content = msg.parts?.[0]?.text || '';
+                if (content) {
+                    messages.push({ role, content });
+                }
             }
         }
 
         // Add current user message
-        contents.push({
-            role: 'user',
-            parts: [{ text: message }],
-        });
+        messages.push({ role: 'user', content: message });
 
-        // Call Gemini API with streaming
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    contents,
-                    systemInstruction: {
-                        parts: [{ text: SYSTEM_PROMPT }],
-                    },
-                    generationConfig: {
-                        maxOutputTokens: 800,
-                        temperature: 0.7,
-                    },
-                }),
-            }
-        );
+        // Call Claude API with streaming
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01',
+            },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 800,
+                system: SYSTEM_PROMPT,
+                messages,
+                stream: true,
+            }),
+        });
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Gemini API error:', errorText);
+            console.error('Claude API error:', errorText);
             return NextResponse.json(
                 { error: 'Failed to generate response' },
                 { status: response.status }
@@ -242,9 +237,9 @@ export async function POST(request: NextRequest) {
 
                                 try {
                                     const parsed = JSON.parse(data);
-                                    const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
-                                    if (text) {
-                                        controller.enqueue(encoder.encode(text));
+                                    // Claude streaming format: content_block_delta events contain the text
+                                    if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+                                        controller.enqueue(encoder.encode(parsed.delta.text));
                                     }
                                 } catch {
                                     // Skip malformed JSON
