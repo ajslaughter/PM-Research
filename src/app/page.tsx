@@ -192,8 +192,9 @@ export default function LandingPage() {
             <section className="relative py-8 px-6 border-t border-pm-border">
                 <div className="max-w-4xl mx-auto text-center">
                     <p className="text-xs text-pm-muted leading-relaxed">
-                        Model portfolio  performance shown is hypothetical. Past performance does not guarantee future results.
+                        Model portfolio performance shown is hypothetical. Past performance does not guarantee future results.
                         PM Research provides research content and model portfolios—not personalized investment advice.
+                        PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
                     </p>
                 </div>
             </section>

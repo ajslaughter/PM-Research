@@ -72,7 +72,7 @@ export default function ResearchPage() {
                     transition={{ delay: 0.1 }}
                     className="flex flex-wrap gap-2 mb-8"
                 >
-                    {["All", "Alpha Signal", "Sector Analysis", "Risk Alert", "Deep Dive"].map(
+                    {["All", "Emerging Trend", "Sector Analysis", "Risk Assessment", "Deep Dive"].map(
                         (category) => (
                             <button
                                 key={category}
@@ -127,7 +127,7 @@ export default function ResearchPage() {
                 <div className="mt-16 pt-8 border-t border-pm-border text-center">
                     <p className="text-xs text-pm-muted flex items-center justify-center gap-2">
                         <Info className="w-4 h-4" />
-                        DISCLAIMER: Content is for informational and educational purposes only. PM Research does not provide financial advice.
+                        DISCLAIMER: Content is for informational and educational purposes only. PM Research does not provide financial advice. PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
                     </p>
                 </div>
             </div>

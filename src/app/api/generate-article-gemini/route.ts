@@ -22,16 +22,16 @@ When generating research, you MUST return valid JSON with this exact structure:
   "summary": "2-3 sentence executive summary",
   "fullContent": "Full markdown article with ## headers, bullet points, and analysis (800-1200 words). Do NOT use bold (**) formatting.",
   "pmScore": 75,
-  "category": "Alpha Signal | Sector Analysis | Risk Alert | Deep Dive",
+  "category": "Emerging Trend | Sector Analysis | Risk Assessment | Deep Dive",
   "relatedTickers": ["TICKER1", "TICKER2"],
   "readTime": "5 min read"
 }
 
 Rules for pmScore:
-- 80-100: High conviction, strong catalysts within 12 months
-- 60-79: Building thesis, catalysts 12-24 months out
+- 80-100: Strong thesis, well-supported structural trend, clear drivers
+- 60-79: Developing thesis, emerging trend, drivers forming over 12-24 months
 - 40-59: Early stage, monitoring for inflection points
-- Below 40: Speculative or high uncertainty`;
+- Below 40: Exploratory or high uncertainty`;
 
 export async function POST(request: NextRequest) {
     if (!GEMINI_API_KEY) {
