@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyAuth, checkRateLimit, getClientIP, sanitizeTopic } from '@/lib/security';
 
 // Sanitize API key: trim whitespace and remove newlines that could cause Headers errors
 const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY ?? '').trim().replace(/[\r\n]/g, '');
@@ -27,10 +28,31 @@ When generating research, you MUST return valid JSON with this exact structure:
 }`;
 
 export async function POST(request: NextRequest) {
-    // SECURITY CHECK: Verify Request Authenticity
-    // TODO: Integrate with Supabase Auth Middleware for robust RBAC.
-    // Current Gate: Basic check or Env variable toggle can be added here.
-    // For now, we rely on the implementation ensuring this route is protected or internal.
+    // Security: Rate limiting (10 requests per hour per IP)
+    const clientIP = getClientIP(request);
+    const rateLimitResult = checkRateLimit(clientIP, 10, 60 * 60 * 1000);
+
+    if (!rateLimitResult.allowed) {
+        return NextResponse.json(
+            { error: 'Rate limit exceeded. Please try again later.' },
+            {
+                status: 429,
+                headers: {
+                    'X-RateLimit-Remaining': '0',
+                    'X-RateLimit-Reset': rateLimitResult.resetTime.toString(),
+                }
+            }
+        );
+    }
+
+    // Security: Verify authentication
+    const auth = await verifyAuth(request);
+    if (!auth) {
+        return NextResponse.json(
+            { error: 'Authentication required. Please log in to access this resource.' },
+            { status: 401 }
+        );
+    }
 
     if (!ANTHROPIC_API_KEY) {
         return NextResponse.json(
@@ -42,14 +64,17 @@ export async function POST(request: NextRequest) {
     try {
         const { topic, category } = await request.json();
 
-        if (!topic) {
+        // Security: Input sanitization
+        const topicResult = sanitizeTopic(topic);
+        if (!topicResult.valid) {
             return NextResponse.json(
-                { error: 'Topic is required' },
+                { error: topicResult.error },
                 { status: 400 }
             );
         }
+        const sanitizedTopic = topicResult.sanitized;
 
-        const userPrompt = `Generate a PM Research deep-dive article on: "${topic}"
+        const userPrompt = `Generate a PM Research deep-dive article on: "${sanitizedTopic}"
 
 Focus on:
 - What's the 12-36 month forward thesis?

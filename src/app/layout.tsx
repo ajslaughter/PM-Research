@@ -41,7 +41,6 @@ export default function RootLayout({
                                                 <span className="w-2 h-2 rounded-full bg-pm-green animate-pulse" />
                                                 Systems Operational
                                             </span>
-                                            <span className="font-mono text-xs">v2.1.0</span>
                                         </div>
                                     </div>
                                 </div>

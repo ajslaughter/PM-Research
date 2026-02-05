@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
     Sparkles,
@@ -11,9 +12,11 @@ import {
     Eye,
     Save,
     Trash2,
+    LogOut,
 } from "lucide-react";
 import { ResearchNote } from "@/lib/portfolios";
 import { useResearch } from "@/context/ResearchContext";
+import { supabase } from "@/lib/supabase";
 
 const categories = ["Emerging Trend", "Sector Analysis", "Risk Assessment", "Deep Dive"];
 
@@ -25,7 +28,28 @@ export default function AdminPage() {
     const [generatedArticle, setGeneratedArticle] = useState<Partial<ResearchNote> | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
     const { addResearchNote } = useResearch();
+    const router = useRouter();
+
+    // Get current user info
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                setUserEmail(user.email || null);
+            }
+        };
+        getUser();
+    }, []);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        // Clear auth cookies
+        document.cookie = 'sb-access-token=; path=/; max-age=0';
+        document.cookie = 'sb-refresh-token=; path=/; max-age=0';
+        router.push('/login');
+    };
 
     const handleGenerate = async () => {
         if (!topic.trim()) {
@@ -38,9 +62,20 @@ export default function AdminPage() {
         setGeneratedArticle(null);
 
         try {
+            // Get the current session for auth token
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                setError("Session expired. Please log in again.");
+                router.push('/login');
+                return;
+            }
+
             const response = await fetch("/api/generate-article", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${session.access_token}`,
+                },
                 body: JSON.stringify({ topic, category: category || undefined }),
             });
 
@@ -100,13 +135,29 @@ export default function AdminPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-8"
                 >
-                    <div className="flex items-center gap-4 mb-2">
-                        <div className="w-12 h-12 rounded-lg bg-pm-purple/10 flex items-center justify-center">
-                            <Sparkles className="w-6 h-6 text-pm-purple" />
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-lg bg-pm-purple/10 flex items-center justify-center">
+                                <Sparkles className="w-6 h-6 text-pm-purple" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold">Research Generator</h1>
+                                <p className="text-pm-muted">AI-powered forward-looking research</p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-3xl font-bold">Research Generator</h1>
-                            <p className="text-pm-muted">AI-powered forward-looking research</p>
+                        <div className="flex items-center gap-4">
+                            {userEmail && (
+                                <span className="text-sm text-pm-muted hidden md:block">
+                                    {userEmail}
+                                </span>
+                            )}
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-lg text-pm-muted hover:text-pm-text hover:border-red-500/30 transition-colors"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                <span className="hidden sm:inline">Logout</span>
+                            </button>
                         </div>
                     </div>
                 </motion.div>
