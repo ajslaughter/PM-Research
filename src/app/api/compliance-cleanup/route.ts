@@ -22,7 +22,8 @@ export async function POST() {
 
         // Category replacements
         const categoryMap: Record<string, string> = {
-            'Alpha Signal': 'Emerging Trend',
+            'Alpha Signal': 'Deep Dive',
+            'Emerging Trend': 'Deep Dive',
             'Risk Alert': 'Risk Assessment',
         };
 
