@@ -15,6 +15,9 @@ interface CacheEntry {
 }
 
 // Server-side cache - 30 second TTL
+// WARNING: In-memory cache is unreliable in serverless environments (Vercel/Netlify).
+// Each function invocation may get a fresh instance, resetting this cache.
+// For production reliability, migrate to an external store (e.g., Vercel KV / Upstash Redis).
 const CACHE_TTL_MS = 30 * 1000;
 let priceCache: CacheEntry | null = null;
 

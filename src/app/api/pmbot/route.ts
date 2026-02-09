@@ -41,6 +41,9 @@ RULES:
 8. Always maintain PM Research's voice: forward-looking, structural, contrarian where warranted.`;
 
 // Rate limiting - in-memory storage
+// WARNING: In-memory rate limiting is unreliable in serverless environments (Vercel/Netlify).
+// Each function invocation may get a fresh instance, resetting counters.
+// For production reliability, migrate to an external store (e.g., Vercel KV / Upstash Redis).
 interface RateLimitEntry {
     hourlyCount: number;
     hourlyResetTime: number;
