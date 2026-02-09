@@ -2,6 +2,9 @@ import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // Rate limiting - in-memory storage for API routes
+// WARNING: In-memory rate limiting is unreliable in serverless environments (Vercel/Netlify).
+// Each function invocation may get a fresh instance, resetting counters.
+// For production reliability, migrate to an external store (e.g., Vercel KV / Upstash Redis).
 interface RateLimitEntry {
     count: number;
     resetTime: number;
@@ -130,6 +133,43 @@ export async function verifyAuth(request: NextRequest): Promise<{ user: { id: st
 }
 
 /**
+ * Common prompt injection patterns used across sanitization functions.
+ * NOTE: Deny-lists are inherently brittle — a determined attacker can bypass
+ * them (e.g., unicode homoglyphs, Base64, foreign languages). These patterns
+ * provide a reasonable first line of defense for a research bot, but should
+ * NOT be relied upon for high-stakes actions.
+ */
+const PROMPT_INJECTION_PATTERNS: RegExp[] = [
+    /ignore\s+(all\s+)?previous\s+instructions/i,
+    /ignore\s+(all\s+)?prior\s+instructions/i,
+    /disregard\s+(all\s+)?previous/i,
+    /forget\s+(all\s+)?previous/i,
+    /system\s+prompt/i,
+    /you\s+are\s+now/i,
+    /act\s+as\s+(a\s+)?different/i,
+    /new\s+instructions/i,
+    /override\s+(the\s+)?system/i,
+    /jailbreak/i,
+    /\[INST\]/i,
+    /\[\/INST\]/i,
+    /<\|im_start\|>/i,
+    /<\|im_end\|>/i,
+    /do\s+not\s+follow/i,
+    /bypass\s+(the\s+)?(filter|safety|rules)/i,
+    /pretend\s+(you\s+are|to\s+be)/i,
+    /roleplay\s+as/i,
+    /enter\s+(developer|debug|admin)\s+mode/i,
+];
+
+/**
+ * Check text against prompt injection patterns.
+ * Returns true if injection is detected.
+ */
+function containsInjection(text: string): boolean {
+    return PROMPT_INJECTION_PATTERNS.some((pattern) => pattern.test(text));
+}
+
+/**
  * Validate and sanitize topic input for article generation
  */
 export function sanitizeTopic(topic: string): { valid: boolean; sanitized: string; error?: string } {
@@ -151,28 +191,8 @@ export function sanitizeTopic(topic: string): { valid: boolean; sanitized: strin
     // Strip HTML tags
     sanitized = sanitized.replace(/<[^>]*>/g, '');
 
-    // Check for prompt injection patterns
-    const injectionPatterns = [
-        /ignore\s+(all\s+)?previous\s+instructions/i,
-        /ignore\s+(all\s+)?prior\s+instructions/i,
-        /disregard\s+(all\s+)?previous/i,
-        /forget\s+(all\s+)?previous/i,
-        /system\s+prompt/i,
-        /you\s+are\s+now/i,
-        /act\s+as\s+(a\s+)?different/i,
-        /new\s+instructions/i,
-        /override\s+(the\s+)?system/i,
-        /jailbreak/i,
-        /\[INST\]/i,
-        /\[\/INST\]/i,
-        /<\|im_start\|>/i,
-        /<\|im_end\|>/i,
-    ];
-
-    for (const pattern of injectionPatterns) {
-        if (pattern.test(sanitized)) {
-            return { valid: false, sanitized: '', error: 'Invalid topic content' };
-        }
+    if (containsInjection(sanitized)) {
+        return { valid: false, sanitized: '', error: 'Invalid topic content' };
     }
 
     return { valid: true, sanitized };
@@ -200,28 +220,8 @@ export function sanitizeMessage(message: string): { valid: boolean; sanitized: s
     // Strip HTML tags
     sanitized = sanitized.replace(/<[^>]*>/g, '');
 
-    // Check for prompt injection patterns (same as topic)
-    const injectionPatterns = [
-        /ignore\s+(all\s+)?previous\s+instructions/i,
-        /ignore\s+(all\s+)?prior\s+instructions/i,
-        /disregard\s+(all\s+)?previous/i,
-        /forget\s+(all\s+)?previous/i,
-        /system\s+prompt/i,
-        /you\s+are\s+now/i,
-        /act\s+as\s+(a\s+)?different/i,
-        /new\s+instructions/i,
-        /override\s+(the\s+)?system/i,
-        /jailbreak/i,
-        /\[INST\]/i,
-        /\[\/INST\]/i,
-        /<\|im_start\|>/i,
-        /<\|im_end\|>/i,
-    ];
-
-    for (const pattern of injectionPatterns) {
-        if (pattern.test(sanitized)) {
-            return { valid: false, sanitized: '', error: 'Invalid message content' };
-        }
+    if (containsInjection(sanitized)) {
+        return { valid: false, sanitized: '', error: 'Invalid message content' };
     }
 
     return { valid: true, sanitized };
