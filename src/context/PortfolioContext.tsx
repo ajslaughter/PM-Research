@@ -22,7 +22,7 @@ interface PortfolioContextType {
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
-const STORAGE_KEY = "pm-portfolios-v4";  // Bumped to v4 for new portfolio categories
+const STORAGE_KEY = "pm-portfolios-v5";  // Bumped to v5 for Broadcom addition to core portfolio
 const ACTIVE_PORTFOLIO_KEY = "pm-active-portfolio";
 
 export function PortfolioProvider({ children }: { children: ReactNode }) {
