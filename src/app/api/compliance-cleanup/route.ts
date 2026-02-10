@@ -35,6 +35,7 @@ export async function POST() {
             'Quantum Computing: Timeline Acceleration': 'Quantum Computing: Error Correction Breakthroughs and What They Mean',
             'Mag 7 Concentration Risk: When Does the Trade Get Crowded?': 'Mag 7 Concentration: Index Composition at Historic Levels',
             'Space Infrastructure: The $1T Opportunity Nobody Is Modeling': 'Space Infrastructure: LEO Constellations, Launch Economics, and the Emerging Sector',
+            'Risk Alert: Automation Sector Headwinds': 'Risk Assessment: Automation Sector Headwinds',
         };
 
         // Non-compliant phrases to replace in summaries and content

@@ -58,7 +58,7 @@ export interface DbResearchNote {
 }
 
 // Normalize category from DB to valid app categories
-function normalizeCategory(category: string): ResearchNote['category'] {
+export function normalizeCategory(category: string): ResearchNote['category'] {
     const categoryMap: Record<string, ResearchNote['category']> = {
         'Emerging Trend': 'Deep Dive',
         'Alpha Signal': 'Deep Dive',
@@ -67,13 +67,35 @@ function normalizeCategory(category: string): ResearchNote['category'] {
     return categoryMap[category] || (category as ResearchNote['category']);
 }
 
+// Normalize title to remove non-compliant prefixes
+export function normalizeTitle(title: string): string {
+    return title
+        .replace(/^Risk Alert:/i, 'Risk Assessment:')
+        .replace(/^Alpha Signal:/i, 'Deep Dive:');
+}
+
+// Normalize content to remove financial advice language
+export function normalizeContent(content: string): string {
+    return content
+        .replace(/## Alert Summary/g, '## Assessment Summary')
+        .replace(/## Affected Positions/g, '## Sector Impact')
+        .replace(/## Recommended Action/g, '## Research Outlook')
+        .replace(/## Alpha Extraction/g, '## Structural Analysis')
+        .replace(/### The Trade/g, '### Key Companies')
+        .replace(/### Position Sizing/g, '### Sector Structure')
+        .replace(/[Tt]rim .+? exposure,? ?rotate to .+?\./g, 'The sector faces structural headwinds. Further analysis warranted.')
+        .replace(/[Ww]e're issuing a risk alert/g, 'This report analyzes risk factors')
+        .replace(/[Rr]educing conviction,? ?PM Score lowered to \d+/g, 'PM Score under review as thesis faces structural headwinds')
+        .replace(/[Mm]onitoring for further deterioration/g, 'Monitoring for further developments across the sector');
+}
+
 // Convert DB format to app format
 export function dbToResearchNote(db: DbResearchNote): ResearchNote {
     return {
         id: db.id,
-        title: db.title,
+        title: normalizeTitle(db.title),
         summary: db.summary,
-        fullContent: db.full_content,
+        fullContent: normalizeContent(db.full_content),
         date: db.date,
         pmScore: db.pm_score,
         category: normalizeCategory(db.category),
