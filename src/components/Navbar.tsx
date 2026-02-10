@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
     Activity,
+    ArrowLeft,
     BookOpen,
     Briefcase,
     Bot,
@@ -13,6 +14,8 @@ import {
 
 export default function Navbar() {
     const pathname = usePathname();
+    const router = useRouter();
+    const isHome = pathname === "/";
 
     const navLinks = [
         { href: "/", label: "Home", icon: Activity },
@@ -36,6 +39,18 @@ export default function Navbar() {
                             <span className="text-pm-text">Research</span>
                         </span>
                     </Link>
+
+                    {/* Mobile Back Button - visible only on mobile, on inner pages */}
+                    {!isHome && (
+                        <button
+                            onClick={() => router.back()}
+                            className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg text-pm-muted hover:text-pm-green transition-colors"
+                            aria-label="Go back"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            <span className="text-sm font-medium">Back</span>
+                        </button>
+                    )}
 
                     {/* Navigation Links */}
                     <div className="hidden md:flex items-center gap-1">
