@@ -1,21 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     Activity,
-    ArrowLeft,
     BookOpen,
     Briefcase,
     Bot,
+    Menu,
+    X,
     Zap,
 } from "lucide-react";
 
 export default function Navbar() {
     const pathname = usePathname();
-    const router = useRouter();
-    const isHome = pathname === "/";
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const navLinks = [
         { href: "/", label: "Home", icon: Activity },
@@ -40,19 +41,16 @@ export default function Navbar() {
                         </span>
                     </Link>
 
-                    {/* Mobile Back Button - visible only on mobile, on inner pages */}
-                    {!isHome && (
-                        <button
-                            onClick={() => router.back()}
-                            className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg text-pm-muted hover:text-pm-green transition-colors"
-                            aria-label="Go back"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                            <span className="text-sm font-medium">Back</span>
-                        </button>
-                    )}
+                    {/* Mobile Menu Toggle */}
+                    <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-pm-muted hover:text-pm-green transition-colors"
+                        aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                    >
+                        {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    </button>
 
-                    {/* Navigation Links */}
+                    {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center gap-1">
                         {navLinks.map((link) => {
                             const isActive = pathname === link.href;
@@ -82,6 +80,41 @@ export default function Navbar() {
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Menu Dropdown */}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="md:hidden overflow-hidden border-t border-pm-border bg-pm-black/95 backdrop-blur-xl"
+                    >
+                        <div className="px-6 py-4 flex flex-col gap-1">
+                            {navLinks.map((link) => {
+                                const isActive = pathname === link.href;
+                                const Icon = link.icon;
+                                return (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                                            isActive
+                                                ? "text-pm-green bg-pm-green/10"
+                                                : "text-pm-muted hover:text-pm-text hover:bg-pm-charcoal"
+                                        }`}
+                                    >
+                                        <Icon className="w-5 h-5" />
+                                        {link.label}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </nav>
     );
 }
