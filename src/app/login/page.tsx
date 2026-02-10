@@ -21,9 +21,14 @@ function LoginForm() {
         const checkSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                // Set cookies for middleware
-                document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
-                document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+                await fetch('/api/auth/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        accessToken: session.access_token,
+                        refreshToken: session.refresh_token,
+                    }),
+                });
                 router.push(redirectTo);
             }
             setCheckingAuth(false);
@@ -48,9 +53,14 @@ function LoginForm() {
             }
 
             if (data.session) {
-                // Set cookies for middleware
-                document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
-                document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+                await fetch('/api/auth/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        accessToken: data.session.access_token,
+                        refreshToken: data.session.refresh_token,
+                    }),
+                });
                 router.push(redirectTo);
             }
         } catch {
