@@ -49,7 +49,6 @@ Proprietary ranking system (0-100) combining momentum, fundamentals, and predict
 
 ### Research Hub ("The Feed")
 Institutional-grade research notes categorized as:
-- **Emerging Trend**: Structural trend and opportunity analysis
 - **Sector Analysis**: Deep industry coverage
 - **Risk Assessment**: Position evaluation and risk analysis
 - **Deep Dive**: Comprehensive thesis reports

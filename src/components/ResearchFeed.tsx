@@ -10,7 +10,6 @@ import {
     ArrowRight,
     Lock,
     X,
-    TrendingUp,
     Search,
     LineChart,
     AlertTriangle,
@@ -73,14 +72,12 @@ interface ResearchFeedProps {
 
 // Category styling maps
 const categoryStyles: Record<string, string> = {
-    "Emerging Trend": "bg-pm-green/10 text-pm-green border-pm-green/30",
     "Sector Analysis": "bg-pm-purple/10 text-pm-purple border-pm-purple/30",
     "Risk Assessment": "bg-red-500/10 text-red-400 border-red-500/30",
     "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
 };
 
 const categoryIcons: Record<string, React.ReactNode> = {
-    "Emerging Trend": <TrendingUp className="w-3 h-3" />,
     "Sector Analysis": <LineChart className="w-3 h-3" />,
     "Risk Assessment": <AlertTriangle className="w-3 h-3" />,
     "Deep Dive": <Search className="w-3 h-3" />,
@@ -264,9 +261,9 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                             )}
 
                             <div className="p-4 rounded-lg bg-pm-green/5 border border-pm-green/20">
-                                <h4 className="text-sm font-bold text-pm-green mb-2">Alpha Note</h4>
+                                <h4 className="text-sm font-bold text-pm-green mb-2">Research Note</h4>
                                 <p className="text-xs text-pm-muted leading-relaxed">
-                                    This research note implies a 12-18 month investment horizon. Volatility in infrastructure stocks is expected to remain elevated.
+                                    This analysis covers a 12-18 month structural outlook. Content is for informational and educational purposes only — not financial advice.
                                 </p>
                             </div>
                         </div>

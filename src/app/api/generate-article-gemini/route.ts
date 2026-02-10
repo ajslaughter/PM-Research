@@ -22,7 +22,7 @@ When generating research, you MUST return valid JSON with this exact structure:
   "summary": "2-3 sentence executive summary",
   "fullContent": "Full markdown article with ## headers, bullet points, and analysis (800-1200 words). Do NOT use bold (**) formatting.",
   "pmScore": 75,
-  "category": "Emerging Trend | Sector Analysis | Risk Assessment | Deep Dive",
+  "category": "Sector Analysis | Risk Assessment | Deep Dive",
   "relatedTickers": ["TICKER1", "TICKER2"],
   "readTime": "5 min read"
 }

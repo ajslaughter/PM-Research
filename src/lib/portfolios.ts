@@ -117,7 +117,7 @@ export interface ResearchNote {
     fullContent: string;
     date: string;
     pmScore: number;
-    category: "Emerging Trend" | "Sector Analysis" | "Risk Assessment" | "Deep Dive";
+    category: "Sector Analysis" | "Risk Assessment" | "Deep Dive";
     readTime: string;
     relatedTickers?: string[];
     author?: string;
@@ -234,7 +234,7 @@ This vertical integration enables RKLB to capture value across the satellite sup
 RKLB represents the highest-quality pure-play space investment available in public markets. The 85% manifest booking through 2027, combined with Neutron development progress, creates a clear path to revenue growth. We maintain our PM Score of 95—the strongest conviction rating outside of AI infrastructure.`,
         date: "2026-01-12",
         pmScore: 95,
-        category: "Emerging Trend",
+        category: "Deep Dive",
         readTime: "10 min",
         relatedTickers: ["RKLB"],
         author: "PM Research Alpha Desk"
@@ -339,12 +339,12 @@ This report analyzes risk factors for the automation sector based on our enterpr
 2. AI co-pilot adoption cannibalizing RPA budgets
 3. Competition intensifying from hyperscaler offerings
 
-## Affected Positions
-- PATH: Reducing conviction, PM Score lowered to 85
-- Monitoring for further deterioration
+## Affected Holdings
+- PATH: PM Score lowered to 85 based on deteriorating sector fundamentals
+- Continued monitoring for further structural shifts
 
-## Recommended Action
-Trim automation exposure, rotate to AI infrastructure.
+## Research Outlook
+The automation sector faces near-term headwinds as enterprise budgets shift toward AI infrastructure. Structural demand for automation remains intact long-term, but the competitive landscape is evolving rapidly.
     `,
         date: "2026-01-08",
         pmScore: 72,
@@ -522,7 +522,7 @@ This is a barbell trade: combine the high-beta pure-plays (OKLO, SMR) with the s
     `,
         date: "2026-01-26",
         pmScore: 91,
-        category: "Emerging Trend",
+        category: "Sector Analysis",
         readTime: "14 min",
         relatedTickers: ["OKLO", "SMR", "CEG"],
         author: "PM Research Alpha Desk"
@@ -576,7 +576,7 @@ The Cowork architecture demonstrates Anthropic's strategic vision: own the agent
 Claude Cowork represents the first mass-market implementation of autonomous AI agents for non-developers. The Mac Mini repurposing trend validates our thesis that AI infrastructure will decentralize into homes and small offices. We are adding AAPL to our Innovation Watchlist based on this catalyst.`,
         date: "2026-01-25",
         pmScore: 94,
-        category: "Emerging Trend",
+        category: "Deep Dive",
         readTime: "11 min",
         relatedTickers: ["NVDA", "AAPL"],
         author: "PM Research Alpha Desk"
@@ -703,7 +703,7 @@ Management has outlined plans for 45-60 additional satellite launches by year-en
 ASTS represents a rare "infrastructure monopoly in formation" opportunity. The combination of carrier partnerships, technical moat, and contract wins creates a defensible position in a $151B market. The 45-60 satellite launch roadmap provides clear catalysts through 2026. We are initiating coverage with a PM Score of 89 and adding ASTS to the Innovation Watchlist.`,
         date: "2026-01-25",
         pmScore: 89,
-        category: "Emerging Trend",
+        category: "Deep Dive",
         readTime: "10 min",
         relatedTickers: ["ASTS", "T", "VZ"],
         author: "PM Research Alpha Desk"
@@ -722,7 +722,7 @@ The GPU shortage ended.
 The packaging shortage just started.`,
         date: "2026-01-28",
         pmScore: 91,
-        category: "Emerging Trend",
+        category: "Sector Analysis",
         readTime: "2 min",
         relatedTickers: ["TSM", "NVDA", "AMD", "AMAT"],
         author: "PM Research Alpha Desk"
