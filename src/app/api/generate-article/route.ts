@@ -83,12 +83,14 @@ Focus on:
 - What is consensus missing or getting wrong?
 - What's the risk/reward setup?
 
-IMPORTANT COMPLIANCE:
+IMPORTANT COMPLIANCE — THIS IS RESEARCH AND ANALYSIS ONLY, NOT FINANCIAL ADVICE:
 - Do NOT make specific price predictions or price targets (e.g., "Stock will hit $100" or "$127 price target").
 - Do NOT include short-term technical analysis (MACD, RSI, moving averages, volume patterns, support/resistance levels).
-- Focus on 12-36 month structural thesis, NOT short-term price action.
-- Use language like "potential upside," "undervalued relative to peers," or "favorable risk/reward."
-- Include a disclaimer section if the thesis is high-risk.
+- Do NOT use sections titled "Recommended Action", "Affected Positions", "Position Sizing", "The Trade", or "Alpha Extraction".
+- Do NOT recommend buying, selling, trimming, rotating, or any specific portfolio actions.
+- Do NOT use language like "we are upgrading to Overweight", "initiating coverage with a Buy", or "adding to our watchlist".
+- Use sections like "Research Outlook", "Sector Impact", "Coverage Update", "Structural Analysis", "Key Companies" instead.
+- Focus on structural analysis, technology trends, and market dynamics — NOT investment recommendations.
 - Write in clear, professional prose. Avoid filler phrases, excessive hedging, or generic AI-style language.
 
 ${category ? `Category preference: ${category}` : 'Choose the most appropriate category.'}

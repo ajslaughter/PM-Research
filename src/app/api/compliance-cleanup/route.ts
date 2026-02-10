@@ -59,6 +59,18 @@ export async function POST() {
             { pattern: /High Conviction/g, replacement: 'Strong Thesis' },
             { pattern: /Building Thesis/g, replacement: 'Developing Thesis' },
             { pattern: /Speculative/g, replacement: 'Exploratory' },
+            // Financial advice language removal
+            { pattern: /## Alert Summary/g, replacement: '## Assessment Summary' },
+            { pattern: /## Affected Positions/g, replacement: '## Sector Impact' },
+            { pattern: /## Recommended Action/g, replacement: '## Research Outlook' },
+            { pattern: /## Alpha Extraction/g, replacement: '## Structural Analysis' },
+            { pattern: /### The Trade/g, replacement: '## Key Companies' },
+            { pattern: /### Position Sizing/g, replacement: '### Sector Structure' },
+            { pattern: /[Ww]e are upgrading .+? to Overweight/g, replacement: 'This sector warrants close attention' },
+            { pattern: /[Ww]e are initiating coverage with a/g, replacement: 'PM Score:' },
+            { pattern: /[Tt]rim .+? exposure,? ?rotate to/g, replacement: 'Structural headwinds in this sector may benefit' },
+            { pattern: /[Rr]educing conviction/g, replacement: 'PM Score under review' },
+            { pattern: /[Ww]e're issuing a risk alert/g, replacement: 'This report analyzes risk factors' },
         ];
 
         // Update each article
