@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
 import { ResearchNote, researchNotes as initialResearchNotes } from "@/lib/portfolios";
-import { fetchResearchNotes, saveResearchNote, deleteResearchNote as deleteFromSupabase } from "@/lib/supabase";
+import { fetchResearchNotes, saveResearchNote, deleteResearchNote as deleteFromSupabase, normalizeCategory, normalizeTitle, normalizeContent } from "@/lib/supabase";
 
 interface ResearchContextType {
     researchNotes: ResearchNote[];
@@ -63,19 +63,29 @@ export function ResearchProvider({ children }: { children: ReactNode }) {
         init();
     }, [refreshFromSupabase]);
 
+    // Normalize a note to fix legacy categories, titles, and content
+    const normalizeNote = useCallback((note: ResearchNote): ResearchNote => ({
+        ...note,
+        category: normalizeCategory(note.category),
+        title: normalizeTitle(note.title),
+        fullContent: normalizeContent(note.fullContent),
+    }), []);
+
     // Combine hardcoded/localStorage notes with Supabase notes
     const combinedNotes = React.useMemo(() => {
+        // Normalize Supabase notes (already normalized in dbToResearchNote, but belt-and-suspenders)
+        const normalizedSupabase = supabaseNotes.map(normalizeNote);
         // Get IDs from Supabase notes to avoid duplicates
-        const supabaseIds = new Set(supabaseNotes.map(n => n.id));
+        const supabaseIds = new Set(normalizedSupabase.map(n => n.id));
         // Filter out any local notes that exist in Supabase (by title match as fallback)
-        const supabaseTitles = new Set(supabaseNotes.map(n => n.title));
+        const supabaseTitles = new Set(normalizedSupabase.map(n => n.title));
 
-        const localOnly = researchNotes.filter(
-            n => !supabaseIds.has(n.id) && !supabaseTitles.has(n.title)
-        );
+        const localOnly = researchNotes
+            .map(normalizeNote)
+            .filter(n => !supabaseIds.has(n.id) && !supabaseTitles.has(n.title));
 
-        return [...supabaseNotes, ...localOnly];
-    }, [researchNotes, supabaseNotes]);
+        return [...normalizedSupabase, ...localOnly];
+    }, [researchNotes, supabaseNotes, normalizeNote]);
 
     // Persist to localStorage
     useEffect(() => {
