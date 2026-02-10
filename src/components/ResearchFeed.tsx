@@ -263,7 +263,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                             <div className="p-4 rounded-lg bg-pm-green/5 border border-pm-green/20">
                                 <h4 className="text-sm font-bold text-pm-green mb-2">Research Note</h4>
                                 <p className="text-xs text-pm-muted leading-relaxed">
-                                    This analysis covers a 12-18 month structural outlook. Content is for informational and educational purposes only — not financial advice.
+                                    This content is for educational and informational purposes only. It does not constitute financial advice. Always conduct your own research.
                                 </p>
                             </div>
                         </div>

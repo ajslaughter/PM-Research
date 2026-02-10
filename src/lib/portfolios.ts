@@ -146,7 +146,7 @@ While NVIDIA remains King, the hyperscalers (Amazon Inferentia, Google Axion, Mi
 Training models requires massive centralized clusters. *Running* them (inference) requires proximity to the user. We expect a massive re-rating of edge-compute providers and localized datacenters.
 
 ## Thesis Conclusion
-We are rotating exposure from "Generic AI Beta" (indices) to "Infrastructure Alpha" (Thermal Management & Custom Silicon). The easy money is made; now we hunt for specific technical moats.
+The structural shift from "Generic AI Beta" (indices) to "Infrastructure Alpha" (Thermal Management & Custom Silicon) is underway. The focus moves to companies with specific technical moats in cooling and custom silicon.
     `,
         date: "2026-01-15",
         pmScore: 96,
@@ -231,7 +231,7 @@ This vertical integration enables RKLB to capture value across the satellite sup
 
 ## Thesis Conclusion
 
-RKLB represents the highest-quality pure-play space investment available in public markets. The 85% manifest booking through 2027, combined with Neutron development progress, creates a clear path to revenue growth. We maintain our PM Score of 95—the strongest conviction rating outside of AI infrastructure.`,
+RKLB represents a high-quality pure-play in the commercial space sector. The 85% manifest booking through 2027, combined with Neutron development progress, provides exceptional revenue visibility. PM Score: 95, reflecting the strength of the structural thesis.`,
         date: "2026-01-12",
         pmScore: 95,
         category: "Deep Dive",
@@ -294,7 +294,7 @@ The quantum computing timeline has compressed from "10+ years" to "3-5 years" fo
 *   2027-2028: First revenue-generating quantum applications in production
 *   2028-2030: Fault-tolerant quantum computers enabling broader use cases
 
-This timeline compression creates a window for early-mover investors before the "quantum premium" is fully priced in.
+This timeline compression has significant implications for the sector's development and commercial trajectory.
 
 ### The Investment Landscape
 
@@ -309,16 +309,16 @@ This timeline compression creates a window for early-mover investors before the 
 *   Timeline Uncertainty: "3-5 years" estimates have historically proven optimistic in quantum computing
 *   Competition: Well-funded private competitors (PsiQuantum, Rigetti) may leapfrog public companies
 
-## Position Update
+## Coverage Update
 
-We are initiating formal coverage on quantum pure-plays with PM Score methodology. IonQ represents our highest-conviction quantum position based on:
+We are initiating formal coverage on quantum pure-plays using PM Score methodology. IonQ scores highest among quantum names based on:
 
 *   Clearest near-term commercial pathway
 *   Superior qubit quality metrics (AQ 35)
 *   Expanding enterprise customer base
 *   Reasonable valuation relative to TAM
 
-The quantum computing investment thesis has transitioned from "technology bet" to "infrastructure timing." We are positioning for the timeline compression.`,
+The quantum computing thesis has transitioned from "technology bet" to "infrastructure timing." The sector warrants close attention as the commercial timeline compresses.`,
         date: "2026-01-10",
         pmScore: 88,
         category: "Sector Analysis",
@@ -339,12 +339,12 @@ This report analyzes risk factors for the automation sector based on our enterpr
 2. AI co-pilot adoption cannibalizing RPA budgets
 3. Competition intensifying from hyperscaler offerings
 
-## Affected Holdings
-- PATH: PM Score lowered to 85 based on deteriorating sector fundamentals
-- Continued monitoring for further structural shifts
+## Sector Impact
+- PATH: PM Score under review as thesis faces structural headwinds
+- Monitoring for further developments across the automation sector
 
 ## Research Outlook
-The automation sector faces near-term headwinds as enterprise budgets shift toward AI infrastructure. Structural demand for automation remains intact long-term, but the competitive landscape is evolving rapidly.
+The automation sector faces structural headwinds from AI co-pilot adoption. AI infrastructure companies may benefit from the same trends pressuring traditional automation names. Further analysis warranted as enterprise spending patterns evolve.
     `,
         date: "2026-01-08",
         pmScore: 72,
@@ -443,15 +443,15 @@ The investment opportunity extends beyond new transmission lines:
 *   Interest Rate Sensitivity: Infrastructure projects are capital-intensive; higher rates increase project costs
 *   Political Risk: IRA provisions could face modification in future administrations (though most investment is contracted)
 
-## PM Research Watchlist
+## Key Companies
 
-We are adding grid infrastructure names to our formal coverage universe:
+Grid infrastructure names under PM Research coverage:
 
-*   Quanta Services (PWR): PM Score 84—highest-quality pure-play on grid buildout
-*   Vertiv (VRT): PM Score 86—crossover play on data center and grid infrastructure
-*   EATON (ETN): PM Score 81—diversified electrical equipment with grid exposure
+*   Quanta Services (PWR): PM Score 84 — largest electrical grid contractor with broad transmission exposure
+*   Vertiv (VRT): PM Score 86 — crossover exposure to data center and grid infrastructure
+*   EATON (ETN): PM Score 81 — diversified electrical equipment with grid modernization exposure
 
-The grid infrastructure thesis offers a rare combination: visible multi-decade demand, bipartisan policy support, and technological moats. We are initiating sector coverage with an Overweight rating.`,
+The grid infrastructure thesis offers a rare combination: visible multi-decade demand, bipartisan policy support, and technological moats. The sector warrants close monitoring given these structural tailwinds.`,
         date: "2026-01-05",
         pmScore: 82,
         category: "Sector Analysis",
@@ -490,7 +490,7 @@ NuScale Power, holder of the *only* NRC-certified SMR design, entered a global p
 ### The NVIDIA Signal
 Jensen Huang has publicly emphasized that SMRs are essential for powering the next generation of AI infrastructure. When the CEO of the world's most valuable semiconductor company identifies your technology as critical path, the market should listen.
 
-## Alpha Extraction
+## Structural Analysis
 
 ### Bull Thesis
 The SMR sector is transitioning from "speculative technology bet" to "contracted infrastructure play." The hyperscaler partnerships provide:
@@ -498,10 +498,10 @@ The SMR sector is transitioning from "speculative technology bet" to "contracted
 *   Creditworthy counterparties (Meta, TVA)
 *   Regulatory de-risking through institutional backing
 
-### The Trade
-*   OKLO: Pre-revenue but now with anchor customer. First commercial operations expected late 2027. Current valuation prices in execution risk, but the Meta deal fundamentally changes the risk/reward calculus.
-*   SMR (NuScale): First-mover regulatory advantage. The Entra1 partnership and TVA program provide multiple shots on goal. Oak Ridge National Laboratory validation confirms technical readiness.
-*   CEG (Constellation Energy): Infrastructure exposure as the largest U.S. nuclear operator with existing fleet optionality and SMR integration capabilities.
+### Key Companies
+*   OKLO: Pre-revenue but now with anchor customer. First commercial operations expected late 2027. The Meta deal fundamentally changes the company's development trajectory.
+*   SMR (NuScale): First-mover regulatory advantage. The Entra1 partnership and TVA program provide multiple development pathways. Oak Ridge National Laboratory validation confirms technical readiness.
+*   CEG (Constellation Energy): Largest U.S. nuclear operator with existing fleet optionality and SMR integration capabilities.
 
 ### Technical Moat Analysis
 NuScale's NRC certification represents a 5-7 year head start on competitors. This is not easily replicated. The regulatory barrier creates a natural oligopoly structure that investors systematically undervalue.
@@ -513,16 +513,16 @@ NuScale's NRC certification represents a 5-7 year head start on competitors. Thi
 *   Valuation Sensitivity: OKLO trades at speculative multiples; any delay creates significant downside
 *   Policy Risk: Nuclear permitting reform remains incomplete; regulatory friction persists
 
-## PM Research Conviction
+## PM Research Coverage
 
-We are initiating coverage on the SMR nuclear sector with a PM Score of 91. The hyperscaler validation fundamentally changes the investment thesis from "technology speculation" to "infrastructure deployment." The AI power crisis is structural and multi-year; SMRs are the highest-conviction solution.
+PM Score: 91. The hyperscaler validation fundamentally changes the sector narrative from "technology speculation" to "infrastructure deployment." The AI power crisis is structural and multi-year; SMRs represent a high-conviction structural theme.
 
-### Position Sizing
-This is a barbell trade: combine the high-beta pure-plays (OKLO, SMR) with the stable cash-flow generator (CEG) to manage volatility while maintaining exposure to the nuclear renaissance.
+### Sector Structure
+The SMR sector spans a range of company profiles: pre-revenue development-stage companies (OKLO, SMR) and established operators with stable cash flows (CEG), offering different exposure profiles to the nuclear renaissance theme.
     `,
         date: "2026-01-26",
         pmScore: 91,
-        category: "Sector Analysis",
+        category: "Deep Dive",
         readTime: "14 min",
         relatedTickers: ["OKLO", "SMR", "CEG"],
         author: "PM Research Alpha Desk"
@@ -565,18 +565,18 @@ Cowork utilizes the Model Context Protocol (MCP) as the standard for connecting 
 
 The Cowork architecture demonstrates Anthropic's strategic vision: own the agentic interface layer while remaining hardware-agnostic for inference. This positions the company to capture value regardless of which chips ultimately dominate the AI compute landscape.
 
-### Investment Implications
+### Sector Implications
 
-*   AAPL: Mac Mini sales uplift provides incremental revenue in a mature hardware category. The "AI server" positioning extends the product lifecycle and justifies premium pricing.
+*   AAPL: Mac Mini sales uplift provides incremental revenue in a mature hardware category. The "AI server" positioning extends the product lifecycle.
 *   NVDA: Infrastructure partnership ensures Anthropic remains a top-5 GPU customer. Grace Blackwell production constraints become even more acute.
 *   Enterprise Software: Traditional automation tools (RPA, workflow platforms) face disruption from AI agents that can navigate interfaces directly.
 
 ## Thesis Conclusion
 
-Claude Cowork represents the first mass-market implementation of autonomous AI agents for non-developers. The Mac Mini repurposing trend validates our thesis that AI infrastructure will decentralize into homes and small offices. We are adding AAPL to our Innovation Watchlist based on this catalyst.`,
+Claude Cowork represents the first mass-market implementation of autonomous AI agents for non-developers. The Mac Mini repurposing trend supports the thesis that AI infrastructure will decentralize into homes and small offices. This convergence of local AI agents and dedicated hardware creates a new computing paradigm worth monitoring.`,
         date: "2026-01-25",
         pmScore: 94,
-        category: "Deep Dive",
+        category: "Sector Analysis",
         readTime: "11 min",
         relatedTickers: ["NVDA", "AAPL"],
         author: "PM Research Alpha Desk"
@@ -635,7 +635,7 @@ Intel's stock valuation reflects past execution challenges. Key forward indicato
 
 ## Thesis Conclusion
 
-Intel 14A represents the most compelling risk/reward setup in semiconductors. If execution continues on the current trajectory, Intel will possess the world's most advanced manufacturing process by 2027. The AWS and Microsoft commitments validate the technical thesis with real customer dollars. We are upgrading INTC to Overweight with a PM Score of 92.`,
+Intel 14A represents a significant development in the semiconductor manufacturing landscape. If execution continues on the current trajectory, Intel will possess the world's most advanced manufacturing process by 2027. The AWS and Microsoft commitments validate the technical thesis with real customer commitments. PM Score: 92, reflecting the strength of the technical roadmap and customer validation.`,
         date: "2026-01-25",
         pmScore: 92,
         category: "Deep Dive",
@@ -700,7 +700,7 @@ Management has outlined plans for 45-60 additional satellite launches by year-en
 
 ## Thesis Conclusion
 
-ASTS represents a rare "infrastructure monopoly in formation" opportunity. The combination of carrier partnerships, technical moat, and contract wins creates a defensible position in a $151B market. The 45-60 satellite launch roadmap provides clear catalysts through 2026. We are initiating coverage with a PM Score of 89 and adding ASTS to the Innovation Watchlist.`,
+ASTS has assembled a defensible position through carrier partnerships, technical differentiation, and government contract wins in a $151B addressable market. The 45-60 satellite launch roadmap provides clear milestones through 2026. PM Score: 89, reflecting the structural strength of the direct-to-device thesis.`,
         date: "2026-01-25",
         pmScore: 89,
         category: "Deep Dive",

@@ -49,9 +49,9 @@ Proprietary ranking system (0-100) combining momentum, fundamentals, and predict
 
 ### Research Hub ("The Feed")
 Institutional-grade research notes categorized as:
-- **Sector Analysis**: Deep industry coverage
-- **Risk Assessment**: Position evaluation and risk analysis
-- **Deep Dive**: Comprehensive thesis reports
+- **Sector Analysis**: Deep industry and sector coverage
+- **Risk Assessment**: Risk evaluation and structural analysis
+- **Deep Dive**: Comprehensive thesis reports and in-depth research
 
 ### PM Research Bot
 AI-powered research reports and analysis on demand (Operator tier feature).

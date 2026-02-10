@@ -57,6 +57,16 @@ export interface DbResearchNote {
     created_at: string;
 }
 
+// Normalize category from DB to valid app categories
+function normalizeCategory(category: string): ResearchNote['category'] {
+    const categoryMap: Record<string, ResearchNote['category']> = {
+        'Emerging Trend': 'Deep Dive',
+        'Alpha Signal': 'Deep Dive',
+        'Risk Alert': 'Risk Assessment',
+    };
+    return categoryMap[category] || (category as ResearchNote['category']);
+}
+
 // Convert DB format to app format
 export function dbToResearchNote(db: DbResearchNote): ResearchNote {
     return {
@@ -66,7 +76,7 @@ export function dbToResearchNote(db: DbResearchNote): ResearchNote {
         fullContent: db.full_content,
         date: db.date,
         pmScore: db.pm_score,
-        category: db.category as ResearchNote['category'],
+        category: normalizeCategory(db.category),
         readTime: `${Math.ceil(db.full_content.split(' ').length / 200)} min`,
         relatedTickers: db.related_tickers || undefined,
         author: db.author || undefined,
