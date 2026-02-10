@@ -45,9 +45,7 @@ export default function AdminPage() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        // Clear auth cookies
-        document.cookie = 'sb-access-token=; path=/; max-age=0';
-        document.cookie = 'sb-refresh-token=; path=/; max-age=0';
+        await fetch('/api/auth/session', { method: 'DELETE' });
         router.push('/login');
     };
 

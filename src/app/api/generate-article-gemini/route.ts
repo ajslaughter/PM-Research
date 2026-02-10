@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyAuth, checkRateLimit, getClientIP, sanitizeTopic } from '@/lib/security';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = 'gemini-2.5-pro-preview-06-05';
@@ -34,6 +35,30 @@ Rules for pmScore:
 - Below 40: Exploratory or high uncertainty`;
 
 export async function POST(request: NextRequest) {
+    const clientIP = getClientIP(request);
+    const rateLimitResult = checkRateLimit(clientIP, 10, 60 * 60 * 1000);
+
+    if (!rateLimitResult.allowed) {
+        return NextResponse.json(
+            { error: 'Rate limit exceeded. Please try again later.' },
+            {
+                status: 429,
+                headers: {
+                    'X-RateLimit-Remaining': '0',
+                    'X-RateLimit-Reset': rateLimitResult.resetTime.toString(),
+                }
+            }
+        );
+    }
+
+    const auth = await verifyAuth(request);
+    if (!auth) {
+        return NextResponse.json(
+            { error: 'Authentication required. Please log in to access this resource.' },
+            { status: 401 }
+        );
+    }
+
     if (!GEMINI_API_KEY) {
         return NextResponse.json(
             { error: 'Gemini API key not configured. Get a free key at https://aistudio.google.com/apikey' },
@@ -44,14 +69,17 @@ export async function POST(request: NextRequest) {
     try {
         const { topic, category } = await request.json();
 
-        if (!topic) {
+        const topicResult = sanitizeTopic(topic);
+        if (!topicResult.valid) {
             return NextResponse.json(
-                { error: 'Topic is required' },
+                { error: topicResult.error },
                 { status: 400 }
             );
         }
 
-        const userPrompt = `Generate a PM Research deep-dive article on: "${topic}"
+        const sanitizedTopic = topicResult.sanitized;
+
+        const userPrompt = `Generate a PM Research deep-dive article on: "${sanitizedTopic}"
 
 Focus on:
 - What's the 12-36 month forward thesis?

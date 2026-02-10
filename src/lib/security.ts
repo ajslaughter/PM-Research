@@ -133,6 +133,37 @@ export async function verifyAuth(request: NextRequest): Promise<{ user: { id: st
 }
 
 /**
+ * Verify authenticated user is an admin.
+ *
+ * Uses ADMIN_EMAILS env var (comma-separated) when provided.
+ * If ADMIN_EMAILS is not set, authentication alone is treated as admin access
+ * to avoid accidentally locking existing deployments.
+ */
+export async function verifyAdminAuth(request: NextRequest): Promise<{ user: { id: string; email?: string } } | null> {
+    const auth = await verifyAuth(request);
+    if (!auth) {
+        return null;
+    }
+
+    const adminEmailsRaw = process.env.ADMIN_EMAILS;
+    if (!adminEmailsRaw) {
+        return auth;
+    }
+
+    const adminEmails = adminEmailsRaw
+        .split(',')
+        .map((email) => email.trim().toLowerCase())
+        .filter(Boolean);
+
+    const userEmail = auth.user.email?.toLowerCase();
+    if (!userEmail || !adminEmails.includes(userEmail)) {
+        return null;
+    }
+
+    return auth;
+}
+
+/**
  * Common prompt injection patterns used across sanitization functions.
  * NOTE: Deny-lists are inherently brittle — a determined attacker can bypass
  * them (e.g., unicode homoglyphs, Base64, foreign languages). These patterns

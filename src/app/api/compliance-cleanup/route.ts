@@ -1,8 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { verifyAdminAuth } from '@/lib/security';
 
 // Compliance cleanup route to update categories, titles, and remove non-compliant language
-export async function POST() {
+export async function POST(request: NextRequest) {
+    if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: 'Route disabled in production' }, { status: 403 });
+    }
+
+    const auth = await verifyAdminAuth(request);
+    if (!auth) {
+        return NextResponse.json({ error: 'Admin authentication required' }, { status: 401 });
+    }
+
     try {
         // Fetch all articles
         const { data: articles, error: fetchError } = await supabase
