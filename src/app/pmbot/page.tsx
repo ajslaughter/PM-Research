@@ -121,8 +121,8 @@ export default function PMbotPage() {
     const isAtMessageLimit = messages.length >= MAX_MESSAGES;
 
     return (
-        <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6">
-            <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-8rem)]">
+        <div className="min-h-screen pt-24 pb-20 md:pb-12 px-4 sm:px-6">
+            <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-8rem)] max-md:h-[calc(100vh-11rem)]">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
