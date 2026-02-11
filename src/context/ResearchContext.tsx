@@ -15,12 +15,8 @@ interface ResearchContextType {
 
 const ResearchContext = createContext<ResearchContextType | undefined>(undefined);
 
-const STORAGE_KEY = "pm-research";
-
 export function ResearchProvider({ children }: { children: ReactNode }) {
-    const [isHydrated, setIsHydrated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [researchNotes, setResearchNotes] = useState<ResearchNote[]>(initialResearchNotes);
     const [supabaseNotes, setSupabaseNotes] = useState<ResearchNote[]>([]);
 
     // Fetch from Supabase on mount
@@ -35,28 +31,12 @@ export function ResearchProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    // Load from localStorage and Supabase on mount
+    // Fetch from Supabase on mount
     useEffect(() => {
         if (typeof window === "undefined") return;
 
         const init = async () => {
-            // Load from localStorage first
-            try {
-                const savedResearch = localStorage.getItem(STORAGE_KEY);
-                if (savedResearch) {
-                    const parsed = JSON.parse(savedResearch);
-                    if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].title) {
-                        setResearchNotes(parsed);
-                    }
-                }
-            } catch (error) {
-                console.error("Failed to load research from localStorage:", error);
-            }
-
-            // Then try Supabase
             await refreshFromSupabase();
-
-            setIsHydrated(true);
             setIsLoading(false);
         };
 
@@ -71,31 +51,18 @@ export function ResearchProvider({ children }: { children: ReactNode }) {
         fullContent: normalizeContent(note.fullContent),
     }), []);
 
-    // Combine hardcoded/localStorage notes with Supabase notes
+    // Combine hardcoded defaults with Supabase notes (no localStorage)
     const combinedNotes = React.useMemo(() => {
-        // Normalize Supabase notes (already normalized in dbToResearchNote, but belt-and-suspenders)
         const normalizedSupabase = supabaseNotes.map(normalizeNote);
-        // Get IDs from Supabase notes to avoid duplicates
         const supabaseIds = new Set(normalizedSupabase.map(n => n.id));
-        // Filter out any local notes that exist in Supabase (by title match as fallback)
         const supabaseTitles = new Set(normalizedSupabase.map(n => n.title));
 
-        const localOnly = researchNotes
+        const localOnly = initialResearchNotes
             .map(normalizeNote)
             .filter(n => !supabaseIds.has(n.id) && !supabaseTitles.has(n.title));
 
         return [...normalizedSupabase, ...localOnly];
-    }, [researchNotes, supabaseNotes, normalizeNote]);
-
-    // Persist to localStorage
-    useEffect(() => {
-        if (!isHydrated || typeof window === "undefined") return;
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(researchNotes));
-        } catch (error) {
-            console.error("Failed to save research to localStorage:", error);
-        }
-    }, [researchNotes, isHydrated]);
+    }, [supabaseNotes, normalizeNote]);
 
     // Research CRUD operations
     const addResearchNote = useCallback(async (note: Omit<ResearchNote, "id">) => {
@@ -105,32 +72,28 @@ export function ResearchProvider({ children }: { children: ReactNode }) {
             readTime: note.readTime || `${Math.ceil((note.fullContent?.split(' ').length || 0) / 200)} min`,
         };
 
-        // Add to local state immediately
-        setResearchNotes((prev) => [newNote, ...prev]);
-
         // Try to save to Supabase
         try {
             const saved = await saveResearchNote(note);
             if (saved) {
-                // Replace with Supabase version (has proper ID)
                 setSupabaseNotes((prev) => [saved, ...prev]);
+                return;
             }
         } catch (error) {
             console.error("Failed to save to Supabase:", error);
         }
+
+        // Fallback: add to Supabase notes state directly
+        setSupabaseNotes((prev) => [newNote, ...prev]);
     }, []);
 
     const updateResearchNote = useCallback((id: string, updates: Partial<ResearchNote>) => {
-        setResearchNotes((prev) =>
-            prev.map((note) => (note.id === id ? { ...note, ...updates } : note))
-        );
         setSupabaseNotes((prev) =>
             prev.map((note) => (note.id === id ? { ...note, ...updates } : note))
         );
     }, []);
 
     const deleteResearchNote = useCallback(async (id: string) => {
-        setResearchNotes((prev) => prev.filter((note) => note.id !== id));
         setSupabaseNotes((prev) => prev.filter((note) => note.id !== id));
 
         // Try to delete from Supabase
