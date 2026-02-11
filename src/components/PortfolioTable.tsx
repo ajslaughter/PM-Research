@@ -292,7 +292,6 @@ export default function PortfolioTable({
         { quarter: "Q4 2025", return: 14.2, isCurrent: false },
         { quarter: "Q3 2025", return: 9.1, isCurrent: false },
         { quarter: "Q2 2025", return: 18.5, isCurrent: false },
-        { quarter: "Q1 2025", return: 11.2, isCurrent: false },
     ];
 
     // Format the last updated time
@@ -515,10 +514,10 @@ export default function PortfolioTable({
                     <thead>
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
                             <th className="p-4">Ticker</th>
-                            <th className="p-4">Asset Class</th>
+                            <th className="p-4 hidden md:table-cell">Asset Class</th>
                             <th className="p-4 text-right">Weight</th>
-                            <th className="p-4 text-right">{YTD_OPEN_YEAR} Open</th>
-                            <th className="p-4 text-right">
+                            <th className="p-4 text-right hidden md:table-cell">{YTD_OPEN_YEAR} Open</th>
+                            <th className="p-4 text-right hidden md:table-cell">
                                 Current
                                 {isLoadingPrices && (
                                     <span className="ml-2 text-yellow-500 animate-pulse">
@@ -551,7 +550,7 @@ export default function PortfolioTable({
                                         </span>
                                     </div>
                                 </td>
-                                <td className="p-4">
+                                <td className="p-4 hidden md:table-cell">
                                     <SectorBadge
                                         sector={position.assetClass}
                                         size="sm"
@@ -561,10 +560,10 @@ export default function PortfolioTable({
                                 <td className="p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
                                 </td>
-                                <td className="p-4 text-right font-mono text-pm-muted">
+                                <td className="p-4 text-right font-mono text-pm-muted hidden md:table-cell">
                                     ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
-                                <td className="p-4 text-right font-mono font-medium">
+                                <td className="p-4 text-right font-mono font-medium hidden md:table-cell">
                                     {isLoadingPrices ? (
                                         <div className="flex items-center justify-end gap-2">
                                             <LoadingSpinner size="w-3 h-3" />
