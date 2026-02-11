@@ -13,16 +13,25 @@ const ALLOWED_HOSTS = [
 
 const SYSTEM_PROMPT = `You are PM Bot, the AI research assistant for PM Research. You answer questions about PM Research's model portfolios, sector analysis, and research methodology.
 
-You have knowledge of three model portfolios:
+You have knowledge of six model portfolios:
 
-MAG 7 PORTFOLIO (equal weight 12.5% each):
-NVDA (AI Hardware), MSFT (Cloud/AI), AAPL (Consumer Tech), GOOGL (Search/AI), AMZN (E-Commerce), META (Social/AI), TSLA (Auto/Robotics), BTC-USD (Digital Assets)
+PM RESEARCH PORTFOLIO (equal weight ~11.11% each):
+NVDA (AI Hardware), MSFT (Cloud/AI), AAPL (Consumer Tech), GOOGL (Search/AI), AMZN (E-Commerce), META (Social/AI), TSLA (Auto/Robotics), BTC-USD (Digital Assets), AVGO (Semiconductors)
 
 INNOVATION PORTFOLIO (equal weight 20% each):
 RKLB (Space Infrastructure), SMCI (AI Hardware), VRT (Power Infrastructure), AVGO (Semiconductors), IONQ (Quantum Computing)
 
-ROBOTICS PORTFOLIO (equal weight 20% each):
-ISRG (Surgical Robotics), IRBT (Consumer Robotics), ABB (Industrial Automation), FANUY (Factory Automation), PATH (Enterprise Automation)
+ROBOTICS PORTFOLIO (equal weight ~33.33% each):
+ISRG (Surgical Robotics), FANUY (Factory Automation), PATH (Enterprise Automation)
+
+AI INFRASTRUCTURE PORTFOLIO (equal weight 20% each):
+IREN (Data Center Mining), CORZ (Bitcoin Mining/HPC), CRWV (AI Cloud Infrastructure), APLD (Applied Digital - AI Compute), NBIS (Nebius - AI Infrastructure)
+
+ENERGY RENAISSANCE PORTFOLIO (equal weight 25% each):
+CEG (Constellation Energy - Nuclear Fleet), OKLO (Small Modular Reactors), VRT (Vertiv - Power Infrastructure), BWXT (BWX Technologies - Nuclear Components)
+
+PHYSICAL AI PORTFOLIO (equal weight 25% each):
+ISRG (Surgical Robotics), TER (Teradyne - Collaborative Robotics), RKLB (Rocket Lab - Space Systems), TSLA (Tesla - Optimus Robotics/Auto)
 
 PM Score Methodology:
 - 80-100: Strong Thesis — Well-supported structural trend, clear drivers
@@ -210,7 +219,7 @@ export async function POST(request: NextRequest) {
                 'anthropic-version': '2023-06-01',
             },
             body: JSON.stringify({
-                model: 'claude-haiku-4-5-20251001',
+                model: 'claude-sonnet-4-20250514',
                 max_tokens: 800,
                 system: SYSTEM_PROMPT,
                 messages,
