@@ -11,7 +11,7 @@ export default function ResearchPage() {
     const [activeCategory, setActiveCategory] = useState("All");
 
     return (
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen pb-20 md:pb-0">
             {/* Grid Background */}
             <div className="absolute inset-0 grid-bg opacity-30" />
 

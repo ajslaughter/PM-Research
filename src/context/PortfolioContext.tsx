@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, ReactNode, useCallback } from "react";
 import { Portfolio, PortfolioPosition, PortfolioCategory, defaultPortfolios } from "@/lib/portfolios";
 
 interface PortfolioContextType {
@@ -22,62 +22,9 @@ interface PortfolioContextType {
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
-const STORAGE_KEY = "pm-portfolios-v4";  // Bumped to v4 for new portfolio categories
-const ACTIVE_PORTFOLIO_KEY = "pm-active-portfolio";
-
 export function PortfolioProvider({ children }: { children: ReactNode }) {
-    const [isHydrated, setIsHydrated] = useState(false);
     const [portfolios, setPortfolios] = useState<Portfolio[]>(defaultPortfolios);
     const [activePortfolioId, setActivePortfolioId] = useState<string>("pm-research");
-
-    // Load from localStorage on mount
-    useEffect(() => {
-        if (typeof window === "undefined") return;
-
-        try {
-            const savedPortfolios = localStorage.getItem(STORAGE_KEY);
-            if (savedPortfolios) {
-                const parsed = JSON.parse(savedPortfolios);
-                if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].positions) {
-                    // Ensure backwards compatibility - add category if missing
-                    const portfoliosWithCategory = parsed.map((p: Portfolio) => ({
-                        ...p,
-                        category: p.category || 'Magnificent 7' as PortfolioCategory
-                    }));
-                    setPortfolios(portfoliosWithCategory);
-                }
-            }
-
-            const savedActivePortfolio = localStorage.getItem(ACTIVE_PORTFOLIO_KEY);
-            if (savedActivePortfolio) {
-                setActivePortfolioId(savedActivePortfolio);
-            }
-        } catch (error) {
-            console.error("Failed to load portfolios from localStorage:", error);
-        }
-
-        setIsHydrated(true);
-    }, []);
-
-    // Persist portfolios to localStorage
-    useEffect(() => {
-        if (!isHydrated || typeof window === "undefined") return;
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolios));
-        } catch (error) {
-            console.error("Failed to save portfolios to localStorage:", error);
-        }
-    }, [portfolios, isHydrated]);
-
-    // Persist active portfolio
-    useEffect(() => {
-        if (!isHydrated || typeof window === "undefined") return;
-        try {
-            localStorage.setItem(ACTIVE_PORTFOLIO_KEY, activePortfolioId);
-        } catch (error) {
-            console.error("Failed to save active portfolio to localStorage:", error);
-        }
-    }, [activePortfolioId, isHydrated]);
 
     // Portfolio CRUD operations
     const addPortfolio = useCallback((name: string, description: string, category: PortfolioCategory = 'Magnificent 7') => {

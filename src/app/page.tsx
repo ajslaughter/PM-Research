@@ -42,11 +42,11 @@ export default function LandingPage() {
         { value: "147%", label: "2025 Model Return" },
         { value: "89", label: "Average PM Score" },
         { value: "2.4x", label: "Alpha vs. S&P 500" },
-        { value: "12", label: "Active Positions" },
+        { value: "9", label: "Active Positions" },
     ];
 
     return (
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden pb-20 md:pb-0">
             {/* Grid Background */}
             <div className="absolute inset-0 grid-bg opacity-50" />
 
