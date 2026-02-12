@@ -33,7 +33,7 @@ export const Physical_AI_Portfolio = ['ISRG', 'TER', 'RKLB', 'TSLA'];
 export const defaultPortfolios: Portfolio[] = [
     {
         id: "pm-research",
-        name: "PM Research Portfolio",
+        name: "MAG 7 + Bitcoin + Broadcom",
         description: "Mag 7 + Bitcoin + Broadcom - Core Holdings",
         category: "Magnificent 7",
         positions: [
