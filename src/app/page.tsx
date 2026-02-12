@@ -4,46 +4,12 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
     ArrowRight,
-    Brain,
-    Target,
     TrendingUp,
-    Shield,
     LineChart,
     Sparkles,
 } from "lucide-react";
 
 export default function LandingPage() {
-    const features = [
-        {
-            icon: Brain,
-            title: "AI-Powered Analysis",
-            description:
-                "Large language models with comprehensive market knowledge to identify asymmetric opportunities.",
-            color: "pm-purple",
-        },
-        {
-            icon: Target,
-            title: "Model Portfolio Tracking",
-            description:
-                "High-conviction model portfolios with position updates and YTD performance metrics.",
-            color: "pm-green",
-        },
-        {
-            icon: Shield,
-            title: "Research on Demand",
-            description:
-                "Deep-dive sector analysis and AI-powered research reports when you need them.",
-            color: "pm-green",
-        },
-    ];
-
-    const stats = [
-        { value: "147%", label: "2025 Model Return" },
-        { value: "89", label: "Average PM Score" },
-        { value: "2.4x", label: "Alpha vs. S&P 500" },
-        { value: "9", label: "Active Positions" },
-    ];
-
     return (
         <div className="relative overflow-hidden pb-20 md:pb-0">
             {/* Grid Background */}
@@ -94,64 +60,6 @@ export default function LandingPage() {
                             </Link>
                         </div>
                     </motion.div>
-                </div>
-            </section>
-
-            {/* Stats Bar */}
-            <section className="relative border-y border-pm-border bg-pm-charcoal/50 backdrop-blur-lg">
-                <div className="max-w-7xl mx-auto px-6 py-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {stats.map((stat, index) => (
-                            <motion.div
-                                key={stat.label}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="text-center"
-                            >
-                                <div className="text-3xl md:text-4xl font-mono font-bold text-pm-green">
-                                    {stat.value}
-                                </div>
-                                <div className="text-sm text-pm-muted mt-1">{stat.label}</div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Features Section */}
-            <section className="relative py-24 px-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            <span className="text-pm-purple">Research</span> That Moves Markets
-                        </h2>
-                        <p className="text-pm-muted max-w-xl mx-auto">
-                            Our proprietary PM Score system ranks opportunities based on momentum,
-                            fundamentals, and predictive signals.
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {features.map((feature, index) => (
-                            <motion.div
-                                key={feature.title}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 + index * 0.1 }}
-                                className="pm-card-hover group"
-                            >
-                                <div
-                                    className={`w-12 h-12 rounded-lg bg-${feature.color}/10 flex items-center justify-center mb-4
-                    group-hover:scale-110 transition-transform`}
-                                >
-                                    <feature.icon className={`w-6 h-6 text-${feature.color}`} />
-                                </div>
-                                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                                <p className="text-pm-muted leading-relaxed">{feature.description}</p>
-                            </motion.div>
-                        ))}
-                    </div>
                 </div>
             </section>
 
