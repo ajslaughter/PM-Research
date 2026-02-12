@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
     ArrowRight,
+    Briefcase,
     TrendingUp,
     LineChart,
     Sparkles,
@@ -53,10 +54,14 @@ export default function LandingPage() {
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                            <Link href="/research" className="btn-primary flex items-center gap-2">
+                            <Link href="/portfolio" className="btn-primary flex items-center gap-2">
+                                <Briefcase className="w-5 h-5" />
+                                Model Portfolios
+                                <ArrowRight className="w-5 h-5" />
+                            </Link>
+                            <Link href="/research" className="btn-secondary flex items-center gap-2">
                                 <LineChart className="w-5 h-5" />
                                 View Research
-                                <ArrowRight className="w-5 h-5" />
                             </Link>
                         </div>
                     </motion.div>
