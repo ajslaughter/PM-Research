@@ -57,6 +57,9 @@ export const roboticsBaselines: Record<string, BaselinePrice> = {
   'ISRG': { ticker: 'ISRG', price: 566.78, date: BASELINE_DATE },
   'FANUY': { ticker: 'FANUY', price: 19.65, date: BASELINE_DATE },
   'PATH': { ticker: 'PATH', price: 16.50, date: BASELINE_DATE },
+  'TER': { ticker: 'TER', price: 193.56, date: BASELINE_DATE },
+  'TSLA': { ticker: 'TSLA', price: 457.80, date: BASELINE_DATE },
+  'SYM': { ticker: 'SYM', price: 59.50, date: BASELINE_DATE },
 };
 
 /**

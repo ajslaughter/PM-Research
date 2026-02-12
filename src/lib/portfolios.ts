@@ -5,6 +5,7 @@
 export interface PortfolioPosition {
     ticker: string;
     weight: number; // Percentage (0-100), should sum to 100 per portfolio
+    thesis?: string; // One-line investment rationale
 }
 
 // Portfolio category for filtering
@@ -66,9 +67,11 @@ export const defaultPortfolios: Portfolio[] = [
         description: "Automation & Robotics",
         category: "Magnificent 7",
         positions: [
-            { ticker: "ISRG", weight: 33.33 },
-            { ticker: "FANUY", weight: 33.33 },
-            { ticker: "PATH", weight: 33.34 },
+            { ticker: "ISRG", weight: 20, thesis: "da Vinci monopoly in surgical robotics; expanding procedures" },
+            { ticker: "FANUY", weight: 20, thesis: "Global leader in factory automation; CNC and servo moat" },
+            { ticker: "PATH", weight: 20, thesis: "Enterprise RPA platform; AI-driven process automation" },
+            { ticker: "TER", weight: 20, thesis: "Universal Robots dominant in cobots; test automation moat" },
+            { ticker: "TSLA", weight: 20, thesis: "Optimus humanoid + FSD; robotics optionality underpriced" },
         ],
     },
     {
