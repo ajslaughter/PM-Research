@@ -270,6 +270,7 @@ export default function PortfolioTable({
             name: stock?.name || position.ticker,
             assetClass: stock?.assetClass || 'Unknown',
             weight: position.weight,
+            thesis: position.thesis,
             yearlyClose,
             currentPrice,
             returnPercent: ytdReturn,
@@ -548,6 +549,11 @@ export default function PortfolioTable({
                                         <span className="text-xs text-pm-muted hidden md:inline-block">
                                             {position.name}
                                         </span>
+                                        {position.thesis && (
+                                            <span className="text-[11px] text-pm-subtle italic hidden md:inline-block mt-0.5">
+                                                {position.thesis}
+                                            </span>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="p-4 hidden md:table-cell">
