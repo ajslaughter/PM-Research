@@ -9,7 +9,7 @@ export interface PortfolioPosition {
 }
 
 // Portfolio category for filtering
-export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Physical AI';
+export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance';
 
 // Portfolio structure
 export interface Portfolio {
@@ -25,9 +25,6 @@ export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBI
 
 // Energy Renaissance Portfolio Tickers
 export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT'];
-
-// Physical AI Portfolio Tickers
-export const Physical_AI_Portfolio = ['ISRG', 'TER', 'RKLB', 'TSLA'];
 
 // Default portfolios
 export const defaultPortfolios: Portfolio[] = [
@@ -46,19 +43,6 @@ export const defaultPortfolios: Portfolio[] = [
             { ticker: "TSLA", weight: 11.11 },
             { ticker: "BTC-USD", weight: 11.11 },
             { ticker: "AVGO", weight: 11.12 },
-        ],
-    },
-    {
-        id: "innovation",
-        name: "Innovation Portfolio",
-        description: "High-Growth Tech & Space",
-        category: "Magnificent 7",
-        positions: [
-            { ticker: "RKLB", weight: 20 },
-            { ticker: "SMCI", weight: 20 },
-            { ticker: "VRT", weight: 20 },
-            { ticker: "AVGO", weight: 20 },
-            { ticker: "IONQ", weight: 20 },
         ],
     },
     {
@@ -97,18 +81,6 @@ export const defaultPortfolios: Portfolio[] = [
             { ticker: "OKLO", weight: 25 },
             { ticker: "VRT", weight: 25 },
             { ticker: "BWXT", weight: 25 },
-        ],
-    },
-    {
-        id: "physical-ai",
-        name: "Physical AI Portfolio",
-        description: "Robotics, Automation & Embodied AI",
-        category: "Physical AI",
-        positions: [
-            { ticker: "ISRG", weight: 25 },
-            { ticker: "TER", weight: 25 },
-            { ticker: "RKLB", weight: 25 },
-            { ticker: "TSLA", weight: 25 },
         ],
     },
 ];

@@ -53,13 +53,11 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 ## Features
 
 ### Model Portfolios
-Six curated model portfolios with hypothetical positions:
+Four curated model portfolios with hypothetical positions:
 - **Magnificent 9**: Mag 7 (NVDA, MSFT, AAPL, GOOGL, AMZN, META, TSLA) + Bitcoin + AVGO
-- **Innovation Portfolio**: High-growth tech & space (RKLB, SMCI, VRT, AVGO, IONQ)
 - **Robotics Portfolio**: Automation & robotics (ISRG, FANUY, PATH)
 - **AI Infrastructure Portfolio**: Data centers & compute (IREN, CORZ, CRWV, APLD, NBIS)
 - **Energy Renaissance Portfolio**: Nuclear & power infrastructure (CEG, OKLO, VRT, BWXT)
-- **Physical AI Portfolio**: Robotics & embodied AI (ISRG, TER, RKLB, TSLA)
 
 ### PM Score System
 Proprietary ranking system (0-100) combining momentum, fundamentals, and predictive signals. Higher scores indicate stronger conviction.

@@ -38,7 +38,6 @@ const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
     'Magnificent 7',
     'AI Infrastructure',
     'Energy Renaissance',
-    'Physical AI',
 ];
 
 // Props for the component

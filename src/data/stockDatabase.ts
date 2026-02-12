@@ -54,13 +54,7 @@ export const stockDatabase: Record<string, StockData> = {
   "META": createStock("META", "Meta Platforms Inc.", "Social/AI", "Technology", 91, "2026-01-29"),
   "TSLA": createStock("TSLA", "Tesla Inc.", "Auto/Robotics", "Consumer Cyclical", 85, "2026-01-29"),
   "BTC-USD": createStock("BTC-USD", "Bitcoin", "Digital Assets", "Cryptocurrency", 88, "2026-01-31"),
-
-  // Innovation Portfolio
-  "RKLB": createStock("RKLB", "Rocket Lab USA", "Space", "Aerospace", 94, "2026-01-29"),
-  "SMCI": createStock("SMCI", "Super Micro Computer", "Data Center", "Technology", 78, "2026-01-31"),
-  "VRT": createStock("VRT", "Vertiv Holdings", "Data Center", "Industrials", 86, "2026-01-29"),
   "AVGO": createStock("AVGO", "Broadcom Inc.", "AI Hardware", "Technology", 93, "2026-01-29"),
-  "IONQ": createStock("IONQ", "IonQ Inc.", "Quantum", "Technology", 82, "2026-01-31"),
 
   // Robotics Portfolio
   "ISRG": createStock("ISRG", "Intuitive Surgical", "Auto/Robotics", "Healthcare", 91, "2026-01-29"),
@@ -77,12 +71,12 @@ export const stockDatabase: Record<string, StockData> = {
   // Energy Renaissance Portfolio
   "CEG": createStock("CEG", "Constellation Energy", "Nuclear", "Energy", 90, "2026-01-31"),
   "OKLO": createStock("OKLO", "Oklo Inc.", "Nuclear", "Energy", 86, "2026-01-31"),
+  "VRT": createStock("VRT", "Vertiv Holdings", "Data Center", "Industrials", 86, "2026-01-29"),
   "BWXT": createStock("BWXT", "BWX Technologies", "Nuclear", "Industrials", 87, "2026-01-31"),
 
   // Robotics Portfolio (additional tickers)
   "SYM": createStock("SYM", "Symbotic Inc.", "Auto/Robotics", "Technology", 81, "2026-02-12"),
 
-  // Physical AI Portfolio (additional tickers)
   "TER": createStock("TER", "Teradyne Inc.", "Auto/Robotics", "Technology", 83, "2026-01-31"),
 };
 
