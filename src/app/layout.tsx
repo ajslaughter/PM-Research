@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import { SubscriptionProvider } from "@/context/SubscriptionContext";
 import { AdminProvider } from "@/context/AdminContext";
@@ -37,6 +38,21 @@ export default function RootLayout({
                                             <span>© 2026</span>
                                         </div>
                                         <div className="flex items-center gap-6 text-sm text-pm-muted">
+                                            <span className="text-pm-subtle italic">
+                                                Not financial advice
+                                            </span>
+                                            <Link
+                                                href="/legal/terms"
+                                                className="hover:text-pm-text transition-colors"
+                                            >
+                                                Terms
+                                            </Link>
+                                            <Link
+                                                href="/legal/privacy"
+                                                className="hover:text-pm-text transition-colors"
+                                            >
+                                                Privacy
+                                            </Link>
                                             <span className="flex items-center gap-2">
                                                 <span className="w-2 h-2 rounded-full bg-pm-green animate-pulse" />
                                                 Systems Operational
