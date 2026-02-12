@@ -9,7 +9,7 @@ export interface PortfolioPosition {
 }
 
 // Portfolio category for filtering
-export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance';
+export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space';
 
 // Portfolio structure
 export interface Portfolio {
@@ -82,6 +82,20 @@ export const defaultPortfolios: Portfolio[] = [
             { ticker: "OKLO", weight: 25 },
             { ticker: "VRT", weight: 25 },
             { ticker: "BWXT", weight: 25 },
+        ],
+    },
+    {
+        id: "orbital-space",
+        name: "Orbital & Space Portfolio",
+        description: "Orbital Data Centers, Launch & Space Infrastructure",
+        category: "Orbital & Space",
+        positions: [
+            { ticker: "RKLB", weight: 20, thesis: "Clear #2 launch provider; Neutron medium-lift catalyst in H2 2026" },
+            { ticker: "ASTS", weight: 18, thesis: "Direct-to-device satellite monopoly; carrier partnerships de-risk revenue" },
+            { ticker: "LUNR", weight: 17, thesis: "NASA lunar lander prime contractor; multi-mission backlog" },
+            { ticker: "RDW", weight: 15, thesis: "On-orbit manufacturing & space infrastructure; defense contracts" },
+            { ticker: "PL", weight: 15, thesis: "Largest Earth observation satellite fleet; recurring data revenue" },
+            { ticker: "TSLA", weight: 15, thesis: "SpaceX ecosystem adjacency; Starship manufacturing & Optimus for space" },
         ],
     },
 ];
