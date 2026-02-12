@@ -54,7 +54,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ### Model Portfolios
 Six curated model portfolios with hypothetical positions:
-- **PM Research Portfolio**: Mag 7 (NVDA, MSFT, AAPL, GOOGL, AMZN, META, TSLA) + Bitcoin
+- **Magnificent 9**: Mag 7 (NVDA, MSFT, AAPL, GOOGL, AMZN, META, TSLA) + Bitcoin + AVGO
 - **Innovation Portfolio**: High-growth tech & space (RKLB, SMCI, VRT, AVGO, IONQ)
 - **Robotics Portfolio**: Automation & robotics (ISRG, FANUY, PATH)
 - **AI Infrastructure Portfolio**: Data centers & compute (IREN, CORZ, CRWV, APLD, NBIS)
