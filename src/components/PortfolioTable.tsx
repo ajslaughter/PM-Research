@@ -38,6 +38,7 @@ const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
     'Magnificent 7',
     'AI Infrastructure',
     'Energy Renaissance',
+    'Orbital & Space',
 ];
 
 // Props for the component
@@ -509,15 +510,15 @@ export default function PortfolioTable({
                 </button>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50">
-                <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50 -mx-2 px-2 md:mx-0 md:px-0">
+                <table className="w-full text-left border-collapse min-w-[700px]">
                     <thead>
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
-                            <th className="p-4">Ticker</th>
-                            <th className="p-4 hidden md:table-cell">Asset Class</th>
-                            <th className="p-4 text-right">Weight</th>
-                            <th className="p-4 text-right hidden md:table-cell">{YTD_OPEN_YEAR} Open</th>
-                            <th className="p-4 text-right hidden md:table-cell">
+                            <th className="p-3 md:p-4 sticky left-0 bg-pm-black/90 z-10">Ticker</th>
+                            <th className="p-3 md:p-4">Asset Class</th>
+                            <th className="p-3 md:p-4 text-right">Weight</th>
+                            <th className="p-3 md:p-4 text-right">{YTD_OPEN_YEAR} Open</th>
+                            <th className="p-3 md:p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
                                     <span className="ml-2 text-yellow-500 animate-pulse">
@@ -530,8 +531,8 @@ export default function PortfolioTable({
                                     </span>
                                 )}
                             </th>
-                            <th className="p-4 text-right">Day %</th>
-                            <th className="p-4 text-right">YTD Return</th>
+                            <th className="p-3 md:p-4 text-right">Day %</th>
+                            <th className="p-3 md:p-4 text-right">YTD Return</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-pm-border">
@@ -540,7 +541,7 @@ export default function PortfolioTable({
                                 key={position.ticker}
                                 className="hover:bg-pm-charcoal/80 transition-colors group"
                             >
-                                <td className="p-4">
+                                <td className="p-3 md:p-4 sticky left-0 bg-pm-dark/95 z-10">
                                     <div className="flex flex-col">
                                         <span className="font-bold text-white group-hover:text-pm-green transition-colors">
                                             {position.ticker}
@@ -555,20 +556,20 @@ export default function PortfolioTable({
                                         )}
                                     </div>
                                 </td>
-                                <td className="p-4 hidden md:table-cell">
+                                <td className="p-3 md:p-4">
                                     <SectorBadge
                                         sector={position.assetClass}
                                         size="sm"
                                         interactive={false}
                                     />
                                 </td>
-                                <td className="p-4 text-right font-mono text-pm-muted">
+                                <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
                                 </td>
-                                <td className="p-4 text-right font-mono text-pm-muted hidden md:table-cell">
+                                <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
                                     ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
-                                <td className="p-4 text-right font-mono font-medium hidden md:table-cell">
+                                <td className="p-3 md:p-4 text-right font-mono font-medium">
                                     {isLoadingPrices ? (
                                         <div className="flex items-center justify-end gap-2">
                                             <LoadingSpinner size="w-3 h-3" />
@@ -588,7 +589,7 @@ export default function PortfolioTable({
                                         </span>
                                     )}
                                 </td>
-                                <td className={`p-4 text-right font-mono text-sm ${position.isStale ? "text-pm-muted" : position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
+                                <td className={`p-3 md:p-4 text-right font-mono text-sm ${position.isStale ? "text-pm-muted" : position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
                                     }`}>
                                     {isLoadingPrices ? (
                                         <div className="flex items-center justify-end gap-2">
@@ -605,7 +606,7 @@ export default function PortfolioTable({
                                     )}
                                 </td>
                                 <td
-                                    className={`p-4 text-right font-mono font-bold ${position.returnPercent >= 0
+                                    className={`p-3 md:p-4 text-right font-mono font-bold ${position.returnPercent >= 0
                                         ? "text-pm-green"
                                         : "text-pm-red"
                                         }`}

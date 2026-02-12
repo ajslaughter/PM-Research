@@ -76,6 +76,19 @@ export const energyBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
+ * Orbital & Space Portfolio
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
+ */
+export const spaceBaselines: Record<string, BaselinePrice> = {
+  'RKLB': { ticker: 'RKLB', price: 69.76, date: BASELINE_DATE },
+  'ASTS': { ticker: 'ASTS', price: 72.63, date: BASELINE_DATE },
+  'LUNR': { ticker: 'LUNR', price: 16.23, date: BASELINE_DATE },
+  'RDW': { ticker: 'RDW', price: 7.60, date: BASELINE_DATE },
+  'PL': { ticker: 'PL', price: 19.72, date: BASELINE_DATE },
+};
+
+/**
  * Combined baseline lookup - All tracked assets
  * Use this for YTD calculations throughout the application
  */
@@ -84,6 +97,7 @@ export const baselines: Record<string, BaselinePrice> = {
   ...roboticsBaselines,
   ...aiInfraBaselines,
   ...energyBaselines,
+  ...spaceBaselines,
 };
 
 /**

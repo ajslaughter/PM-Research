@@ -78,6 +78,13 @@ export const stockDatabase: Record<string, StockData> = {
   "SYM": createStock("SYM", "Symbotic Inc.", "Auto/Robotics", "Technology", 81, "2026-02-12"),
 
   "TER": createStock("TER", "Teradyne Inc.", "Auto/Robotics", "Technology", 83, "2026-01-31"),
+
+  // Orbital & Space Portfolio
+  "RKLB": createStock("RKLB", "Rocket Lab USA", "Space", "Industrials", 91, "2026-02-12"),
+  "ASTS": createStock("ASTS", "AST SpaceMobile", "Space", "Technology", 89, "2026-02-12"),
+  "LUNR": createStock("LUNR", "Intuitive Machines", "Space", "Industrials", 84, "2026-02-12"),
+  "RDW": createStock("RDW", "Redwire Corporation", "Space", "Industrials", 80, "2026-02-12"),
+  "PL": createStock("PL", "Planet Labs PBC", "Space", "Technology", 78, "2026-02-12"),
 };
 
 // Asset class color mapping for UI
