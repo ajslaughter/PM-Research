@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
     Activity,
+    Radio,
     BookOpen,
     Briefcase,
     Bot,
@@ -16,6 +17,7 @@ export default function Navbar() {
 
     const navLinks = [
         { href: "/", label: "Home", icon: Activity },
+        { href: "/pm-live", label: "PM Live", icon: Radio },
         { href: "/portfolio", label: "Portfolio", icon: Briefcase },
         { href: "/research", label: "Research", icon: BookOpen },
         { href: "/pmbot", label: "PMbot", icon: Bot },
