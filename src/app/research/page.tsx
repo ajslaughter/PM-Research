@@ -3,11 +3,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import ResearchFeed from "@/components/ResearchFeed";
-import { useSubscription } from "@/context/SubscriptionContext";
-import { BookOpen, Lock, Unlock, Filter, Info } from "lucide-react";
+import { BookOpen, Filter, Info } from "lucide-react";
 
 export default function ResearchPage() {
-    const { isSubscribed } = useSubscription();
     const [activeCategory, setActiveCategory] = useState("All");
 
     return (
@@ -36,27 +34,8 @@ export default function ResearchPage() {
                             </div>
                         </div>
 
-                        {/* Status & Filters */}
+                        {/* Filters */}
                         <div className="flex items-center gap-4">
-                            <div
-                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${isSubscribed
-                                        ? "bg-pm-green/10 border-pm-green/30 text-pm-green"
-                                        : "bg-pm-charcoal border-pm-border text-pm-muted"
-                                    }`}
-                            >
-                                {isSubscribed ? (
-                                    <>
-                                        <Unlock className="w-4 h-4" />
-                                        <span className="font-mono text-sm">FULL ACCESS</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Lock className="w-4 h-4" />
-                                        <span className="font-mono text-sm">LIMITED ACCESS</span>
-                                    </>
-                                )}
-                            </div>
-
                             <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-pm-border text-pm-muted hover:text-pm-text hover:border-pm-subtle transition-colors">
                                 <Filter className="w-4 h-4" />
                                 <span className="text-sm">Filter</span>
@@ -96,32 +75,6 @@ export default function ResearchPage() {
                 >
                     <ResearchFeed category={activeCategory} />
                 </motion.div>
-
-                {/* Subscription CTA for Guests */}
-                {!isSubscribed && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="mt-16 text-center"
-                    >
-                        <div className="pm-card border-pm-purple/30 max-w-xl mx-auto py-12 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-glow-purple opacity-30" />
-                            <div className="relative z-10">
-                                <h3 className="text-2xl font-bold mb-3">
-                                    Unlock Complete Research Access
-                                </h3>
-                                <p className="text-pm-muted mb-6 max-w-md mx-auto">
-                                    Get full access to all research notes, predictive signals, and
-                                    in-depth analysis with a PM Research subscription.
-                                </p>
-                                <a href="/pricing" className="btn-primary inline-flex items-center gap-2">
-                                    View Subscription Plans
-                                </a>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
 
                 {/* Disclaimer */}
                 <div className="mt-16 pt-8 border-t border-pm-border text-center">

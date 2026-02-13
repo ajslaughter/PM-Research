@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode } from "react";
 
 // Define the shape of our subscription context
 interface SubscriptionContextType {
@@ -16,27 +16,15 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(
 );
 
 // Provider component that wraps the app
-// NOTE: Website is now 100% free - all users are treated as subscribed
+// Website is 100% free - all users always have full access
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
-    const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
-    const [subscriptionTier, setSubscriptionTier] = useState<
-        "guest" | "observer" | "operator"
-    >("operator");
-
-    // Toggle function for testing subscriber views
-    const toggleSubscription = () => {
-        setIsSubscribed((prev) => !prev);
-        // When toggling, also update the tier
-        setSubscriptionTier((prev) => (prev === "guest" ? "operator" : "guest"));
-    };
-
     return (
         <SubscriptionContext.Provider
             value={{
-                isSubscribed,
-                toggleSubscription,
-                subscriptionTier,
-                setSubscriptionTier,
+                isSubscribed: true,
+                toggleSubscription: () => {},
+                subscriptionTier: "operator",
+                setSubscriptionTier: () => {},
             }}
         >
             {children}
