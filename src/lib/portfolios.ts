@@ -33,7 +33,7 @@ export const Quantum_Portfolio = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
 export const defaultPortfolios: Portfolio[] = [
     {
         id: "pm-research",
-        name: "Magnificent 9",
+        name: "9 MAGS",
         description: "Mag 7 + Bitcoin + Broadcom - Core Holdings",
         category: "Magnificent 7",
         positions: [
