@@ -425,7 +425,7 @@ export default function PortfolioTable({
                         {positions.length}
                     </div>
                     <div className="text-[10px] text-pm-muted mt-1">
-                        {totalWeight === 100 ? 'Fully Allocated' : `${formatPercent(totalWeight)}% Allocated`}
+                        {totalWeight === 100 ? 'Total' : `${formatPercent(totalWeight)}% Allocated`}
                     </div>
                 </div>
             </div>
