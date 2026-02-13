@@ -21,7 +21,7 @@ export interface Portfolio {
 }
 
 // AI Infrastructure Portfolio Tickers
-export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS'];
+export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS', 'WULF'];
 
 // Energy Renaissance Portfolio Tickers
 export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT'];
@@ -68,11 +68,12 @@ export const defaultPortfolios: Portfolio[] = [
         description: "Data Centers, Mining & Compute Infrastructure",
         category: "AI Infrastructure",
         positions: [
-            { ticker: "IREN", weight: 20 },
-            { ticker: "CORZ", weight: 20 },
-            { ticker: "CRWV", weight: 20 },
-            { ticker: "APLD", weight: 20 },
-            { ticker: "NBIS", weight: 20 },
+            { ticker: "IREN", weight: 16.67 },
+            { ticker: "CORZ", weight: 16.67 },
+            { ticker: "CRWV", weight: 16.67 },
+            { ticker: "APLD", weight: 16.67 },
+            { ticker: "NBIS", weight: 16.67 },
+            { ticker: "WULF", weight: 16.65 },
         ],
     },
     {
