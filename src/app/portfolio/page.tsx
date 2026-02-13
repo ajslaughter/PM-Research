@@ -6,7 +6,7 @@ import PortfolioTable from "@/components/PortfolioTable";
 import { PortfolioErrorBoundary } from "@/components/ErrorBoundary";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
-import { Lock, Unlock, Briefcase } from "lucide-react";
+import { Lock, Unlock, Briefcase, Zap } from "lucide-react";
 
 export default function PortfolioPage() {
     const { isSubscribed } = useSubscription();
@@ -47,7 +47,10 @@ export default function PortfolioPage() {
                     className="mb-8"
                 >
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-1 bg-pm-green" />
+                        <div className="relative">
+                            <Zap className="w-8 h-8 text-pm-green" />
+                            <div className="absolute inset-0 blur-md bg-pm-green/30" />
+                        </div>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
                             Model Portfolios
                         </h1>
