@@ -4,12 +4,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import PortfolioTable from "@/components/PortfolioTable";
 import { PortfolioErrorBoundary } from "@/components/ErrorBoundary";
-import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
-import { Lock, Unlock, Briefcase, Zap } from "lucide-react";
+import { Briefcase, Zap } from "lucide-react";
 
 export default function PortfolioPage() {
-    const { isSubscribed } = useSubscription();
     const { portfolios, activePortfolioId, setActivePortfolioId } = useAdmin();
 
     // Find the selected portfolio
@@ -54,28 +52,6 @@ export default function PortfolioPage() {
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
                             Model Portfolios
                         </h1>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <p className="text-pm-muted">Select a portfolio to view positions</p>
-                        {/* Status Banner */}
-                        <div
-                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${isSubscribed
-                                ? "bg-pm-green/10 border-pm-green/30 text-pm-green"
-                                : "bg-pm-charcoal border-pm-border text-pm-muted"
-                                }`}
-                        >
-                            {isSubscribed ? (
-                                <>
-                                    <Unlock className="w-4 h-4" />
-                                    <span className="font-mono text-sm">FULL ACCESS ENABLED</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Lock className="w-4 h-4" />
-                                    <span className="font-mono text-sm">RESTRICTED VIEW</span>
-                                </>
-                            )}
-                        </div>
                     </div>
                 </motion.div>
 

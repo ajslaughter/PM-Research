@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
 import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
 import { PortfolioCategory } from "@/lib/portfolios";
 import SectorBadge from "@/components/SectorBadge";
 import {
-    Lock,
     TrendingUp,
     TrendingDown,
     RefreshCw,
@@ -76,7 +74,6 @@ export default function PortfolioTable({
     onCategoryChange,
     showCategoryFilter = false
 }: PortfolioTableProps) {
-    const { isSubscribed } = useSubscription();
     const { portfolios, stockDb } = useAdmin();
 
     // Internal category state if not controlled externally
@@ -304,26 +301,6 @@ export default function PortfolioTable({
             second: '2-digit'
         });
     };
-
-    if (!isSubscribed) {
-        return (
-            <div className="relative">
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-8 text-center bg-pm-charcoal/80 backdrop-blur-sm border border-pm-border rounded-xl">
-                    <Lock className="w-12 h-12 text-pm-green mb-4 opacity-80" />
-                    <h3 className="text-2xl font-bold mb-2">Operator Access Required</h3>
-                    <p className="text-pm-muted mb-6 max-w-md">
-                        Upgrade to the Operator tier to view our real-time portfolio, YTD performance, and predictive signals.
-                    </p>
-                    <a href="/pricing" className="btn-primary">
-                        View Pricing
-                    </a>
-                </div>
-                <div className="opacity-20 pointer-events-none filter blur-sm">
-                    <div className="w-full h-96 bg-pm-charcoal rounded-xl border border-pm-border"></div>
-                </div>
-            </div>
-        );
-    }
 
     if (!currentPortfolio) {
         return (

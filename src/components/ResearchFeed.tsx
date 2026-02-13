@@ -2,20 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSubscription } from "@/context/SubscriptionContext";
 import { useAdmin } from "@/context/AdminContext";
 import { ResearchNote } from "@/lib/portfolios";
 import {
     Sparkles,
     ArrowRight,
-    Lock,
     X,
     Search,
     LineChart,
     Tag,
 } from "lucide-react";
-import Link from "next/link";
-import PremiumModal from "@/components/PremiumModal";
 import React from "react";
 
 // Skeleton loading component for research cards
@@ -62,7 +58,6 @@ interface FullContentModalProps {
 interface ResearchCardProps {
     note: ResearchNote;
     onReadClick: () => void;
-    isSubscribed: boolean;
 }
 
 interface ResearchFeedProps {
@@ -81,7 +76,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 };
 
 // Research Card Component
-function ResearchCard({ note, onReadClick, isSubscribed }: ResearchCardProps) {
+function ResearchCard({ note, onReadClick }: ResearchCardProps) {
     return (
         <div className="pm-card group hover:border-pm-green/30 transition-all duration-300 flex flex-col h-full">
             {/* Header */}
@@ -118,17 +113,8 @@ function ResearchCard({ note, onReadClick, isSubscribed }: ResearchCardProps) {
                     onClick={onReadClick}
                     className="flex items-center gap-1 text-sm text-pm-green hover:text-pm-text transition-colors group/btn"
                 >
-                    {isSubscribed ? (
-                        <>
-                            <span>Read</span>
-                            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                        </>
-                    ) : (
-                        <>
-                            <Lock className="w-3 h-3" />
-                            <span>Unlock</span>
-                        </>
-                    )}
+                    <span>Read</span>
+                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </button>
             </div>
         </div>
@@ -272,9 +258,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
 }
 
 export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
-    const { isSubscribed } = useSubscription();
     const { researchNotes } = useAdmin();
-    const [showPremiumModal, setShowPremiumModal] = useState(false);
     const [selectedNote, setSelectedNote] = useState<ResearchNote | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -287,11 +271,7 @@ export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
     }, []);
 
     const handleReadClick = (note: ResearchNote) => {
-        if (isSubscribed) {
-            setSelectedNote(note);
-        } else {
-            setShowPremiumModal(true);
-        }
+        setSelectedNote(note);
     };
 
     // Filter and Sort notes
@@ -341,17 +321,10 @@ export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
                         <ResearchCard
                             note={note}
                             onReadClick={() => handleReadClick(note)}
-                            isSubscribed={isSubscribed}
                         />
                     </motion.div>
                 ))}
             </div>
-
-            {/* Modals */}
-            <PremiumModal
-                isOpen={showPremiumModal}
-                onClose={() => setShowPremiumModal(false)}
-            />
 
             {selectedNote && (
                 <FullContentModal
