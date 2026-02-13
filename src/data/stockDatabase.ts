@@ -73,6 +73,8 @@ export const stockDatabase: Record<string, StockData> = {
   "OKLO": createStock("OKLO", "Oklo Inc.", "Nuclear", "Energy", 86, "2026-01-31"),
   "VRT": createStock("VRT", "Vertiv Holdings", "Data Center", "Industrials", 86, "2026-01-29"),
   "BWXT": createStock("BWXT", "BWX Technologies", "Nuclear", "Industrials", 87, "2026-01-31"),
+  "SMR": createStock("SMR", "NuScale Power Corp", "Nuclear", "Energy", 84, "2026-02-13"),
+  "PWR": createStock("PWR", "Quanta Services Inc.", "Grid Infrastructure", "Industrials", 84, "2026-02-13"),
 
   // Robotics Portfolio (additional tickers)
   "SYM": createStock("SYM", "Symbotic Inc.", "Auto/Robotics", "Technology", 81, "2026-02-12"),
