@@ -144,7 +144,7 @@ The structural shift from "Generic AI Beta" (indices) to "Infrastructure Alpha" 
         category: "Deep Dive",
         readTime: "12 min",
         relatedTickers: ["NVDA", "SMCI", "VRT", "AVGO"],
-        author: "S. Cohen, Chief Strat."
+        author: "PM Research"
     },
     {
         id: "r2",
@@ -228,7 +228,7 @@ RKLB represents a high-quality pure-play in the commercial space sector. The 85%
         category: "Deep Dive",
         readTime: "10 min",
         relatedTickers: ["RKLB"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r3",
@@ -315,7 +315,7 @@ The quantum computing thesis has transitioned from "technology bet" to "infrastr
         category: "Sector Analysis",
         readTime: "12 min",
         relatedTickers: ["IONQ", "GOOGL"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r4",
@@ -448,7 +448,7 @@ The grid infrastructure thesis offers a rare combination: visible multi-decade d
         category: "Sector Analysis",
         readTime: "11 min",
         relatedTickers: ["PWR", "VRT", "ETN"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r6",
@@ -516,7 +516,7 @@ The SMR sector spans a range of company profiles: pre-revenue development-stage 
         category: "Deep Dive",
         readTime: "14 min",
         relatedTickers: ["OKLO", "SMR", "CEG"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r7",
@@ -570,7 +570,7 @@ Claude Cowork represents the first mass-market implementation of autonomous AI a
         category: "Sector Analysis",
         readTime: "11 min",
         relatedTickers: ["NVDA", "AAPL"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r8",
@@ -632,7 +632,7 @@ Intel 14A represents a significant development in the semiconductor manufacturin
         category: "Deep Dive",
         readTime: "13 min",
         relatedTickers: ["INTC", "ASML", "AMZN", "MSFT"],
-        author: "S. Cohen, Chief Strat."
+        author: "PM Research"
     },
     {
         id: "r9",
@@ -697,7 +697,7 @@ ASTS has assembled a defensible position through carrier partnerships, technical
         category: "Deep Dive",
         readTime: "10 min",
         relatedTickers: ["ASTS", "T", "VZ"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r10",
@@ -716,7 +716,7 @@ The packaging shortage just started.`,
         category: "Sector Analysis",
         readTime: "2 min",
         relatedTickers: ["TSM", "NVDA", "AMD", "AMAT"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r11",
@@ -781,7 +781,7 @@ Bitcoin's transition from speculative asset to institutional infrastructure is a
         category: "Deep Dive",
         readTime: "12 min",
         relatedTickers: ["BTC-USD", "MARA", "CLSK", "RIOT"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r12",
@@ -855,7 +855,7 @@ The humanoid robotics sector is transitioning from demonstration to deployment. 
         category: "Deep Dive",
         readTime: "11 min",
         relatedTickers: ["TSLA", "ISRG", "TER", "NVDA", "RKLB"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r13",
@@ -965,6 +965,6 @@ The risk is not that AI spending slows—it is that the market has already price
         category: "Deep Dive",
         readTime: "14 min",
         relatedTickers: ["NVDA", "TSM", "AVGO", "AMD", "MSFT", "GOOGL", "AMZN", "ORCL", "META", "SMCI"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
 ];
