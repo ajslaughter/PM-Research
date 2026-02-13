@@ -1,55 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSubscription } from "@/context/SubscriptionContext";
 import {
     Check,
-    X,
-    CreditCard,
-    Zap,
-    Crown,
-    ArrowRight,
     Sparkles,
-    Bot,
 } from "lucide-react";
-import PricingCard, { PricingTierProps } from "@/components/PricingCard";
-
-
 
 export default function PricingPage() {
-    const { isSubscribed, toggleSubscription } = useSubscription();
-
-    const tiers: PricingTierProps[] = [
-        {
-            name: "Observer",
-            price: 25,
-            description: "Core research access for serious investors",
-            icon: <Zap className="w-7 h-7 text-pm-purple" />,
-            features: [
-                { text: "Full Research Hub Access", included: true },
-                { text: "Weekly Market Analysis", included: true },
-                { text: "PM Score Methodology", included: true },
-                { text: "Email Alerts", included: true },
-                { text: "Model Portfolio Access", included: false },
-                { text: "PM Research Bot Access", included: false },
-                { text: "Advanced Analytics Dashboard", included: false },
-            ],
-        },
-        {
-            name: "Operator",
-            price: 150,
-            description: "Full access for investors who demand an edge",
-            icon: <Crown className="w-7 h-7 text-pm-green" />,
-            highlighted: true,
-            features: [
-                { text: "Everything in Observer", included: true },
-                { text: "Full Model Portfolio Access", included: true },
-                { text: "PM Research Bot Access", included: true },
-                { text: "Automated Research Reports", included: true },
-                { text: "Quarterly Portfolio Reviews", included: true },
-                { text: "Advanced Analytics Dashboard", included: true },
-            ],
-        },
+    const features = [
+        "Full Research Hub Access",
+        "Weekly Market Analysis",
+        "PM Score Methodology",
+        "Full Model Portfolio Access",
+        "PM Research Bot Access",
+        "Automated Research Reports",
+        "Advanced Analytics Dashboard",
     ];
 
     return (
@@ -69,60 +34,41 @@ export default function PricingPage() {
                     className="text-center mb-16"
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full mb-6">
-                        <CreditCard className="w-4 h-4 text-pm-green" />
+                        <Sparkles className="w-4 h-4 text-pm-green" />
                         <span className="text-sm font-mono text-pm-muted">
-                            Simple, Transparent Pricing
+                            100% Free Access
                         </span>
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        Choose Your <span className="text-pm-green">Edge</span>
+                        Everything is <span className="text-pm-green">Free</span>
                     </h1>
                     <p className="text-xl text-pm-muted max-w-2xl mx-auto">
-                        Institutional-grade research and model portfolios.
-                        Built for investors who take markets seriously.
+                        Full access to all research, model portfolios, and analytics.
+                        No subscription required.
                     </p>
                 </motion.div>
 
-                {/* Pricing Cards */}
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
-                    {tiers.map((tier, index) => (
-                        <motion.div
-                            key={tier.name}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                        >
-                            <PricingCard {...tier} />
-                        </motion.div>
-                    ))}
-                </div>
-
-                {/* Demo Toggle */}
+                {/* Features Card */}
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="max-w-lg mx-auto mb-16"
                 >
-                    <div className="pm-card inline-flex flex-col items-center gap-4 p-6">
-                        <div className="flex items-center gap-2">
-                            <Sparkles className="w-5 h-5 text-pm-purple" />
-                            <span className="font-semibold">Demo Mode</span>
+                    <div className="pm-card border-pm-green/30 p-8">
+                        <div className="text-center mb-6">
+                            <span className="text-4xl font-bold text-pm-green">$0</span>
+                            <span className="text-pm-muted ml-2">forever</span>
                         </div>
-                        <p className="text-sm text-pm-muted max-w-sm">
-                            Toggle subscription status to preview subscriber vs. guest experiences
-                            throughout the platform.
-                        </p>
-                        <button
-                            onClick={toggleSubscription}
-                            className={`px-6 py-3 rounded-lg font-mono font-medium transition-all ${isSubscribed
-                                ? "bg-pm-green text-pm-black"
-                                : "border border-pm-border text-pm-muted hover:border-pm-green hover:text-pm-green"
-                                }`}
-                        >
-                            {isSubscribed ? "SUBSCRIBED ✓" : "ACTIVATE DEMO"}
-                        </button>
+                        <ul className="space-y-3">
+                            {features.map((feature) => (
+                                <li key={feature} className="flex items-center gap-3">
+                                    <Check className="w-4 h-4 text-pm-green flex-shrink-0" />
+                                    <span className="text-sm text-pm-text">{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </motion.div>
 
@@ -157,11 +103,11 @@ export default function PricingPage() {
                             },
                             {
                                 q: "What are Automated Research Reports?",
-                                a: "Deep-dive analyses generated by our PM Research Bot covering sectors, individual tickers, and market themes. Available on-demand for Operator subscribers.",
+                                a: "Deep-dive analyses generated by our PM Research Bot covering sectors, individual tickers, and market themes.",
                             },
                             {
-                                q: "Is there a refund policy?",
-                                a: "Yes. 7-day money-back guarantee, no questions asked. If PM Research isn't for you, we'll refund in full.",
+                                q: "Why is everything free?",
+                                a: "We believe in open access to research and market analysis. PM Research is a free platform for educational and informational purposes.",
                             },
                         ].map((faq, index) => (
                             <div key={index} className="pm-card">
