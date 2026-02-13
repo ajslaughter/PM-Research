@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sanitizeMessage, verifyOrigin } from '@/lib/security';
+import { defaultPortfolios, researchNotes } from '@/lib/portfolios';
+import { stockDatabase } from '@/data/stockDatabase';
 
 // Sanitize API key
 const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY ?? '').trim().replace(/[\r\n]/g, '');
@@ -11,27 +13,42 @@ const ALLOWED_HOSTS = [
     '127.0.0.1:3000',
 ];
 
-const SYSTEM_PROMPT = `You are PM Bot, the AI research assistant for PM Research. You answer questions about PM Research's model portfolios, sector analysis, and research methodology.
+/**
+ * Dynamically builds the PM Bot system prompt from the current portfolio
+ * and research data. This ensures the bot always reflects the latest
+ * portfolios, holdings, and research notes without manual updates.
+ */
+function buildSystemPrompt(): string {
+    // Build portfolio descriptions from the live data
+    const portfolioDescriptions = defaultPortfolios.map((portfolio) => {
+        const positionList = portfolio.positions.map((pos) => {
+            const stock = stockDatabase[pos.ticker];
+            const label = stock ? `${stock.name} - ${stock.sector}` : pos.ticker;
+            const thesisNote = pos.thesis ? ` | ${pos.thesis}` : '';
+            return `${pos.ticker} (${label}${thesisNote}) — ${pos.weight}%`;
+        });
+        return `${portfolio.name.toUpperCase()} — ${portfolio.description}\nCategory: ${portfolio.category}\nPositions:\n${positionList.map((p) => `  • ${p}`).join('\n')}`;
+    }).join('\n\n');
 
-You have knowledge of six model portfolios:
+    // Build a concise research digest from the latest notes
+    const sortedNotes = [...researchNotes].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    const researchDigest = sortedNotes.map((note) => {
+        const tickers = note.relatedTickers?.length
+            ? ` [${note.relatedTickers.join(', ')}]`
+            : '';
+        return `• ${note.title} (${note.date}, PM Score: ${note.pmScore})${tickers}\n  ${note.summary}`;
+    }).join('\n');
 
-PM RESEARCH PORTFOLIO (equal weight ~11.11% each):
-NVDA (AI Hardware), MSFT (Cloud/AI), AAPL (Consumer Tech), GOOGL (Search/AI), AMZN (E-Commerce), META (Social/AI), TSLA (Auto/Robotics), BTC-USD (Digital Assets), AVGO (Semiconductors)
+    return `You are PM Bot, the AI research assistant for PM Research. You answer questions about PM Research's model portfolios, sector analysis, and research methodology.
 
-INNOVATION PORTFOLIO (equal weight 20% each):
-RKLB (Space Infrastructure), SMCI (AI Hardware), VRT (Power Infrastructure), AVGO (Semiconductors), IONQ (Quantum Computing)
+You have knowledge of ${defaultPortfolios.length} model portfolios:
 
-ROBOTICS PORTFOLIO (equal weight ~33.33% each):
-ISRG (Surgical Robotics), FANUY (Factory Automation), PATH (Enterprise Automation)
+${portfolioDescriptions}
 
-AI INFRASTRUCTURE PORTFOLIO (equal weight 20% each):
-IREN (Data Center Mining), CORZ (Bitcoin Mining/HPC), CRWV (AI Cloud Infrastructure), APLD (Applied Digital - AI Compute), NBIS (Nebius - AI Infrastructure)
-
-ENERGY RENAISSANCE PORTFOLIO (equal weight 25% each):
-CEG (Constellation Energy - Nuclear Fleet), OKLO (Small Modular Reactors), VRT (Vertiv - Power Infrastructure), BWXT (BWX Technologies - Nuclear Components)
-
-PHYSICAL AI PORTFOLIO (equal weight 25% each):
-ISRG (Surgical Robotics), TER (Teradyne - Collaborative Robotics), RKLB (Rocket Lab - Space Systems), TSLA (Tesla - Optimus Robotics/Auto)
+RECENT RESEARCH NOTES:
+${researchDigest}
 
 PM Score Methodology:
 - 80-100: Strong Thesis — Well-supported structural trend, clear drivers
@@ -48,6 +65,10 @@ RULES:
 6. When discussing holdings, explain the THESIS behind why they're in the portfolio, not whether to trade them.
 7. You can discuss sectors, technology trends, competitive landscapes, and structural analysis.
 8. Always maintain PM Research's voice: forward-looking, structural, contrarian where warranted.`;
+}
+
+// Build once at module load — automatically reflects any portfolio/research changes on redeploy
+const SYSTEM_PROMPT = buildSystemPrompt();
 
 // Rate limiting - in-memory storage
 // WARNING: In-memory rate limiting is unreliable in serverless environments (Vercel/Netlify).
