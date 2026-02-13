@@ -18,7 +18,7 @@ import { ResearchNote } from "@/lib/portfolios";
 import { useResearch } from "@/context/ResearchContext";
 import { supabase } from "@/lib/supabase";
 
-const categories = ["Sector Analysis", "Risk Assessment", "Deep Dive"];
+const categories = ["Sector Analysis", "Deep Dive"];
 
 export default function AdminPage() {
     const [topic, setTopic] = useState("");

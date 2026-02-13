@@ -62,7 +62,6 @@ export function normalizeCategory(category: string): ResearchNote['category'] {
     const categoryMap: Record<string, ResearchNote['category']> = {
         'Emerging Trend': 'Deep Dive',
         'Alpha Signal': 'Deep Dive',
-        'Risk Alert': 'Risk Assessment',
     };
     return categoryMap[category] || (category as ResearchNote['category']);
 }
@@ -70,7 +69,6 @@ export function normalizeCategory(category: string): ResearchNote['category'] {
 // Normalize title to remove non-compliant prefixes
 export function normalizeTitle(title: string): string {
     return title
-        .replace(/^Risk Alert:/i, 'Risk Assessment:')
         .replace(/^Alpha Signal:/i, 'Deep Dive:');
 }
 
