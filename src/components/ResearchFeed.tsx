@@ -12,7 +12,6 @@ import {
     X,
     Search,
     LineChart,
-    AlertTriangle,
     Tag,
 } from "lucide-react";
 import Link from "next/link";
@@ -73,13 +72,11 @@ interface ResearchFeedProps {
 // Category styling maps
 const categoryStyles: Record<string, string> = {
     "Sector Analysis": "bg-pm-purple/10 text-pm-purple border-pm-purple/30",
-    "Risk Assessment": "bg-red-500/10 text-red-400 border-red-500/30",
     "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
 };
 
 const categoryIcons: Record<string, React.ReactNode> = {
     "Sector Analysis": <LineChart className="w-3 h-3" />,
-    "Risk Assessment": <AlertTriangle className="w-3 h-3" />,
     "Deep Dive": <Search className="w-3 h-3" />,
 };
 

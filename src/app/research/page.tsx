@@ -72,7 +72,7 @@ export default function ResearchPage() {
                     transition={{ delay: 0.1 }}
                     className="flex flex-wrap gap-2 mb-8"
                 >
-                    {["All", "Sector Analysis", "Risk Assessment", "Deep Dive"].map(
+                    {["All", "Sector Analysis", "Deep Dive"].map(
                         (category) => (
                             <button
                                 key={category}

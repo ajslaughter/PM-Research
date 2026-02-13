@@ -124,7 +124,7 @@ export interface ResearchNote {
     fullContent: string;
     date: string;
     pmScore: number;
-    category: "Sector Analysis" | "Risk Assessment" | "Deep Dive";
+    category: "Sector Analysis" | "Deep Dive";
     readTime: string;
     relatedTickers?: string[];
     author?: string;
@@ -332,31 +332,6 @@ The quantum computing thesis has transitioned from "technology bet" to "infrastr
         readTime: "12 min",
         relatedTickers: ["IONQ", "GOOGL"],
         author: "PM Research"
-    },
-    {
-        id: "r4",
-        title: "Risk Assessment: Automation Sector Headwinds",
-        summary: "Enterprise software spending deceleration impacting automation valuations.",
-        fullContent: `
-## Assessment Summary
-This report analyzes risk factors for the automation sector based on our enterprise spending analysis.
-
-## Key Concerns
-1. Budget cycles extending from Q1 to Q3
-2. AI co-pilot adoption cannibalizing RPA budgets
-3. Competition intensifying from hyperscaler offerings
-
-## Sector Impact
-- PATH: PM Score under review as thesis faces structural headwinds
-- Monitoring for further developments across the automation sector
-
-## Research Outlook
-The automation sector faces structural headwinds from AI co-pilot adoption. AI infrastructure companies may benefit from the same trends pressuring traditional automation names. Further analysis warranted as enterprise spending patterns evolve.
-    `,
-        date: "2026-01-08",
-        pmScore: 72,
-        category: "Risk Assessment",
-        readTime: "5 min",
     },
     {
         id: "r5",
