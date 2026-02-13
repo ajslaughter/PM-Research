@@ -89,6 +89,18 @@ export const spaceBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
+ * Quantum Computing Portfolio
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via Polygon.io / Yahoo Finance
+ */
+export const quantumBaselines: Record<string, BaselinePrice> = {
+  'IONQ': { ticker: 'IONQ', price: 44.87, date: BASELINE_DATE },
+  'RGTI': { ticker: 'RGTI', price: 22.15, date: BASELINE_DATE },
+  'QBTS': { ticker: 'QBTS', price: 26.15, date: BASELINE_DATE },
+  'QUBT': { ticker: 'QUBT', price: 10.33, date: BASELINE_DATE },
+};
+
+/**
  * Combined baseline lookup - All tracked assets
  * Use this for YTD calculations throughout the application
  */
@@ -98,6 +110,7 @@ export const baselines: Record<string, BaselinePrice> = {
   ...aiInfraBaselines,
   ...energyBaselines,
   ...spaceBaselines,
+  ...quantumBaselines,
 };
 
 /**

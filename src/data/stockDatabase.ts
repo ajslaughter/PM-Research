@@ -85,6 +85,12 @@ export const stockDatabase: Record<string, StockData> = {
   "LUNR": createStock("LUNR", "Intuitive Machines", "Space", "Industrials", 84, "2026-02-12"),
   "RDW": createStock("RDW", "Redwire Corporation", "Space", "Industrials", 80, "2026-02-12"),
   "PL": createStock("PL", "Planet Labs PBC", "Space", "Technology", 78, "2026-02-12"),
+
+  // Quantum Computing Portfolio
+  "IONQ": createStock("IONQ", "IonQ Inc.", "Quantum", "Technology", 82, "2026-02-13"),
+  "RGTI": createStock("RGTI", "Rigetti Computing", "Quantum", "Technology", 76, "2026-02-13"),
+  "QBTS": createStock("QBTS", "D-Wave Quantum Inc.", "Quantum", "Technology", 74, "2026-02-13"),
+  "QUBT": createStock("QUBT", "Quantum Computing Inc.", "Quantum", "Technology", 70, "2026-02-13"),
 };
 
 // Asset class color mapping for UI

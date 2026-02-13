@@ -9,7 +9,7 @@ export interface PortfolioPosition {
 }
 
 // Portfolio category for filtering
-export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space';
+export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum';
 
 // Portfolio structure
 export interface Portfolio {
@@ -25,6 +25,9 @@ export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBI
 
 // Energy Renaissance Portfolio Tickers
 export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT'];
+
+// Quantum Computing Portfolio Tickers
+export const Quantum_Portfolio = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
 
 // Default portfolios
 export const defaultPortfolios: Portfolio[] = [
@@ -96,6 +99,19 @@ export const defaultPortfolios: Portfolio[] = [
             { ticker: "RDW", weight: 15, thesis: "On-orbit manufacturing & space infrastructure; defense contracts" },
             { ticker: "PL", weight: 15, thesis: "Largest Earth observation satellite fleet; recurring data revenue" },
             { ticker: "TSLA", weight: 15, thesis: "SpaceX ecosystem adjacency; Starship manufacturing & Optimus for space" },
+        ],
+    },
+    {
+        id: "quantum",
+        name: "Quantum Computing Portfolio",
+        description: "Quantum Hardware, Software & Error Correction",
+        category: "Quantum",
+        positions: [
+            { ticker: "IONQ", weight: 25, thesis: "Pure-play trapped-ion leader; AQ 35 highest commercially available; expanding enterprise base" },
+            { ticker: "GOOGL", weight: 25, thesis: "Willow chip below-threshold error rates; quantum as free option on core business" },
+            { ticker: "RGTI", weight: 20, thesis: "Superconducting qubit architecture; hybrid classical-quantum cloud platform" },
+            { ticker: "QBTS", weight: 15, thesis: "Commercial quantum annealing systems; enterprise optimization workloads in production" },
+            { ticker: "QUBT", weight: 15, thesis: "Photonic quantum computing; thin-film lithium niobate technology for quantum networking" },
         ],
     },
 ];
