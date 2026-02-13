@@ -24,7 +24,7 @@ export interface Portfolio {
 export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS'];
 
 // Energy Renaissance Portfolio Tickers
-export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT'];
+export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR'];
 
 // Quantum Computing Portfolio Tickers
 export const Quantum_Portfolio = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
@@ -81,10 +81,12 @@ export const defaultPortfolios: Portfolio[] = [
         description: "Nuclear, Grid & Power Infrastructure",
         category: "Energy Renaissance",
         positions: [
-            { ticker: "CEG", weight: 25 },
-            { ticker: "OKLO", weight: 25 },
-            { ticker: "VRT", weight: 25 },
-            { ticker: "BWXT", weight: 25 },
+            { ticker: "CEG", weight: 17 },
+            { ticker: "OKLO", weight: 17 },
+            { ticker: "VRT", weight: 17 },
+            { ticker: "BWXT", weight: 17 },
+            { ticker: "SMR", weight: 16, thesis: "Only NRC-certified SMR design; Entra1 $25B partnership and TVA 6-GW program de-risk commercialization" },
+            { ticker: "PWR", weight: 16, thesis: "Largest U.S. electrical grid contractor; $2.5T grid modernization tailwind through 2035" },
         ],
     },
     {

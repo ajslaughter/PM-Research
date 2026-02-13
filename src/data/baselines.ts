@@ -73,6 +73,8 @@ export const energyBaselines: Record<string, BaselinePrice> = {
   'OKLO': { ticker: 'OKLO', price: 71.76, date: BASELINE_DATE },
   'VRT': { ticker: 'VRT', price: 169.47, date: BASELINE_DATE },
   'BWXT': { ticker: 'BWXT', price: 172.84, date: BASELINE_DATE },
+  'SMR': { ticker: 'SMR', price: 14.17, date: BASELINE_DATE },
+  'PWR': { ticker: 'PWR', price: 422.06, date: BASELINE_DATE },
 };
 
 /**
