@@ -172,6 +172,7 @@ body {
   animation: ticker 10s linear infinite;
 }
 
+
 /* Scanline Effect */
 .scanlines::before {
   content: "";

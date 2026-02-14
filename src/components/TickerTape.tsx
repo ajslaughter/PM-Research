@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 interface Ticker {
     symbol: string;
@@ -35,8 +35,6 @@ export function TickerTape() {
     const [tickers, setTickers] = useState<Ticker[]>([]);
     const [gainers, setGainers] = useState<Ticker[]>([]);
     const [losers, setLosers] = useState<Ticker[]>([]);
-    const firstRef = useRef<HTMLDivElement>(null);
-    const [scrollWidth, setScrollWidth] = useState(0);
 
     useEffect(() => {
         const load = async () => {
@@ -53,12 +51,6 @@ export function TickerTape() {
         const interval = setInterval(load, 60_000);
         return () => clearInterval(interval);
     }, []);
-
-    useEffect(() => {
-        if (firstRef.current) {
-            setScrollWidth(firstRef.current.scrollWidth);
-        }
-    }, [tickers, gainers, losers]);
 
     if (!tickers.length) return null;
 
@@ -79,18 +71,10 @@ export function TickerTape() {
 
     const all = [...content, ...movers];
 
-    // Duration scales with content width — ~300px per second (fast)
-    const duration = scrollWidth > 0 ? Math.max(10, scrollWidth / 300) : 30;
-
     return (
         <div className="w-full overflow-hidden bg-pm-black border-y border-pm-border/40 py-2 group">
-            <div
-                className="flex group-hover:[animation-play-state:paused]"
-                style={{
-                    animation: `ticker ${duration}s linear infinite`,
-                }}
-            >
-                <div ref={firstRef} className="flex shrink-0 items-center text-xs font-mono">
+            <div className="flex animate-ticker-wide group-hover:[animation-play-state:paused]">
+                <div className="flex shrink-0 items-center text-xs font-mono">
                     {all}
                 </div>
                 <div className="flex shrink-0 items-center text-xs font-mono" aria-hidden>
