@@ -122,7 +122,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "defense-intelligence",
-        name: "PLTR Defense Portfolio",
+        name: "Defense & Intelligence Portfolio",
         description: "Defense AI, Cybersecurity & Autonomous Systems",
         category: "Defense & Intelligence",
         positions: [
@@ -980,7 +980,7 @@ The risk is not that AI spending slows—it is that the market has already price
     },
     {
         id: "r14",
-        title: "Software-Defined Warfare: The PLTR Defense Tech Thesis",
+        title: "Software-Defined Warfare: The Defense Tech Thesis",
         summary: "Palantir's defense AI operating system anchors a structural shift from hardware-centric to software-defined warfare, creating a decade-long investment runway across cybersecurity, autonomous systems, and defense IT modernization.",
         fullContent: `## The Paradigm Shift
 
@@ -988,7 +988,7 @@ The defense sector is undergoing its most significant structural transformation 
 
 This is not a cyclical shift. It is a generational replatforming of how wars are fought, intelligence is gathered, and threats are countered. The companies positioned at this intersection of defense and technology represent a decade-long investment runway.
 
-### The PLTR Anchor Thesis
+### The Palantir Anchor Thesis
 
 Palantir Technologies has evolved from a niche intelligence community tool into the operating system for modern Western defense:
 
