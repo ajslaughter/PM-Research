@@ -10,10 +10,10 @@ interface Message {
 }
 
 const SUGGESTED_QUESTIONS = [
-    "What's in the Robotics portfolio?",
+    "What can I do on PM Live?",
+    "What's in the Defense & Intelligence portfolio?",
     "Explain the PM Score methodology",
-    "What's the thesis behind RKLB?",
-    "How are the model portfolios structured?",
+    "What features does PM Research offer?",
 ];
 
 const MAX_MESSAGES = 20;
