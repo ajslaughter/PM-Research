@@ -61,6 +61,7 @@ export const aiInfraBaselines: Record<string, BaselinePrice> = {
   'CRWV': { ticker: 'CRWV', price: 71.61, date: BASELINE_DATE },
   'APLD': { ticker: 'APLD', price: 24.52, date: BASELINE_DATE },
   'NBIS': { ticker: 'NBIS', price: 83.71, date: BASELINE_DATE },
+  'WULF': { ticker: 'WULF', price: 11.49, date: BASELINE_DATE },
 };
 
 /**

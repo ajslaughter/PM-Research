@@ -67,6 +67,7 @@ export const stockDatabase: Record<string, StockData> = {
   "CRWV": createStock("CRWV", "CoreWeave Inc.", "AI Infrastructure", "Technology", 88, "2026-01-31"),
   "APLD": createStock("APLD", "Applied Digital Corp", "AI Infrastructure", "Technology", 79, "2026-01-31"),
   "NBIS": createStock("NBIS", "Nebius Group N.V.", "AI Infrastructure", "Technology", 84, "2026-01-31"),
+  "WULF": createStock("WULF", "TeraWulf Inc.", "AI Infrastructure", "Technology", 81, "2026-02-14"),
 
   // Energy Renaissance Portfolio
   "CEG": createStock("CEG", "Constellation Energy", "Nuclear", "Energy", 90, "2026-01-31"),
