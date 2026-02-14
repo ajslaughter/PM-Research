@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface Ticker {
     symbol: string;
@@ -31,19 +31,12 @@ function TickerItem({ t }: { t: Ticker }) {
     );
 }
 
-// Speed in pixels per second
-const SPEED = 150;
-
 export function TickerTape() {
     const [tickers, setTickers] = useState<Ticker[]>([]);
     const [gainers, setGainers] = useState<Ticker[]>([]);
     const [losers, setLosers] = useState<Ticker[]>([]);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const firstRef = useRef<HTMLDivElement>(null);
-    const rafRef = useRef<number>(0);
-    const posRef = useRef(0);
-    const pausedRef = useRef(false);
-    const widthRef = useRef(0);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const innerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const load = async () => {
@@ -61,34 +54,36 @@ export function TickerTape() {
         return () => clearInterval(interval);
     }, []);
 
-    const animate = useCallback((prevTime: number) => {
-        rafRef.current = requestAnimationFrame((now) => {
-            if (!pausedRef.current && containerRef.current) {
-                const dt = (now - prevTime) / 1000;
-                posRef.current -= SPEED * dt;
-                if (widthRef.current > 0 && posRef.current <= -widthRef.current) {
-                    posRef.current += widthRef.current;
-                }
-                containerRef.current.style.transform = `translateX(${posRef.current}px)`;
-            }
-            animate(now);
-        });
-    }, []);
-
+    // Inject dynamic keyframes once we know the content width
     useEffect(() => {
-        if (!tickers.length) return;
-        // Measure after render
+        if (!innerRef.current || !tickers.length) return;
+        // Wait for fonts/layout
         const t = setTimeout(() => {
-            if (firstRef.current) {
-                widthRef.current = firstRef.current.offsetWidth;
+            const w = innerRef.current?.scrollWidth || 0;
+            if (w === 0) return;
+
+            const id = "ticker-keyframes";
+            let style = document.getElementById(id) as HTMLStyleElement | null;
+            if (!style) {
+                style = document.createElement("style");
+                style.id = id;
+                document.head.appendChild(style);
             }
-            animate(performance.now());
-        }, 100);
-        return () => {
-            clearTimeout(t);
-            cancelAnimationFrame(rafRef.current);
-        };
-    }, [tickers, gainers, losers, animate]);
+            // Translate by exact pixel width of one copy
+            style.textContent = `
+                @keyframes tickerScroll {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-${w}px); }
+                }
+            `;
+            if (scrollRef.current) {
+                // ~150px/s speed
+                const duration = w / 150;
+                scrollRef.current.style.animation = `tickerScroll ${duration}s linear infinite`;
+            }
+        }, 200);
+        return () => clearTimeout(t);
+    }, [tickers, gainers, losers]);
 
     if (!tickers.length) return null;
 
@@ -111,12 +106,13 @@ export function TickerTape() {
 
     return (
         <div
-            className="w-full overflow-hidden bg-pm-black border-y border-pm-border/40 py-2"
-            onMouseEnter={() => { pausedRef.current = true; }}
-            onMouseLeave={() => { pausedRef.current = false; }}
+            className="w-full overflow-hidden bg-pm-black border-y border-pm-border/40 py-2 group"
         >
-            <div ref={containerRef} className="flex will-change-transform">
-                <div ref={firstRef} className="flex shrink-0 items-center text-xs font-mono">
+            <div
+                ref={scrollRef}
+                className="flex group-hover:[animation-play-state:paused] will-change-transform"
+            >
+                <div ref={innerRef} className="flex shrink-0 items-center text-xs font-mono">
                     {all}
                 </div>
                 <div className="flex shrink-0 items-center text-xs font-mono" aria-hidden>
