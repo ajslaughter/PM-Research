@@ -168,6 +168,10 @@ body {
   animation: ticker 30s linear infinite;
 }
 
+.animate-ticker-wide {
+  animation: ticker 90s linear infinite;
+}
+
 /* Scanline Effect */
 .scanlines::before {
   content: "";

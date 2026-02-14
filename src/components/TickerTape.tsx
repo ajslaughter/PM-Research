@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 interface Ticker {
     symbol: string;
     name: string;
+    tag: string;
     price: number;
     change: number;
     changePct: number;
+    badge?: string;
 }
 
 function formatPrice(price: number): string {
@@ -31,6 +33,8 @@ function TickerItem({ t }: { t: Ticker }) {
 
 export function TickerTape() {
     const [tickers, setTickers] = useState<Ticker[]>([]);
+    const [gainers, setGainers] = useState<Ticker[]>([]);
+    const [losers, setLosers] = useState<Ticker[]>([]);
 
     useEffect(() => {
         const load = async () => {
@@ -39,6 +43,8 @@ export function TickerTape() {
                 if (!res.ok) return;
                 const json = await res.json();
                 if (json.tickers?.length) setTickers(json.tickers);
+                if (json.gainers?.length) setGainers(json.gainers);
+                if (json.losers?.length) setLosers(json.losers);
             } catch {}
         };
         load();
@@ -50,14 +56,29 @@ export function TickerTape() {
 
     const content = tickers.map((t, i) => <TickerItem key={i} t={t} />);
 
+    const separator = (label: string) => (
+        <span className="inline-flex items-center mx-4 whitespace-nowrap">
+            <span className="text-pm-border mx-2">│</span>
+            <span className="text-[10px] font-mono text-pm-muted uppercase tracking-widest">{label}</span>
+            <span className="text-pm-border mx-2">│</span>
+        </span>
+    );
+
+    const movers = [
+        ...gainers.length ? [separator("TOP GAINERS"), ...gainers.map((t, i) => <TickerItem key={`g${i}`} t={t} />)] : [],
+        ...losers.length ? [separator("TOP LOSERS"), ...losers.map((t, i) => <TickerItem key={`l${i}`} t={t} />)] : [],
+    ];
+
+    const all = [...content, ...movers];
+
     return (
         <div className="w-full overflow-hidden bg-pm-black border-y border-pm-border/40 py-2 group">
-            <div className="flex animate-ticker group-hover:[animation-play-state:paused]">
+            <div className="flex animate-ticker-wide group-hover:[animation-play-state:paused]">
                 <div className="flex shrink-0 items-center text-xs font-mono">
-                    {content}
+                    {all}
                 </div>
                 <div className="flex shrink-0 items-center text-xs font-mono" aria-hidden>
-                    {content}
+                    {all}
                 </div>
             </div>
         </div>
