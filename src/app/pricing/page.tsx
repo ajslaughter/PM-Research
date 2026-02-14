@@ -35,7 +35,7 @@ export default function PricingPage() {
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full mb-6">
                         <Sparkles className="w-4 h-4 text-pm-green" />
-                        <span className="text-sm font-mono text-pm-muted">
+                        <span className="text-sm font-medium tracking-wide text-pm-muted">
                             100% Free Access
                         </span>
                     </div>

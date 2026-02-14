@@ -34,7 +34,7 @@ export default function Navbar() {
                                 <Zap className="w-8 h-8 text-pm-green" />
                                 <div className="absolute inset-0 blur-md bg-pm-green/30 group-hover:bg-pm-green/50 transition-colors" />
                             </div>
-                            <span className="font-mono text-xl font-bold tracking-tight">
+                            <span className="text-xl font-extrabold tracking-tight">
                                 <span className="text-pm-green">PM</span>
                                 <span className="text-pm-text">Research</span>
                             </span>

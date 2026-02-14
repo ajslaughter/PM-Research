@@ -1,8 +1,116 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot, Send, Sparkles, RefreshCw } from "lucide-react";
+import React from "react";
+
+/**
+ * Lightweight markdown renderer for bot messages.
+ * Handles: **bold**, *italic*, `code`, headings, lists, and line breaks.
+ */
+function renderMarkdown(text: string): React.ReactNode {
+    const lines = text.split("\n");
+    const elements: React.ReactNode[] = [];
+    let listItems: React.ReactNode[] = [];
+    let listType: "ul" | "ol" | null = null;
+    let key = 0;
+
+    const flushList = () => {
+        if (listItems.length > 0 && listType) {
+            const Tag = listType;
+            elements.push(
+                <Tag key={key++} className={listType === "ul" ? "list-disc pl-5" : "list-decimal pl-5"}>
+                    {listItems}
+                </Tag>
+            );
+            listItems = [];
+            listType = null;
+        }
+    };
+
+    const renderInline = (str: string): React.ReactNode => {
+        // Process inline markdown: **bold**, *italic*, `code`
+        const parts: React.ReactNode[] = [];
+        const regex = /(\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`)/g;
+        let lastIndex = 0;
+        let match;
+
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIndex) {
+                parts.push(str.slice(lastIndex, match.index));
+            }
+            if (match[2]) {
+                parts.push(<strong key={`b${match.index}`}>{match[2]}</strong>);
+            } else if (match[3]) {
+                parts.push(<em key={`i${match.index}`}>{match[3]}</em>);
+            } else if (match[4]) {
+                parts.push(<code key={`c${match.index}`}>{match[4]}</code>);
+            }
+            lastIndex = match.index + match[0].length;
+        }
+
+        if (lastIndex < str.length) {
+            parts.push(str.slice(lastIndex));
+        }
+
+        return parts.length === 1 ? parts[0] : parts;
+    };
+
+    for (const line of lines) {
+        const trimmed = line.trim();
+
+        // Heading
+        if (trimmed.startsWith("### ")) {
+            flushList();
+            elements.push(<h3 key={key++}>{renderInline(trimmed.slice(4))}</h3>);
+        } else if (trimmed.startsWith("## ")) {
+            flushList();
+            elements.push(<h2 key={key++}>{renderInline(trimmed.slice(3))}</h2>);
+        } else if (trimmed.startsWith("# ")) {
+            flushList();
+            elements.push(<h1 key={key++}>{renderInline(trimmed.slice(2))}</h1>);
+        }
+        // Unordered list item
+        else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+            if (listType !== "ul") {
+                flushList();
+                listType = "ul";
+            }
+            listItems.push(<li key={key++}>{renderInline(trimmed.slice(2))}</li>);
+        }
+        // Ordered list item
+        else if (/^\d+\.\s/.test(trimmed)) {
+            if (listType !== "ol") {
+                flushList();
+                listType = "ol";
+            }
+            listItems.push(<li key={key++}>{renderInline(trimmed.replace(/^\d+\.\s/, ""))}</li>);
+        }
+        // Horizontal rule
+        else if (trimmed === "---" || trimmed === "***") {
+            flushList();
+            elements.push(<hr key={key++} />);
+        }
+        // Empty line
+        else if (trimmed === "") {
+            flushList();
+        }
+        // Regular paragraph
+        else {
+            flushList();
+            elements.push(<p key={key++}>{renderInline(trimmed)}</p>);
+        }
+    }
+
+    flushList();
+    return elements;
+}
+
+function BotMessage({ content }: { content: string }) {
+    const rendered = useMemo(() => renderMarkdown(content), [content]);
+    return <div className="bot-prose">{rendered}</div>;
+}
 
 interface Message {
     role: "user" | "model";
@@ -131,7 +239,7 @@ export default function PMbotPage() {
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full mb-4">
                         <Sparkles className="w-4 h-4 text-pm-green" />
-                        <span className="text-sm font-mono text-pm-muted">AI Research Assistant</span>
+                        <span className="text-sm font-medium text-pm-muted tracking-wide">AI Research Assistant</span>
                     </div>
                     <h1 className="text-3xl md:text-4xl font-bold mb-2">
                         <span className="text-pm-green">PM</span>
@@ -190,11 +298,15 @@ export default function PMbotPage() {
                                             <div
                                                 className={`max-w-[80%] px-4 py-3 rounded-2xl ${
                                                     message.role === "user"
-                                                        ? "bg-pm-green text-pm-black rounded-br-md"
-                                                        : "bg-pm-charcoal border border-pm-border text-pm-text rounded-bl-md font-mono text-sm"
+                                                        ? "bg-pm-green text-pm-black rounded-br-md font-medium"
+                                                        : "bg-pm-charcoal border border-pm-border text-pm-text rounded-bl-md"
                                                 }`}
                                             >
-                                                <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                                                {message.role === "model" ? (
+                                                    <BotMessage content={message.content} />
+                                                ) : (
+                                                    <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                                                )}
                                             </div>
                                         </motion.div>
                                     ))}

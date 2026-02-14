@@ -261,7 +261,7 @@ export default function AdminPage() {
                                 <span className="font-medium">Preview</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 bg-pm-green/10 border border-pm-green/30 rounded text-pm-green text-sm font-mono">
+                                <span className="px-3 py-1 bg-pm-green/10 border border-pm-green/30 rounded text-pm-green text-sm font-semibold tabular-nums">
                                     PM Score: {generatedArticle.pmScore}
                                 </span>
                                 <span className="px-3 py-1 bg-pm-purple/10 border border-pm-purple/30 rounded text-pm-purple text-sm">
@@ -278,7 +278,7 @@ export default function AdminPage() {
                                 {generatedArticle.relatedTickers.map((ticker) => (
                                     <span
                                         key={ticker}
-                                        className="px-2 py-1 bg-pm-charcoal border border-pm-border rounded text-xs font-mono text-pm-green"
+                                        className="px-2 py-1 bg-pm-charcoal border border-pm-border rounded text-xs font-semibold text-pm-green"
                                     >
                                         ${ticker}
                                     </span>
@@ -293,7 +293,7 @@ export default function AdminPage() {
                                         return <h2 key={i} className="text-xl mt-6 mb-3 border-l-2 border-pm-green pl-4">{line.replace('## ', '')}</h2>;
                                     }
                                     if (line.startsWith('### ')) {
-                                        return <h3 key={i} className="text-lg mt-4 mb-2 text-pm-purple font-mono">{line.replace('### ', '')}</h3>;
+                                        return <h3 key={i} className="text-lg mt-4 mb-2 text-pm-purple font-semibold">{line.replace('### ', '')}</h3>;
                                     }
                                     if (line.startsWith('* ')) {
                                         return <li key={i} className="ml-4 list-disc marker:text-pm-green pl-2 mb-1">{line.replace('* ', '')}</li>;

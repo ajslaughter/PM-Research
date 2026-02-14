@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -24,7 +24,10 @@ body {
   overflow-x: hidden;
   background-color: var(--pm-black);
   color: #ffffff;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Custom Scrollbar - Cyberpunk Style */
@@ -63,11 +66,11 @@ body {
   }
 
   .status-open {
-    @apply text-pm-green bg-pm-green/10 px-2 py-1 rounded text-xs font-mono;
+    @apply text-pm-green bg-pm-green/10 px-2 py-1 rounded text-xs font-medium tracking-wide;
   }
 
   .status-closed {
-    @apply text-pm-muted bg-pm-subtle/30 px-2 py-1 rounded text-xs font-mono;
+    @apply text-pm-muted bg-pm-subtle/30 px-2 py-1 rounded text-xs font-medium tracking-wide;
   }
 
   .return-positive {
@@ -127,8 +130,52 @@ body {
 
   /* PM Score Badge */
   .pm-score {
-    @apply inline-flex items-center gap-1 bg-pm-purple/20 text-pm-purple 
-           px-2 py-1 rounded text-xs font-mono font-medium;
+    @apply inline-flex items-center gap-1 bg-pm-purple/20 text-pm-purple
+           px-2 py-1 rounded text-xs font-semibold tabular-nums;
+  }
+
+  /* PM Bot Message Prose - clean, readable bot responses */
+  .bot-prose {
+    @apply text-[15px] leading-relaxed text-pm-text/90;
+  }
+
+  .bot-prose p {
+    @apply mb-3 last:mb-0;
+  }
+
+  .bot-prose strong {
+    @apply text-pm-green font-semibold;
+  }
+
+  .bot-prose em {
+    @apply text-pm-text italic;
+  }
+
+  .bot-prose code {
+    @apply bg-pm-black/60 text-pm-green px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  .bot-prose ul,
+  .bot-prose ol {
+    @apply mb-3 last:mb-0 space-y-1.5;
+  }
+
+  .bot-prose li {
+    @apply pl-1;
+  }
+
+  .bot-prose h1,
+  .bot-prose h2,
+  .bot-prose h3 {
+    @apply font-bold text-white mt-4 mb-2 first:mt-0;
+  }
+
+  .bot-prose h1 { @apply text-lg; }
+  .bot-prose h2 { @apply text-base; }
+  .bot-prose h3 { @apply text-sm text-pm-green; }
+
+  .bot-prose hr {
+    @apply border-pm-border my-3;
   }
 }
 
