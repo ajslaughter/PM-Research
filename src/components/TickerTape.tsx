@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface Ticker {
     symbol: string;
@@ -31,10 +31,19 @@ function TickerItem({ t }: { t: Ticker }) {
     );
 }
 
+// Speed in pixels per second
+const SPEED = 150;
+
 export function TickerTape() {
     const [tickers, setTickers] = useState<Ticker[]>([]);
     const [gainers, setGainers] = useState<Ticker[]>([]);
     const [losers, setLosers] = useState<Ticker[]>([]);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const firstRef = useRef<HTMLDivElement>(null);
+    const rafRef = useRef<number>(0);
+    const posRef = useRef(0);
+    const pausedRef = useRef(false);
+    const widthRef = useRef(0);
 
     useEffect(() => {
         const load = async () => {
@@ -52,12 +61,41 @@ export function TickerTape() {
         return () => clearInterval(interval);
     }, []);
 
+    const animate = useCallback((prevTime: number) => {
+        rafRef.current = requestAnimationFrame((now) => {
+            if (!pausedRef.current && containerRef.current) {
+                const dt = (now - prevTime) / 1000;
+                posRef.current -= SPEED * dt;
+                if (widthRef.current > 0 && posRef.current <= -widthRef.current) {
+                    posRef.current += widthRef.current;
+                }
+                containerRef.current.style.transform = `translateX(${posRef.current}px)`;
+            }
+            animate(now);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!tickers.length) return;
+        // Measure after render
+        const t = setTimeout(() => {
+            if (firstRef.current) {
+                widthRef.current = firstRef.current.offsetWidth;
+            }
+            animate(performance.now());
+        }, 100);
+        return () => {
+            clearTimeout(t);
+            cancelAnimationFrame(rafRef.current);
+        };
+    }, [tickers, gainers, losers, animate]);
+
     if (!tickers.length) return null;
 
     const content = tickers.map((t, i) => <TickerItem key={i} t={t} />);
 
     const separator = (label: string) => (
-        <span className="inline-flex items-center mx-4 whitespace-nowrap">
+        <span key={label} className="inline-flex items-center mx-4 whitespace-nowrap">
             <span className="text-pm-border mx-2">│</span>
             <span className="text-[10px] font-mono text-pm-muted uppercase tracking-widest">{label}</span>
             <span className="text-pm-border mx-2">│</span>
@@ -72,9 +110,13 @@ export function TickerTape() {
     const all = [...content, ...movers];
 
     return (
-        <div className="w-full overflow-hidden bg-pm-black border-y border-pm-border/40 py-2 group">
-            <div className="flex animate-ticker-wide group-hover:[animation-play-state:paused]">
-                <div className="flex shrink-0 items-center text-xs font-mono">
+        <div
+            className="w-full overflow-hidden bg-pm-black border-y border-pm-border/40 py-2"
+            onMouseEnter={() => { pausedRef.current = true; }}
+            onMouseLeave={() => { pausedRef.current = false; }}
+        >
+            <div ref={containerRef} className="flex will-change-transform">
+                <div ref={firstRef} className="flex shrink-0 items-center text-xs font-mono">
                     {all}
                 </div>
                 <div className="flex shrink-0 items-center text-xs font-mono" aria-hidden>

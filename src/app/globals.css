@@ -169,7 +169,7 @@ body {
 }
 
 .animate-ticker-wide {
-  animation: ticker 30s linear infinite;
+  /* not used — ticker uses inline JS animation */
 }
 
 
