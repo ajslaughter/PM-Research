@@ -37,6 +37,7 @@ const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
     'AI Infrastructure',
     'Energy Renaissance',
     'Orbital & Space',
+    'Defense & Intelligence',
 ];
 
 // Props for the component
