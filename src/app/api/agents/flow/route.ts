@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
             }));
 
         // Max pain calculation
-        const strikes = [...new Set([...calls.map((c) => c.strike), ...puts.map((p) => p.strike)])].sort((a, b) => a - b);
+        const strikes = Array.from(new Set([...calls.map((c) => c.strike), ...puts.map((p) => p.strike)])).sort((a, b) => a - b);
 
         let maxPainStrike = quote.regularMarketPrice || 0;
         let minPain = Infinity;
