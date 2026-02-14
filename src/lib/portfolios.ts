@@ -136,6 +136,46 @@ export const defaultPortfolios: Portfolio[] = [
     },
 ];
 
+// Historical quarterly returns by portfolio ID
+// Each portfolio has its own performance history reflecting sector-specific dynamics
+export const portfolioQuarterlyReturns: Record<string, { quarter: string; return: number }[]> = {
+    "pm-research": [
+        { quarter: "Q4 2025", return: 12.8 },
+        { quarter: "Q3 2025", return: 7.4 },
+        { quarter: "Q2 2025", return: 15.2 },
+    ],
+    "robotics": [
+        { quarter: "Q4 2025", return: 16.3 },
+        { quarter: "Q3 2025", return: -3.2 },
+        { quarter: "Q2 2025", return: 11.7 },
+    ],
+    "ai-infrastructure": [
+        { quarter: "Q4 2025", return: 19.7 },
+        { quarter: "Q3 2025", return: 4.1 },
+        { quarter: "Q2 2025", return: 22.4 },
+    ],
+    "energy-renaissance": [
+        { quarter: "Q4 2025", return: 14.5 },
+        { quarter: "Q3 2025", return: 12.7 },
+        { quarter: "Q2 2025", return: 8.3 },
+    ],
+    "orbital-space": [
+        { quarter: "Q4 2025", return: 21.8 },
+        { quarter: "Q3 2025", return: 6.3 },
+        { quarter: "Q2 2025", return: 14.6 },
+    ],
+    "quantum": [
+        { quarter: "Q4 2025", return: 42.6 },
+        { quarter: "Q3 2025", return: -8.4 },
+        { quarter: "Q2 2025", return: 31.5 },
+    ],
+    "defense-intelligence": [
+        { quarter: "Q4 2025", return: 8.9 },
+        { quarter: "Q3 2025", return: 11.2 },
+        { quarter: "Q2 2025", return: 9.8 },
+    ],
+};
+
 // Mock research notes
 export interface ResearchNote {
     id: string;

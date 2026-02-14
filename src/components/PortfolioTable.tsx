@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
 import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
-import { PortfolioCategory } from "@/lib/portfolios";
+import { PortfolioCategory, portfolioQuarterlyReturns } from "@/lib/portfolios";
 import SectorBadge from "@/components/SectorBadge";
 import {
     TrendingUp,
@@ -285,12 +285,15 @@ export default function PortfolioTable({
     const avgPmScore = calculateAvgPmScore(positions, stockDb);
     const totalWeight = positions.reduce((acc, p) => acc + p.weight, 0);
 
-    // Corrected Quarterly Performance for 2025
+    // Quarterly Performance - historical returns are per-portfolio
+    const historicalReturns = currentPortfolio ? portfolioQuarterlyReturns[currentPortfolio.id] : undefined;
     const quarterlyPerformance = [
         { quarter: "Q1 2026", return: weightedYTD, isCurrent: true },
-        { quarter: "Q4 2025", return: 14.2, isCurrent: false },
-        { quarter: "Q3 2025", return: 9.1, isCurrent: false },
-        { quarter: "Q2 2025", return: 18.5, isCurrent: false },
+        ...(historicalReturns || []).map((q) => ({
+            quarter: q.quarter,
+            return: q.return,
+            isCurrent: false,
+        })),
     ];
 
     // Format the last updated time
