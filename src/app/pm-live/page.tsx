@@ -25,6 +25,7 @@ import {
     ReferenceLine,
 } from "recharts";
 import { AgentTabs } from "@/components/agents/AgentTabs";
+import { TickerTape } from "@/components/TickerTape";
 
 // Market indices/assets to chart
 const CHART_SYMBOLS = [
@@ -316,6 +317,9 @@ export default function PMLivePage() {
                             Real-time market performance across major indices and assets.
                         </p>
                     </motion.div>
+
+                    {/* Ticker Tape */}
+                    <TickerTape />
 
                     {/* Market Performance Chart */}
                     <motion.div
