@@ -169,7 +169,7 @@ body {
 }
 
 .animate-ticker-wide {
-  animation: ticker 45s linear infinite;
+  animation: ticker 10s linear infinite;
 }
 
 /* Scanline Effect */
