@@ -59,8 +59,6 @@ export const stockDatabase: Record<string, StockData> = {
   // Robotics Portfolio
   "ISRG": createStock("ISRG", "Intuitive Surgical", "Auto/Robotics", "Healthcare", 91, "2026-01-29"),
   "FANUY": createStock("FANUY", "Fanuc Corporation", "Auto/Robotics", "Industrials", 80, "2026-01-29"),
-  "PATH": createStock("PATH", "UiPath Inc.", "Auto/Robotics", "Technology", 75, "2026-01-29"),
-
   // AI Infrastructure Portfolio
   "IREN": createStock("IREN", "Iris Energy Limited", "AI Infrastructure", "Technology", 85, "2026-01-31"),
   "CORZ": createStock("CORZ", "Core Scientific Inc.", "AI Infrastructure", "Technology", 82, "2026-01-31"),

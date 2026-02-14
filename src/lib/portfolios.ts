@@ -57,12 +57,11 @@ export const defaultPortfolios: Portfolio[] = [
         description: "Automation & Robotics",
         category: "Magnificent 7",
         positions: [
-            { ticker: "ISRG", weight: 17, thesis: "da Vinci monopoly in surgical robotics; expanding procedures" },
-            { ticker: "FANUY", weight: 17, thesis: "Global leader in factory automation; CNC and servo moat" },
-            { ticker: "PATH", weight: 17, thesis: "Enterprise RPA platform; AI-driven process automation" },
-            { ticker: "TER", weight: 17, thesis: "Universal Robots dominant in cobots; test automation moat" },
-            { ticker: "TSLA", weight: 16, thesis: "Optimus humanoid + FSD; robotics optionality underpriced" },
-            { ticker: "SYM", weight: 16, thesis: "AI-powered warehouse robotics; end-to-end automation for supply chain logistics" },
+            { ticker: "ISRG", weight: 20, thesis: "da Vinci monopoly in surgical robotics; expanding procedures" },
+            { ticker: "FANUY", weight: 20, thesis: "Global leader in factory automation; CNC and servo moat" },
+            { ticker: "TER", weight: 20, thesis: "Universal Robots dominant in cobots; test automation moat" },
+            { ticker: "TSLA", weight: 20, thesis: "Optimus humanoid + FSD; robotics optionality underpriced" },
+            { ticker: "SYM", weight: 20, thesis: "AI-powered warehouse robotics; end-to-end automation for supply chain logistics" },
         ],
     },
     {
