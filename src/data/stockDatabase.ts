@@ -94,6 +94,14 @@ export const stockDatabase: Record<string, StockData> = {
   "RGTI": createStock("RGTI", "Rigetti Computing", "Quantum", "Technology", 76, "2026-02-13"),
   "QBTS": createStock("QBTS", "D-Wave Quantum Inc.", "Quantum", "Technology", 74, "2026-02-13"),
   "QUBT": createStock("QUBT", "Quantum Computing Inc.", "Quantum", "Technology", 70, "2026-02-13"),
+
+  // Defense & Intelligence Portfolio
+  "PLTR": createStock("PLTR", "Palantir Technologies", "Defense/AI", "Technology", 93, "2026-02-14"),
+  "CRWD": createStock("CRWD", "CrowdStrike Holdings", "Cybersecurity", "Technology", 90, "2026-02-14"),
+  "PANW": createStock("PANW", "Palo Alto Networks", "Cybersecurity", "Technology", 88, "2026-02-14"),
+  "KTOS": createStock("KTOS", "Kratos Defense & Security", "Defense/AI", "Industrials", 84, "2026-02-14"),
+  "BAH": createStock("BAH", "Booz Allen Hamilton", "Defense/AI", "Technology", 82, "2026-02-14"),
+  "LDOS": createStock("LDOS", "Leidos Holdings", "Defense/AI", "Technology", 80, "2026-02-14"),
 };
 
 // Asset class color mapping for UI
@@ -112,4 +120,6 @@ export const assetClassColors: Record<string, string> = {
   "Data Center": "bg-teal-500/20 text-teal-400 border-teal-500/30",
   "AI Infrastructure": "bg-amber-500/20 text-amber-400 border-amber-500/30",
   "Nuclear": "bg-lime-500/20 text-lime-400 border-lime-500/30",
+  "Defense/AI": "bg-rose-500/20 text-rose-400 border-rose-500/30",
+  "Cybersecurity": "bg-sky-500/20 text-sky-400 border-sky-500/30",
 };

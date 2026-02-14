@@ -9,7 +9,7 @@ export interface PortfolioPosition {
 }
 
 // Portfolio category for filtering
-export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum';
+export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence';
 
 // Portfolio structure
 export interface Portfolio {
@@ -28,6 +28,9 @@ export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR'
 
 // Quantum Computing Portfolio Tickers
 export const Quantum_Portfolio = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
+
+// Defense & Intelligence Portfolio Tickers
+export const Defense_Intelligence_Portfolio = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
 
 // Default portfolios
 export const defaultPortfolios: Portfolio[] = [
@@ -115,6 +118,20 @@ export const defaultPortfolios: Portfolio[] = [
             { ticker: "RGTI", weight: 20, thesis: "Superconducting qubit architecture; hybrid classical-quantum cloud platform" },
             { ticker: "QBTS", weight: 15, thesis: "Commercial quantum annealing systems; enterprise optimization workloads in production" },
             { ticker: "QUBT", weight: 15, thesis: "Photonic quantum computing; thin-film lithium niobate technology for quantum networking" },
+        ],
+    },
+    {
+        id: "defense-intelligence",
+        name: "PLTR Defense Portfolio",
+        description: "Defense AI, Cybersecurity & Autonomous Systems",
+        category: "Defense & Intelligence",
+        positions: [
+            { ticker: "PLTR", weight: 25, thesis: "Defense AI operating system; Gotham/AIP embedded across DoD, IC, NATO; TITAN Army contract" },
+            { ticker: "CRWD", weight: 20, thesis: "Endpoint cybersecurity standard for federal agencies; FedRAMP High; Zero Trust mandate" },
+            { ticker: "PANW", weight: 17, thesis: "Network/cloud security & SASE for government; platformization consolidates defense cyber spend" },
+            { ticker: "KTOS", weight: 15, thesis: "Autonomous drones (Valkyrie/XQ-58A); hypersonic targets; C5ISR defense tech disruptor" },
+            { ticker: "BAH", weight: 13, thesis: "Defense AI/ML consulting; bridges cutting-edge tech to government adoption at scale" },
+            { ticker: "LDOS", weight: 10, thesis: "Largest defense IT contractor; $37B+ backlog; digital transformation & cyber operations" },
         ],
     },
 ];
@@ -959,6 +976,101 @@ The risk is not that AI spending slows—it is that the market has already price
         category: "Deep Dive",
         readTime: "14 min",
         relatedTickers: ["NVDA", "TSM", "AVGO", "AMD", "MSFT", "GOOGL", "AMZN", "ORCL", "META", "SMCI"],
+        author: "PM Research"
+    },
+    {
+        id: "r14",
+        title: "Software-Defined Warfare: The PLTR Defense Tech Thesis",
+        summary: "Palantir's defense AI operating system anchors a structural shift from hardware-centric to software-defined warfare, creating a decade-long investment runway across cybersecurity, autonomous systems, and defense IT modernization.",
+        fullContent: `## The Paradigm Shift
+
+The defense sector is undergoing its most significant structural transformation since the Cold War. The Pentagon's budget priority has shifted from hardware platforms (ships, tanks, aircraft) to software, AI, and autonomous systems. The FY2026 defense budget allocates $17.4B to science and technology—a record—with AI, cyber, and autonomous systems as the three largest growth categories.
+
+This is not a cyclical shift. It is a generational replatforming of how wars are fought, intelligence is gathered, and threats are countered. The companies positioned at this intersection of defense and technology represent a decade-long investment runway.
+
+### The PLTR Anchor Thesis
+
+Palantir Technologies has evolved from a niche intelligence community tool into the operating system for modern Western defense:
+
+*   **Gotham Platform:** Deployed across the DoD, Five Eyes intelligence alliance, and NATO. Gotham integrates signals intelligence, geospatial data, and operational planning into a single decision-making layer. It is the connective tissue between sensors and shooters.
+*   **AIP (Artificial Intelligence Platform):** Launched in 2023, AIP enables military operators to deploy AI models directly on classified networks. The "AI bootcamp" model—hands-on workshops with military units—has generated over $1B in contracted value since inception.
+*   **TITAN Contract:** The U.S. Army's $618M TITAN (Tactical Intelligence Targeting Access Node) contract positions Palantir as the integrator for next-generation ground-based targeting. This is not a one-off contract—it is a program of record with multi-decade sustainment revenue.
+*   **NATO Expansion:** Palantir has secured contracts with 20+ NATO member nations, creating a coalition-wide data fabric that becomes more valuable as more allies adopt the platform. Network effects in defense software are unprecedented.
+
+PM Score: 93. The combination of platform stickiness, expanding TAM, and classified revenue visibility makes PLTR the highest-conviction defense tech name.
+
+## Cybersecurity: The Fastest-Growing Domain of Warfare
+
+Nation-state cyber attacks have increased 300% since 2020. The DoD's Zero Trust mandate requires all systems to achieve zero-trust architecture by 2027. This creates a structural demand tailwind for cybersecurity platforms with federal authorization.
+
+### CrowdStrike (CRWD) — PM Score: 90
+
+CrowdStrike's Falcon platform has become the endpoint security standard for federal agencies:
+
+*   **FedRAMP High Authorization:** The highest level of cloud security certification, enabling deployment across classified and unclassified DoD networks.
+*   **Charlotte AI:** CrowdStrike's generative AI security analyst, purpose-built for threat hunting and incident response. Reduces mean time to detect from hours to seconds.
+*   **Federal Revenue Growth:** Government segment growing 40%+ YoY, outpacing commercial. The July 2024 outage created a buying opportunity that the market has overcorrected—the technology moat remains intact.
+
+### Palo Alto Networks (PANW) — PM Score: 88
+
+Complementary to CrowdStrike (network security vs. endpoint), Palo Alto's platformization strategy consolidates defense cyber spend:
+
+*   **SASE & Zero Trust:** Prisma Access and Prisma Cloud provide the network security fabric for DoD's zero-trust transition.
+*   **DISA Contracts:** Defense Information Systems Agency contracts provide direct access to DoD network infrastructure modernization.
+*   **Platformization:** The strategy of consolidating 30+ point security products into a single platform aligns with DoD procurement modernization goals (reduce vendor sprawl, improve interoperability).
+
+## Autonomous Systems: The Next Battlefield
+
+The Ukraine conflict has demonstrated that autonomous and semi-autonomous systems are not future warfare—they are current warfare. The DoD's Replicator initiative aims to deploy thousands of autonomous systems across all domains by 2026.
+
+### Kratos Defense & Security (KTOS) — PM Score: 84
+
+Kratos represents the purest play on autonomous military systems:
+
+*   **Valkyrie (XQ-58A):** The Air Force's autonomous collaborative combat aircraft. Designed to fly alongside manned fighters as "loyal wingmen," Valkyrie can conduct ISR, electronic warfare, and strike missions at a fraction of the cost of manned aircraft ($3M per unit vs. $80M for an F-35).
+*   **Hypersonic Targets:** Kratos is the leading provider of hypersonic target drones for DoD testing. As hypersonic threats proliferate (China, Russia), testing demand creates a durable revenue stream.
+*   **C5ISR Systems:** Command, control, communications, computers, cyber, intelligence, surveillance, and reconnaissance—the backbone of modern battlefield networks.
+
+The Valkyrie program alone could be worth $10B+ over the next decade if the USAF moves to full-rate production of autonomous wingmen.
+
+## Defense IT Modernization: The Infrastructure Layer
+
+### Booz Allen Hamilton (BAH) — PM Score: 82
+
+Booz Allen is the brain trust that bridges cutting-edge technology to government adoption:
+
+*   **AI/ML Practice:** The largest AI/ML consulting practice in the federal sector. BAH teams embed directly with military units to deploy AI capabilities in operationally relevant timeframes.
+*   **Digital Transformation:** Modernizing legacy defense IT systems (many dating to the 1980s-90s) into cloud-native, AI-ready architectures.
+*   **Cyber Operations:** Offensive and defensive cyber capabilities for the intelligence community and DoD.
+
+### Leidos Holdings (LDOS) — PM Score: 80
+
+The largest pure-play defense IT contractor with unmatched scale:
+
+*   **$37B+ Backlog:** Provides multi-year revenue visibility across defense, intelligence, and civil government.
+*   **Digital Modernization:** Prime contractor on multiple DoD IT infrastructure programs including enterprise cloud migration and network modernization.
+*   **Cyber & Intelligence:** Deep presence in classified programs for the intelligence community.
+
+## Risk Factors
+
+*   **Budget Uncertainty:** Defense budgets face continuing resolution risk and potential sequestration in future administrations.
+*   **Valuation Premium:** PLTR trades at elevated multiples (50x+ forward revenue); any growth deceleration creates significant downside.
+*   **Procurement Cycles:** Government contracting timelines remain slow; program of record status takes years to achieve.
+*   **Classification Opacity:** Classified revenue streams limit transparency for fundamental analysis.
+*   **Concentration Risk:** Heavy reliance on U.S. DoD; allied nation adoption is growing but remains early-stage.
+
+## Thesis Conclusion
+
+The defense sector's transformation from hardware to software creates a structural investment opportunity that will unfold over the next decade. Palantir sits at the center as the AI operating system, supported by cybersecurity leaders (CrowdStrike, Palo Alto Networks), autonomous systems disruptors (Kratos), and defense IT modernizers (Booz Allen, Leidos).
+
+The portfolio is designed for a 10-year horizon: PLTR provides the growth engine and platform optionality, cybersecurity names capture the Zero Trust mandate cycle, Kratos offers asymmetric upside on autonomous warfare adoption, and BAH/LDOS provide ballast through contracted government revenue.
+
+PM Score: 91. High-conviction structural thesis with defense modernization as a multi-decade tailwind.`,
+        date: "2026-02-14",
+        pmScore: 91,
+        category: "Deep Dive",
+        readTime: "15 min",
+        relatedTickers: ["PLTR", "CRWD", "PANW", "KTOS", "BAH", "LDOS"],
         author: "PM Research"
     },
 ];

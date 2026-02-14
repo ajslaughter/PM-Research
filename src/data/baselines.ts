@@ -104,6 +104,20 @@ export const quantumBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
+ * Defense & Intelligence Portfolio
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via StockAnalysis / Yahoo Finance
+ */
+export const defenseBaselines: Record<string, BaselinePrice> = {
+  'PLTR': { ticker: 'PLTR', price: 177.75, date: BASELINE_DATE },
+  'CRWD': { ticker: 'CRWD', price: 468.76, date: BASELINE_DATE },
+  'PANW': { ticker: 'PANW', price: 184.20, date: BASELINE_DATE },
+  'KTOS': { ticker: 'KTOS', price: 77.00, date: BASELINE_DATE },
+  'BAH': { ticker: 'BAH', price: 84.36, date: BASELINE_DATE },
+  'LDOS': { ticker: 'LDOS', price: 180.40, date: BASELINE_DATE },
+};
+
+/**
  * Combined baseline lookup - All tracked assets
  * Use this for YTD calculations throughout the application
  */
@@ -114,6 +128,7 @@ export const baselines: Record<string, BaselinePrice> = {
   ...energyBaselines,
   ...spaceBaselines,
   ...quantumBaselines,
+  ...defenseBaselines,
 };
 
 /**
