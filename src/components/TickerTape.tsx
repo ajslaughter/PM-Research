@@ -79,8 +79,8 @@ export function TickerTape() {
 
     const all = [...content, ...movers];
 
-    // Duration scales with content width — ~60px per second
-    const duration = scrollWidth > 0 ? Math.max(20, scrollWidth / 60) : 60;
+    // Duration scales with content width — ~300px per second (fast)
+    const duration = scrollWidth > 0 ? Math.max(10, scrollWidth / 300) : 30;
 
     return (
         <div className="w-full overflow-hidden bg-pm-black border-y border-pm-border/40 py-2 group">
