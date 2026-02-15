@@ -264,7 +264,8 @@ export default function MyPortfoliosPage() {
                         <Briefcase className="w-16 h-16 text-pm-green mx-auto mb-6" />
                         <h1 className="text-3xl font-bold mb-4">My Portfolios</h1>
                         <p className="text-pm-muted mb-8">
-                            Sign in or create an account to build and track your own custom stock portfolios with live pricing.
+                            Create a free account to build your own custom stock portfolio with live pricing.
+                            Everything else on PM Research is available without an account.
                         </p>
                         <div className="flex gap-4 justify-center">
                             <Link
@@ -331,13 +332,15 @@ export default function MyPortfoliosPage() {
                                 <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                                 Refresh
                             </button>
-                            <Link
-                                href="/my-portfolios/create"
-                                className="btn-primary flex items-center gap-2 px-4 py-2"
-                            >
-                                <Plus className="w-4 h-4" />
-                                Create Portfolio
-                            </Link>
+                            {portfolios.length === 0 && (
+                                <Link
+                                    href="/my-portfolios/create"
+                                    className="btn-primary flex items-center gap-2 px-4 py-2"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                    Create Portfolio
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </motion.div>
@@ -362,16 +365,16 @@ export default function MyPortfoliosPage() {
                         className="pm-card p-12 text-center"
                     >
                         <Briefcase className="w-16 h-16 text-pm-muted mx-auto mb-4" />
-                        <h2 className="text-xl font-bold mb-2">No Portfolios Yet</h2>
+                        <h2 className="text-xl font-bold mb-2">No Portfolio Yet</h2>
                         <p className="text-pm-muted mb-6">
-                            Create your first custom portfolio by selecting any stocks from our coverage universe.
+                            Create your custom portfolio by selecting any stocks from our coverage universe.
                         </p>
                         <Link
                             href="/my-portfolios/create"
                             className="btn-primary inline-flex items-center gap-2 px-6 py-3"
                         >
                             <Plus className="w-5 h-5" />
-                            Create Your First Portfolio
+                            Create Your Portfolio
                         </Link>
                     </motion.div>
                 ) : (
@@ -401,7 +404,7 @@ export default function MyPortfoliosPage() {
                     className="mt-12 text-center"
                 >
                     <p className="text-xs text-pm-muted max-w-2xl mx-auto">
-                        Custom portfolios are for research tracking purposes only. PM Research does not provide personalized investment advice.
+                        Your custom portfolio is for research tracking purposes only. PM Research does not provide personalized investment advice.
                         Always conduct your own research before making investment decisions.
                     </p>
                 </motion.div>

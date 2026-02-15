@@ -85,6 +85,11 @@ export function UserPortfolioProvider({ children }: { children: ReactNode }) {
     ): Promise<UserPortfolio | null> => {
         if (!accessToken) return null;
 
+        if (portfolios.length > 0) {
+            setError("You can only create one custom portfolio.");
+            return null;
+        }
+
         try {
             const res = await fetch('/api/user-portfolios', {
                 method: 'POST',
@@ -105,7 +110,7 @@ export function UserPortfolioProvider({ children }: { children: ReactNode }) {
             setError('Failed to create portfolio');
             return null;
         }
-    }, [accessToken, headers]);
+    }, [accessToken, headers, portfolios.length]);
 
     const updatePortfolio = useCallback(async (
         id: string,
