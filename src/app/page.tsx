@@ -85,7 +85,7 @@ export default function LandingPage() {
                                 Ready to Access the <span className="text-pm-green">Edge</span>?
                             </h2>
                             <p className="text-pm-muted max-w-lg mx-auto mb-8">
-                                Explore our model portfolios and AI-powered research—completely free.
+                                Explore our model portfolios and AI-powered research.
                             </p>
                             <Link href="/research" className="btn-primary inline-flex items-center gap-2">
                                 Explore Research

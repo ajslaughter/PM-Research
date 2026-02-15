@@ -16,7 +16,7 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(
 );
 
 // Provider component that wraps the app
-// Website is 100% free - all users always have full access
+// Currently free - all users have full access
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
     return (
         <SubscriptionContext.Provider
