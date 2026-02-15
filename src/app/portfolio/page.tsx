@@ -344,15 +344,13 @@ export default function PortfolioPage() {
                             <Briefcase className="w-5 h-5 text-pm-green" />
                             Model Portfolios
                         </h2>
-                        {user && showCreateButton && (
-                            <Link
-                                href="/portfolio/create"
-                                className="btn-primary flex items-center gap-2 px-4 py-2 text-sm"
-                            >
-                                <Plus className="w-4 h-4" />
-                                Create Portfolio
-                            </Link>
-                        )}
+                        <Link
+                            href="/portfolio/create"
+                            className="btn-primary flex items-center gap-2 px-4 py-2 text-sm"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Create Portfolio
+                        </Link>
                     </div>
                 </motion.div>
 
