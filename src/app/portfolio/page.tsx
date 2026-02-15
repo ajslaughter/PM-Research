@@ -339,10 +339,21 @@ export default function PortfolioPage() {
                     transition={{ delay: 0.1 }}
                     className="mb-4"
                 >
-                    <h2 className="text-lg font-semibold text-pm-text flex items-center gap-2 mb-4">
-                        <Briefcase className="w-5 h-5 text-pm-green" />
-                        Model Portfolios
-                    </h2>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-semibold text-pm-text flex items-center gap-2">
+                            <Briefcase className="w-5 h-5 text-pm-green" />
+                            Model Portfolios
+                        </h2>
+                        {user && showCreateButton && (
+                            <Link
+                                href="/portfolio/create"
+                                className="btn-primary flex items-center gap-2 px-4 py-2 text-sm"
+                            >
+                                <Plus className="w-4 h-4" />
+                                Create Portfolio
+                            </Link>
+                        )}
+                    </div>
                 </motion.div>
 
                 {/* Portfolio Selector Cards */}
