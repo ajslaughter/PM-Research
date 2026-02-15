@@ -478,7 +478,6 @@ const THEMES_MAP: StockEntry[] = [
     { ticker: "DDOG", name: "Datadog", sector: "AI", industry: "Data", weight: 0.6 },
     // Robotics (AI)
     { ticker: "TSLA", name: "Tesla (Optimus)", sector: "AI", industry: "Robotics", weight: 1.5 },
-    { ticker: "PATH", name: "UiPath", sector: "AI", industry: "Robotics", weight: 0.3 },
     // Energy (AI)
     { ticker: "CRWV", name: "CoreWeave", sector: "AI", industry: "Energy", weight: 0.8 },
     { ticker: "IREN", name: "Iris Energy", sector: "AI", industry: "Energy", weight: 0.3 },
@@ -585,7 +584,6 @@ const THEMES_MAP: StockEntry[] = [
     { ticker: "SYM", name: "Symbotic", sector: "Industrial Automation", industry: "Logistics", weight: 0.3 },
     { ticker: "GXO", name: "GXO Logistics", sector: "Industrial Automation", industry: "Logistics", weight: 0.2 },
     // Automation Software
-    { ticker: "PATH", name: "UiPath", sector: "Industrial Automation", industry: "Automation", weight: 0.3 },
     { ticker: "ANSS", name: "Ansys", sector: "Industrial Automation", industry: "Software", weight: 0.3 },
     { ticker: "PTC", name: "PTC", sector: "Industrial Automation", industry: "Software", weight: 0.2 },
     // 3D Printing
