@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdmin } from "@/context/AdminContext";
 import { ResearchNote } from "@/lib/portfolios";
+import { getPmScoreCategory } from "@/services/stockService";
 import {
     Sparkles,
     ArrowRight,
@@ -216,7 +217,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                                     </div>
                                     <div className="text-xs text-pm-muted leading-tight">
                                         Out of 100<br />
-                                        <span className="text-white">Strong Thesis</span>
+                                        <span className="text-white">{getPmScoreCategory(note.pmScore)}</span>
                                     </div>
                                 </div>
                                 <div className="w-full bg-pm-border h-1.5 rounded-full mt-3 overflow-hidden">

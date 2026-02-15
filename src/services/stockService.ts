@@ -158,6 +158,15 @@ export function calculateWeightedDayChange(
   return weightedChange;
 }
 
+// Get PM Score category based on methodology thresholds
+export function getPmScoreCategory(score: number): string {
+  const rounded = Math.round(score);
+  if (rounded >= 80) return 'Strong Thesis';
+  if (rounded >= 60) return 'Developing Thesis';
+  if (rounded >= 40) return 'Monitoring';
+  return 'Exploratory';
+}
+
 // Calculate average PM score
 export function calculateAvgPmScore(
   positions: Array<{ ticker: string; weight: number }>,

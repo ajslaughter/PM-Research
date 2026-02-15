@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore } from "@/services/stockService";
+import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore, getPmScoreCategory } from "@/services/stockService";
 import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
 import { PortfolioCategory, portfolioQuarterlyReturns } from "@/lib/portfolios";
 import SectorBadge from "@/components/SectorBadge";
@@ -418,7 +418,7 @@ export default function PortfolioTable({
                     <div className="text-2xl font-bold text-white">
                         {Math.round(avgPmScore)}
                     </div>
-                    <div className="text-[10px] text-pm-muted mt-1">Strong Conviction</div>
+                    <div className="text-[10px] text-pm-muted mt-1">{getPmScoreCategory(avgPmScore)}</div>
                 </div>
 
                 <div className="pm-card p-4 border-l-4 border-l-yellow-500">
