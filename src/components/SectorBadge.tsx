@@ -146,7 +146,6 @@ export function getTickerSector(ticker: string): string {
         "ISRG": "Robotics/Automation",
         "ABBNY": "Auto/Robotics",
         "FANUY": "Auto/Robotics",
-        "PATH": "Enterprise Software",
         // Additional common tickers
         "ARM": "Semiconductors",
         "PLTR": "Enterprise Software",
