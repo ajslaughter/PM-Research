@@ -100,6 +100,14 @@ export const stockDatabase: Record<string, StockData> = {
   "KTOS": createStock("KTOS", "Kratos Defense & Security", "Defense/AI", "Industrials", 84, "2026-02-14"),
   "BAH": createStock("BAH", "Booz Allen Hamilton", "Defense/AI", "Technology", 82, "2026-02-14"),
   "LDOS": createStock("LDOS", "Leidos Holdings", "Defense/AI", "Technology", 80, "2026-02-14"),
+
+  // Biotech Portfolio
+  "STOK": createStock("STOK", "Stoke Therapeutics", "Genomics", "Healthcare", 82, "2026-02-15"),
+  "CRSP": createStock("CRSP", "CRISPR Therapeutics", "Genomics", "Healthcare", 86, "2026-02-15"),
+  "NTLA": createStock("NTLA", "Intellia Therapeutics", "Genomics", "Healthcare", 78, "2026-02-15"),
+  "BEAM": createStock("BEAM", "Beam Therapeutics", "Genomics", "Healthcare", 80, "2026-02-15"),
+  "EDIT": createStock("EDIT", "Editas Medicine", "Genomics", "Healthcare", 74, "2026-02-15"),
+  "TWST": createStock("TWST", "Twist Bioscience", "Genomics", "Healthcare", 84, "2026-02-15"),
 };
 
 // Asset class color mapping for UI
@@ -120,4 +128,5 @@ export const assetClassColors: Record<string, string> = {
   "Nuclear": "bg-lime-500/20 text-lime-400 border-lime-500/30",
   "Defense/AI": "bg-rose-500/20 text-rose-400 border-rose-500/30",
   "Cybersecurity": "bg-sky-500/20 text-sky-400 border-sky-500/30",
+  "Genomics": "bg-fuchsia-500/20 text-fuchsia-400 border-fuchsia-500/30",
 };
