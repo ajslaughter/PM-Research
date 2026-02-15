@@ -69,7 +69,7 @@ function SignUpForm() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">Create Account</h1>
-                            <p className="text-pm-muted text-sm">Build your custom portfolios</p>
+                            <p className="text-pm-muted text-sm">Only needed to create your own portfolio</p>
                         </div>
                     </div>
 

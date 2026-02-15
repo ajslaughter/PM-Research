@@ -264,7 +264,8 @@ export default function MyPortfoliosPage() {
                         <Briefcase className="w-16 h-16 text-pm-green mx-auto mb-6" />
                         <h1 className="text-3xl font-bold mb-4">My Portfolios</h1>
                         <p className="text-pm-muted mb-8">
-                            Sign in or create an account to build and track your own custom stock portfolios with live pricing.
+                            Create a free account to build your own custom stock portfolios with live pricing.
+                            Everything else on PM Research is available without an account.
                         </p>
                         <div className="flex gap-4 justify-center">
                             <Link

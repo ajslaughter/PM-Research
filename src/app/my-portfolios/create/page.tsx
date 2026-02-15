@@ -135,7 +135,8 @@ export default function CreatePortfolioPage() {
                         <Briefcase className="w-16 h-16 text-pm-green mx-auto mb-6" />
                         <h1 className="text-3xl font-bold mb-4">Create Your Portfolio</h1>
                         <p className="text-pm-muted mb-8">
-                            Sign in or create an account to build and track your own custom stock portfolios.
+                            Create a free account to build and track your own custom stock portfolios.
+                            An account is only needed for this feature -- everything else is open.
                         </p>
                         <div className="flex gap-4 justify-center">
                             <Link
