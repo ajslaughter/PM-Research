@@ -9,7 +9,7 @@ export interface PortfolioPosition {
 }
 
 // Portfolio category for filtering
-export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence';
+export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech';
 
 // Portfolio structure
 export interface Portfolio {
@@ -31,6 +31,9 @@ export const Quantum_Portfolio = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
 
 // Defense & Intelligence Portfolio Tickers
 export const Defense_Intelligence_Portfolio = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
+
+// Biotech Portfolio Tickers
+export const Biotech_Portfolio = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
 
 // Default portfolios
 export const defaultPortfolios: Portfolio[] = [
@@ -133,6 +136,20 @@ export const defaultPortfolios: Portfolio[] = [
             { ticker: "LDOS", weight: 10, thesis: "Largest defense IT contractor; $37B+ backlog; digital transformation & cyber operations" },
         ],
     },
+    {
+        id: "biotech",
+        name: "Biotech Portfolio",
+        description: "Genomics, Gene Editing & Precision Medicine",
+        category: "Biotech",
+        positions: [
+            { ticker: "STOK", weight: 17, thesis: "RNA-based medicines targeting genetic diseases; TANGO antisense platform unlocks undruggable targets" },
+            { ticker: "CRSP", weight: 20, thesis: "Gene editing pioneer; CASGEVY first approved CRISPR therapy for sickle cell & beta-thalassemia" },
+            { ticker: "NTLA", weight: 17, thesis: "In vivo CRISPR gene editing leader; NTLA-2002 for hereditary angioedema advancing toward pivotal data" },
+            { ticker: "BEAM", weight: 17, thesis: "Next-gen base editing avoids double-strand breaks; precision single-letter DNA edits for blood diseases" },
+            { ticker: "EDIT", weight: 14, thesis: "CRISPR pioneer with in vivo editing programs; reni-cel for sickle cell disease in clinical development" },
+            { ticker: "TWST", weight: 15, thesis: "Synthetic biology infrastructure; silicon-based DNA synthesis platform enables genomics R&D at scale" },
+        ],
+    },
 ];
 
 // Historical quarterly returns by portfolio ID
@@ -172,6 +189,11 @@ export const portfolioQuarterlyReturns: Record<string, { quarter: string; return
         { quarter: "Q4 2025", return: 8.9 },
         { quarter: "Q3 2025", return: 11.2 },
         { quarter: "Q2 2025", return: 9.8 },
+    ],
+    "biotech": [
+        { quarter: "Q4 2025", return: -5.2 },
+        { quarter: "Q3 2025", return: 8.7 },
+        { quarter: "Q2 2025", return: -12.4 },
     ],
 };
 

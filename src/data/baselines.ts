@@ -117,6 +117,20 @@ export const defenseBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
+ * Biotech Portfolio
+ * Verified closing prices from December 31, 2025 (TradingView standard)
+ * Source: Official exchange data via StockAnalysis / Yahoo Finance
+ */
+export const biotechBaselines: Record<string, BaselinePrice> = {
+  'STOK': { ticker: 'STOK', price: 31.74, date: BASELINE_DATE },
+  'CRSP': { ticker: 'CRSP', price: 52.44, date: BASELINE_DATE },
+  'NTLA': { ticker: 'NTLA', price: 8.99, date: BASELINE_DATE },
+  'BEAM': { ticker: 'BEAM', price: 27.72, date: BASELINE_DATE },
+  'EDIT': { ticker: 'EDIT', price: 2.05, date: BASELINE_DATE },
+  'TWST': { ticker: 'TWST', price: 31.72, date: BASELINE_DATE },
+};
+
+/**
  * Combined baseline lookup - All tracked assets
  * Use this for YTD calculations throughout the application
  */
@@ -128,6 +142,7 @@ export const baselines: Record<string, BaselinePrice> = {
   ...spaceBaselines,
   ...quantumBaselines,
   ...defenseBaselines,
+  ...biotechBaselines,
 };
 
 /**
