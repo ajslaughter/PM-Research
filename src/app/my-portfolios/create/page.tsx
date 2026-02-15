@@ -24,7 +24,7 @@ import SectorBadge from "@/components/SectorBadge";
 export default function CreatePortfolioPage() {
     const router = useRouter();
     const { user, isLoading: authLoading } = useAuth();
-    const { createPortfolio } = useUserPortfolios();
+    const { createPortfolio, portfolios } = useUserPortfolios();
     const { stockDb } = useStockDatabase();
 
     const [name, setName] = useState("");
@@ -162,6 +162,35 @@ export default function CreatePortfolioPage() {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-pm-green" />
+            </div>
+        );
+    }
+
+    // Limit to one portfolio
+    if (portfolios.length > 0) {
+        return (
+            <div className="relative min-h-screen pb-20 md:pb-0">
+                <div className="absolute inset-0 grid-bg opacity-30" />
+                <div className="relative max-w-2xl mx-auto px-6 py-24 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="pm-card p-12"
+                    >
+                        <Briefcase className="w-16 h-16 text-pm-green mx-auto mb-6" />
+                        <h1 className="text-3xl font-bold mb-4">Portfolio Already Created</h1>
+                        <p className="text-pm-muted mb-8">
+                            You already have a custom portfolio. You can view and manage it from the My Portfolios page.
+                        </p>
+                        <Link
+                            href="/my-portfolios"
+                            className="btn-primary inline-flex items-center gap-2 px-6 py-3"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Go to My Portfolios
+                        </Link>
+                    </motion.div>
+                </div>
             </div>
         );
     }
