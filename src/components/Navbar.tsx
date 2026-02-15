@@ -11,7 +11,6 @@ import {
     Briefcase,
     Bot,
     Zap,
-    FolderHeart,
     User,
     LogOut,
 } from "lucide-react";
@@ -24,7 +23,6 @@ export default function Navbar() {
         { href: "/", label: "Home", icon: Activity },
         { href: "/pm-live", label: "PM Live", icon: Radio },
         { href: "/portfolio", label: "Portfolio", icon: Briefcase },
-        { href: "/my-portfolios", label: "My Portfolios", icon: FolderHeart },
         { href: "/research", label: "Research", icon: BookOpen },
         { href: "/pmbot", label: "PMbot", icon: Bot },
     ];
@@ -49,7 +47,7 @@ export default function Navbar() {
                         {/* Desktop Navigation Links */}
                         <div className="hidden md:flex items-center gap-1">
                             {navLinks.map((link) => {
-                                const isActive = pathname === link.href || (link.href === "/my-portfolios" && pathname.startsWith("/my-portfolios"));
+                                const isActive = pathname === link.href || (link.href === "/portfolio" && pathname.startsWith("/portfolio/"));
                                 const Icon = link.icon;
                                 return (
                                     <Link
@@ -112,7 +110,7 @@ export default function Navbar() {
             <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-pm-black/90 backdrop-blur-xl border-t border-pm-border">
                 <div className="flex items-center justify-around h-16 px-2">
                     {navLinks.map((link) => {
-                        const isActive = pathname === link.href || (link.href === "/my-portfolios" && pathname.startsWith("/my-portfolios"));
+                        const isActive = pathname === link.href || (link.href === "/portfolio" && pathname.startsWith("/portfolio/"));
                         const Icon = link.icon;
                         return (
                             <Link

@@ -16,7 +16,7 @@ function SignUpForm() {
     const [success, setSuccess] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const redirectTo = searchParams.get("redirectTo") || "/my-portfolios";
+    const redirectTo = searchParams.get("redirectTo") || "/portfolio";
     const { signUp } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
