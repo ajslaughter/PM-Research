@@ -452,7 +452,7 @@ export default function AdminPanel() {
 
                                     {/* Positions List */}
                                     <div className="space-y-2">
-                                        <h4 className="text-sm text-pm-muted font-mono uppercase tracking-wider">
+                                        <h4 className="text-sm text-pm-muted font-semibold uppercase tracking-wider">
                                             Positions ({currentPortfolio?.positions.length || 0})
                                         </h4>
                                         {currentPortfolio?.positions.map((position) => {
@@ -463,7 +463,7 @@ export default function AdminPanel() {
                                                     className="bg-pm-charcoal/50 rounded-lg border border-pm-border p-3 flex items-center justify-between"
                                                 >
                                                     <div className="flex items-center gap-3 flex-1">
-                                                        <div className="w-10 h-10 rounded-lg bg-pm-green/10 flex items-center justify-center font-mono font-bold text-pm-green text-xs">
+                                                        <div className="w-10 h-10 rounded-lg bg-pm-green/10 flex items-center justify-center font-bold text-pm-green text-xs">
                                                             {position.ticker.slice(0, 4)}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
@@ -621,7 +621,7 @@ export default function AdminPanel() {
 
                                     {/* Existing Articles List */}
                                     <div className="space-y-2">
-                                        <h4 className="text-sm text-pm-muted font-mono uppercase tracking-wider">
+                                        <h4 className="text-sm text-pm-muted font-semibold uppercase tracking-wider">
                                             Existing Articles ({researchNotes.length})
                                         </h4>
                                         {researchNotes.map((note) => (

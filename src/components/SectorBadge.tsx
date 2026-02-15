@@ -225,7 +225,7 @@ export default function SectorBadge({
     const baseClasses = `
         inline-flex items-center justify-center
         rounded border
-        font-mono uppercase tracking-wide
+        font-semibold uppercase tracking-wide
         transition-all duration-200
         ${sizeClasses[size]}
         ${colors.bg}

@@ -22,7 +22,7 @@ export function AgentTabs() {
                 <div className="flex items-center gap-2 mb-4">
                     <div className="w-2 h-2 rounded-full bg-pm-green animate-pulse" />
                     <h2 className="text-lg font-semibold text-pm-text">Market Tools</h2>
-                    <span className="text-xs text-pm-muted font-mono ml-2">
+                    <span className="text-xs text-pm-muted ml-2">
                         Real-time data
                     </span>
                 </div>
@@ -34,7 +34,7 @@ export function AgentTabs() {
                             <button
                                 key={tab.key}
                                 onClick={() => setActiveTab(tab.key)}
-                                className={`px-4 py-2.5 text-sm font-mono rounded-lg transition-all whitespace-nowrap flex items-center gap-2 ${
+                                className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap flex items-center gap-2 ${
                                     activeTab === tab.key
                                         ? "bg-pm-green text-pm-black font-semibold"
                                         : "text-pm-muted hover:text-pm-text hover:bg-pm-border/20"

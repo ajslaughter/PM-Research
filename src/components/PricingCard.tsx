@@ -33,7 +33,7 @@ export default function PricingCard({
             {/* Popular Badge */}
             {highlighted && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-pm-green text-pm-black px-4 py-1 rounded-full text-xs font-mono font-bold">
+                    <span className="bg-pm-green text-pm-black px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                         MOST POPULAR
                     </span>
                 </div>
@@ -54,7 +54,7 @@ export default function PricingCard({
 
             {/* Price */}
             <div className="text-center mb-8">
-                <span className="text-5xl font-mono font-bold">${price}</span>
+                <span className="text-5xl font-extrabold tabular-nums">${price}</span>
                 <span className="text-pm-muted">/month</span>
             </div>
 

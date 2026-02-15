@@ -32,7 +32,7 @@ export default function LandingPage() {
                         {/* Badge */}
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full">
                             <Sparkles className="w-4 h-4 text-pm-purple" />
-                            <span className="text-sm font-mono text-pm-muted">
+                            <span className="text-sm font-medium tracking-wide text-pm-muted">
                                 Institutional-Grade Research
                             </span>
                         </div>

@@ -82,7 +82,7 @@ function ResearchCard({ note, onReadClick }: ResearchCardProps) {
             {/* Header */}
             <div className="flex items-start justify-between gap-4 mb-4">
                 <span
-                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border ${categoryStyles[note.category]}`}
+                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryStyles[note.category]}`}
                 >
                     {categoryIcons[note.category]}
                     {note.category}
@@ -102,7 +102,7 @@ function ResearchCard({ note, onReadClick }: ResearchCardProps) {
             {/* Footer */}
             <div className="flex items-center justify-between pt-4 border-t border-pm-border">
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 px-2 py-1 rounded bg-pm-green/10 text-pm-green border border-pm-green/30 text-xs font-mono">
+                    <div className="flex items-center gap-1 px-2 py-1 rounded bg-pm-green/10 text-pm-green border border-pm-green/30 text-xs font-semibold tabular-nums">
                         <Sparkles className="w-3 h-3" />
                         {note.pmScore}
                     </div>
@@ -151,11 +151,11 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
 
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border ${categoryStyles[note.category]}`}>
+                                <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryStyles[note.category]}`}>
                                     {categoryIcons[note.category]}
                                     {note.category}
                                 </span>
-                                <span className="text-pm-muted text-xs font-mono">{note.date}</span>
+                                <span className="text-pm-muted text-xs">{note.date}</span>
                             </div>
                             <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">
                                 {note.title}
@@ -194,7 +194,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                                         return <h2 key={i} className="text-xl mt-8 mb-4 border-l-2 border-pm-green pl-4">{line.replace('## ', '')}</h2>;
                                     }
                                     if (line.startsWith('### ')) {
-                                        return <h3 key={i} className="text-lg mt-6 mb-2 text-pm-purple font-mono">{line.replace('### ', '')}</h3>;
+                                        return <h3 key={i} className="text-lg mt-6 mb-2 text-pm-purple font-semibold">{line.replace('### ', '')}</h3>;
                                     }
                                     if (line.startsWith('* ')) {
                                         return <li key={i} className="ml-4 list-disc marker:text-pm-green pl-2 mb-2">{line.replace('* ', '')}</li>;
@@ -209,7 +209,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                         {/* Sidebar / Metadata */}
                         <div className="p-6 bg-pm-black">
                             <div className="mb-8">
-                                <h4 className="text-xs font-mono uppercase text-pm-muted mb-4 tracking-wider">PM Sentiment Score</h4>
+                                <h4 className="text-xs font-semibold uppercase text-pm-muted mb-4 tracking-wider">PM Sentiment Score</h4>
                                 <div className="flex items-center gap-3">
                                     <div className={`text-4xl font-bold ${note.pmScore >= 90 ? 'text-pm-green' : 'text-pm-text'}`}>
                                         {note.pmScore}
@@ -229,13 +229,13 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
 
                             {note.relatedTickers && (
                                 <div className="mb-8">
-                                    <h4 className="text-xs font-mono uppercase text-pm-muted mb-4 tracking-wider flex items-center gap-2">
+                                    <h4 className="text-xs font-semibold uppercase text-pm-muted mb-4 tracking-wider flex items-center gap-2">
                                         <Tag className="w-3 h-3" />
                                         Related Assets
                                     </h4>
                                     <div className="flex flex-wrap gap-2">
                                         {note.relatedTickers.map(ticker => (
-                                            <span key={ticker} className="px-3 py-1 bg-pm-charcoal hover:bg-white/10 border border-pm-border rounded-md text-xs font-mono text-pm-green cursor-pointer transition-colors">
+                                            <span key={ticker} className="px-3 py-1 bg-pm-charcoal hover:bg-white/10 border border-pm-border rounded-md text-xs font-semibold text-pm-green cursor-pointer transition-colors">
                                                 ${ticker}
                                             </span>
                                         ))}

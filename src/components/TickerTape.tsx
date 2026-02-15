@@ -92,7 +92,7 @@ export function TickerTape() {
     const separator = (label: string) => (
         <span key={label} className="inline-flex items-center mx-4 whitespace-nowrap">
             <span className="text-pm-border mx-2">│</span>
-            <span className="text-[10px] font-mono text-pm-muted uppercase tracking-widest">{label}</span>
+            <span className="text-[10px] font-semibold text-pm-muted uppercase tracking-widest">{label}</span>
             <span className="text-pm-border mx-2">│</span>
         </span>
     );

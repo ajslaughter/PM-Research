@@ -31,11 +31,11 @@ export default function RootLayout({
                             <footer className="border-t border-pm-border bg-pm-charcoal/50">
                                 <div className="max-w-7xl mx-auto px-6 py-8">
                                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                                        <div className="flex items-center gap-2 font-mono text-sm text-pm-muted">
+                                        <div className="flex items-center gap-2 text-sm font-semibold text-pm-muted">
                                             <span className="text-pm-green">PM</span>
                                             <span>Research</span>
-                                            <span className="text-pm-subtle">|</span>
-                                            <span>© 2026</span>
+                                            <span className="text-pm-subtle font-normal">|</span>
+                                            <span className="font-normal">© 2026</span>
                                         </div>
                                         <div className="flex items-center gap-6 text-sm text-pm-muted">
                                             <span className="text-pm-subtle italic">
