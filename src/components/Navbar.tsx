@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 import {
     Activity,
     Radio,
@@ -10,15 +11,20 @@ import {
     Briefcase,
     Bot,
     Zap,
+    FolderHeart,
+    User,
+    LogOut,
 } from "lucide-react";
 
 export default function Navbar() {
     const pathname = usePathname();
+    const { user, signOut } = useAuth();
 
     const navLinks = [
         { href: "/", label: "Home", icon: Activity },
         { href: "/pm-live", label: "PM Live", icon: Radio },
         { href: "/portfolio", label: "Portfolio", icon: Briefcase },
+        { href: "/my-portfolios", label: "My Portfolios", icon: FolderHeart },
         { href: "/research", label: "Research", icon: BookOpen },
         { href: "/pmbot", label: "PMbot", icon: Bot },
     ];
@@ -43,13 +49,13 @@ export default function Navbar() {
                         {/* Desktop Navigation Links */}
                         <div className="hidden md:flex items-center gap-1">
                             {navLinks.map((link) => {
-                                const isActive = pathname === link.href;
+                                const isActive = pathname === link.href || (link.href === "/my-portfolios" && pathname.startsWith("/my-portfolios"));
                                 const Icon = link.icon;
                                 return (
                                     <Link
                                         key={link.href}
                                         href={link.href}
-                                        className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2
+                                        className={`relative px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-1.5
                         ${isActive
                                                 ? "text-pm-green"
                                                 : "text-pm-muted hover:text-pm-text"
@@ -67,6 +73,28 @@ export default function Navbar() {
                                     </Link>
                                 );
                             })}
+
+                            {/* Auth Button */}
+                            <div className="ml-2 pl-2 border-l border-pm-border">
+                                {user ? (
+                                    <button
+                                        onClick={() => signOut()}
+                                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-pm-muted hover:text-pm-text transition-colors"
+                                        title={user.email}
+                                    >
+                                        <User className="w-4 h-4 text-pm-green" />
+                                        <LogOut className="w-3 h-3" />
+                                    </button>
+                                ) : (
+                                    <Link
+                                        href="/signup"
+                                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-pm-green/10 text-pm-green border border-pm-green/20 hover:bg-pm-green/20 transition-colors"
+                                    >
+                                        <User className="w-4 h-4" />
+                                        Sign Up
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -76,7 +104,7 @@ export default function Navbar() {
             <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-pm-black/90 backdrop-blur-xl border-t border-pm-border">
                 <div className="flex items-center justify-around h-16 px-2">
                     {navLinks.map((link) => {
-                        const isActive = pathname === link.href;
+                        const isActive = pathname === link.href || (link.href === "/my-portfolios" && pathname.startsWith("/my-portfolios"));
                         const Icon = link.icon;
                         return (
                             <Link
