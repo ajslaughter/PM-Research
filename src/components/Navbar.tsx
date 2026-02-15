@@ -73,28 +73,36 @@ export default function Navbar() {
                                     </Link>
                                 );
                             })}
+                        </div>
 
-                            {/* Auth Button */}
-                            <div className="ml-2 pl-2 border-l border-pm-border">
-                                {user ? (
-                                    <button
-                                        onClick={() => signOut()}
-                                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-pm-muted hover:text-pm-text transition-colors"
-                                        title={user.email}
+                        {/* Sign In / Sign Up (top right) */}
+                        <div className="hidden md:flex items-center gap-2">
+                            {user ? (
+                                <button
+                                    onClick={() => signOut()}
+                                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-pm-muted hover:text-pm-text transition-colors"
+                                    title={user.email}
+                                >
+                                    <User className="w-4 h-4 text-pm-green" />
+                                    <span className="text-xs text-pm-muted max-w-[120px] truncate">{user.email}</span>
+                                    <LogOut className="w-4 h-4" />
+                                </button>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/login"
+                                        className="px-3 py-2 rounded-lg text-sm text-pm-muted hover:text-pm-text transition-colors"
                                     >
-                                        <User className="w-4 h-4 text-pm-green" />
-                                        <LogOut className="w-3 h-3" />
-                                    </button>
-                                ) : (
+                                        Sign In
+                                    </Link>
                                     <Link
                                         href="/signup"
-                                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-pm-green/10 text-pm-green border border-pm-green/20 hover:bg-pm-green/20 transition-colors"
+                                        className="px-4 py-2 rounded-lg text-sm font-medium bg-pm-green text-pm-black hover:bg-pm-green/90 transition-colors"
                                     >
-                                        <User className="w-4 h-4" />
                                         Sign Up
                                     </Link>
-                                )}
-                            </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
