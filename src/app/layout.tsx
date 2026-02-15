@@ -3,6 +3,8 @@ import Link from "next/link";
 import "./globals.css";
 import { SubscriptionProvider } from "@/context/SubscriptionContext";
 import { AdminProvider } from "@/context/AdminContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { UserPortfolioProvider } from "@/context/UserPortfolioContext";
 import Navbar from "@/components/Navbar";
 import AdminPanel from "@/components/AdminPanel";
 
@@ -21,8 +23,10 @@ export default function RootLayout({
     return (
         <html lang="en" className="dark">
             <body className="bg-pm-black text-pm-text antialiased">
+                <AuthProvider>
                 <SubscriptionProvider>
                     <AdminProvider>
+                        <UserPortfolioProvider>
                         <div className="min-h-screen flex flex-col">
                             <Navbar />
                             <main className="flex-1 pt-16">{children}</main>
@@ -65,8 +69,10 @@ export default function RootLayout({
 
                         {/* Admin Panel - renders when admin mode is active */}
                         <AdminPanel />
+                        </UserPortfolioProvider>
                     </AdminProvider>
                 </SubscriptionProvider>
+                </AuthProvider>
             </body>
         </html>
     );
