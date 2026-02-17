@@ -47,8 +47,7 @@ export default function LandingPage() {
                         {/* Subheadline */}
                         <p className="text-xl text-pm-muted max-w-2xl mx-auto leading-relaxed">
                             PM Research delivers{" "}
-                            <span className="text-pm-text">institutional-grade research</span> and{" "}
-                            <span className="text-pm-text">watchlists</span>{" "}
+                            <span className="text-pm-text">institutional-grade research</span>{" "}
                             for investors who demand an edge.
                         </p>
 
