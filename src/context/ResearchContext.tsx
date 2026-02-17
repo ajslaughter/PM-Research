@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
-import { ResearchNote, researchNotes as initialResearchNotes } from "@/lib/portfolios";
+import { ResearchNote, researchNotes as initialResearchNotes } from "@/lib/watchlists";
 import { fetchResearchNotes, saveResearchNote, deleteResearchNote as deleteFromSupabase, normalizeCategory, normalizeTitle, normalizeContent } from "@/lib/supabase";
 
 interface ResearchContextType {

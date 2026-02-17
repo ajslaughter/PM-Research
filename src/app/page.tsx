@@ -47,16 +47,15 @@ export default function LandingPage() {
                         {/* Subheadline */}
                         <p className="text-xl text-pm-muted max-w-2xl mx-auto leading-relaxed">
                             PM Research delivers{" "}
-                            <span className="text-pm-text">institutional-grade research</span> and{" "}
-                            <span className="text-pm-text">model portfolios</span>{" "}
+                            <span className="text-pm-text">institutional-grade research</span>{" "}
                             for investors who demand an edge.
                         </p>
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                            <Link href="/portfolio" className="btn-primary flex items-center gap-2">
+                            <Link href="/watchlist" className="btn-primary flex items-center gap-2">
                                 <Briefcase className="w-5 h-5" />
-                                Model Portfolios
+                                Watchlists
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
                             <Link href="/research" className="btn-secondary flex items-center gap-2">
@@ -85,7 +84,7 @@ export default function LandingPage() {
                                 Ready to Access the <span className="text-pm-green">Edge</span>?
                             </h2>
                             <p className="text-pm-muted max-w-lg mx-auto mb-8">
-                                Explore our model portfolios and AI-powered research.
+                                Explore our research watchlists and AI-powered analysis.
                             </p>
                             <Link href="/research" className="btn-primary inline-flex items-center gap-2">
                                 Explore Research
@@ -100,9 +99,9 @@ export default function LandingPage() {
             <section className="relative py-8 px-6 border-t border-pm-border">
                 <div className="max-w-4xl mx-auto text-center">
                     <p className="text-xs text-pm-muted leading-relaxed">
-                        Model portfolio performance shown is hypothetical. Past performance does not guarantee future results.
-                        PM Research provides research content and model portfolios—not personalized investment advice.
-                        PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
+                        Watchlist performance shown is hypothetical and for research tracking purposes only. Past performance does not guarantee future results.
+                        PM Research provides research content and curated watchlists reflecting our analytical coverage — not personalized investment advice or buy/sell recommendations.
+                        Inclusion on a watchlist indicates active research coverage, not a recommendation to purchase. PM Scores reflect research depth and thesis conviction, not return predictions. Always conduct your own due diligence before making investment decisions.
                     </p>
                 </div>
             </section>

@@ -136,13 +136,13 @@ export function getTickerSector(ticker: string): string {
         "TSLA": "Auto/Robotics",
         // Digital Assets
         "BTC-USD": "Digital Assets",
-        // Innovation Portfolio
+        // Innovation Watchlist
         "RKLB": "Space",
         "SMCI": "Data Center",
         "VRT": "Data Center",
         "AVGO": "AI Hardware",
         "IONQ": "Quantum",
-        // Robotics Portfolio
+        // Robotics Watchlist
         "ISRG": "Robotics/Automation",
         "ABBNY": "Auto/Robotics",
         "FANUY": "Auto/Robotics",

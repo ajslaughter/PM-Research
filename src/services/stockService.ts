@@ -89,13 +89,13 @@ export function calculateYTDFromBaseline(ticker: string, currentPrice: number): 
 }
 
 /**
- * Calculate weighted portfolio YTD return.
+ * Calculate weighted watchlist YTD return.
  * Formula: Sum of (weight * individual YTD) for all positions
  *
  * IMPORTANT: Uses baselines.ts as the SINGLE SOURCE OF TRUTH.
  * No fallback to stockDatabase - if baseline is missing, position is skipped.
  *
- * @param positions - Array of portfolio positions with ticker and weight
+ * @param positions - Array of watchlist positions with ticker and weight
  * @param livePrices - Current live prices from API
  * @param _stockDb - Unused, kept for API compatibility (baselines.ts is source of truth)
  * @returns Weighted YTD percentage rounded to 2 decimal places

@@ -87,7 +87,7 @@ IMPORTANT COMPLIANCE — THIS IS RESEARCH AND ANALYSIS ONLY, NOT FINANCIAL ADVIC
 - Do NOT make specific price predictions or price targets (e.g., "Stock will hit $100" or "$127 price target").
 - Do NOT include short-term technical analysis (MACD, RSI, moving averages, volume patterns, support/resistance levels).
 - Do NOT use sections titled "Recommended Action", "Affected Positions", "Position Sizing", "The Trade", or "Alpha Extraction".
-- Do NOT recommend buying, selling, trimming, rotating, or any specific portfolio actions.
+- Do NOT recommend buying, selling, trimming, rotating, or any specific investment actions.
 - Do NOT use language like "we are upgrading to Overweight", "initiating coverage with a Buy", or "adding to our watchlist".
 - Use sections like "Research Outlook", "Sector Impact", "Coverage Update", "Structural Analysis", "Key Companies" instead.
 - Focus on structural analysis, technology trends, and market dynamics — NOT investment recommendations.

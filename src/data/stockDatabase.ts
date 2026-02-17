@@ -45,7 +45,7 @@ function createStock(
  * to ensure a single source of truth for YTD calculations.
  */
 export const stockDatabase: Record<string, StockData> = {
-  // Mag 7 + Bitcoin (Core Portfolio)
+  // Mag 7 + Bitcoin (Core Watchlist)
   "NVDA": createStock("NVDA", "NVIDIA Corporation", "AI Hardware", "Technology", 98, "2026-01-31"),
   "MSFT": createStock("MSFT", "Microsoft Corp", "Cloud/AI", "Technology", 94, "2026-01-29"),
   "AAPL": createStock("AAPL", "Apple Inc.", "Consumer Tech", "Technology", 89, "2026-01-29"),
@@ -56,10 +56,10 @@ export const stockDatabase: Record<string, StockData> = {
   "BTC-USD": createStock("BTC-USD", "Bitcoin", "Digital Assets", "Cryptocurrency", 88, "2026-01-31"),
   "AVGO": createStock("AVGO", "Broadcom Inc.", "AI Hardware", "Technology", 93, "2026-01-29"),
 
-  // Robotics Portfolio
+  // Robotics Watchlist
   "ISRG": createStock("ISRG", "Intuitive Surgical", "Auto/Robotics", "Healthcare", 91, "2026-01-29"),
   "FANUY": createStock("FANUY", "Fanuc Corporation", "Auto/Robotics", "Industrials", 80, "2026-01-29"),
-  // AI Infrastructure Portfolio
+  // AI Infrastructure Watchlist
   "IREN": createStock("IREN", "Iris Energy Limited", "AI Infrastructure", "Technology", 85, "2026-01-31"),
   "CORZ": createStock("CORZ", "Core Scientific Inc.", "AI Infrastructure", "Technology", 82, "2026-01-31"),
   "CRWV": createStock("CRWV", "CoreWeave Inc.", "AI Infrastructure", "Technology", 88, "2026-01-31"),
@@ -67,7 +67,7 @@ export const stockDatabase: Record<string, StockData> = {
   "NBIS": createStock("NBIS", "Nebius Group N.V.", "AI Infrastructure", "Technology", 84, "2026-01-31"),
   "WULF": createStock("WULF", "TeraWulf Inc.", "AI Infrastructure", "Technology", 81, "2026-02-14"),
 
-  // Energy Renaissance Portfolio
+  // Energy Renaissance Watchlist
   "CEG": createStock("CEG", "Constellation Energy", "Nuclear", "Energy", 90, "2026-01-31"),
   "OKLO": createStock("OKLO", "Oklo Inc.", "Nuclear", "Energy", 86, "2026-01-31"),
   "VRT": createStock("VRT", "Vertiv Holdings", "Data Center", "Industrials", 86, "2026-01-29"),
@@ -75,25 +75,25 @@ export const stockDatabase: Record<string, StockData> = {
   "SMR": createStock("SMR", "NuScale Power Corp", "Nuclear", "Energy", 84, "2026-02-13"),
   "PWR": createStock("PWR", "Quanta Services Inc.", "Grid Infrastructure", "Industrials", 84, "2026-02-13"),
 
-  // Robotics Portfolio (additional tickers)
+  // Robotics Watchlist (additional tickers)
   "SYM": createStock("SYM", "Symbotic Inc.", "Auto/Robotics", "Technology", 81, "2026-02-12"),
 
   "TER": createStock("TER", "Teradyne Inc.", "Auto/Robotics", "Technology", 83, "2026-01-31"),
 
-  // Orbital & Space Portfolio
+  // Orbital & Space Watchlist
   "RKLB": createStock("RKLB", "Rocket Lab USA", "Space", "Industrials", 91, "2026-02-12"),
   "ASTS": createStock("ASTS", "AST SpaceMobile", "Space", "Technology", 89, "2026-02-12"),
   "LUNR": createStock("LUNR", "Intuitive Machines", "Space", "Industrials", 84, "2026-02-12"),
   "RDW": createStock("RDW", "Redwire Corporation", "Space", "Industrials", 80, "2026-02-12"),
   "PL": createStock("PL", "Planet Labs PBC", "Space", "Technology", 78, "2026-02-12"),
 
-  // Quantum Computing Portfolio
+  // Quantum Computing Watchlist
   "IONQ": createStock("IONQ", "IonQ Inc.", "Quantum", "Technology", 82, "2026-02-13"),
   "RGTI": createStock("RGTI", "Rigetti Computing", "Quantum", "Technology", 76, "2026-02-13"),
   "QBTS": createStock("QBTS", "D-Wave Quantum Inc.", "Quantum", "Technology", 74, "2026-02-13"),
   "QUBT": createStock("QUBT", "Quantum Computing Inc.", "Quantum", "Technology", 70, "2026-02-13"),
 
-  // Defense & Intelligence Portfolio
+  // Defense & Intelligence Watchlist
   "PLTR": createStock("PLTR", "Palantir Technologies", "Defense/AI", "Technology", 93, "2026-02-14"),
   "CRWD": createStock("CRWD", "CrowdStrike Holdings", "Cybersecurity", "Technology", 90, "2026-02-14"),
   "PANW": createStock("PANW", "Palo Alto Networks", "Cybersecurity", "Technology", 88, "2026-02-14"),
@@ -101,7 +101,7 @@ export const stockDatabase: Record<string, StockData> = {
   "BAH": createStock("BAH", "Booz Allen Hamilton", "Defense/AI", "Technology", 82, "2026-02-14"),
   "LDOS": createStock("LDOS", "Leidos Holdings", "Defense/AI", "Technology", 80, "2026-02-14"),
 
-  // Biotech Portfolio
+  // Biotech Watchlist
   "STOK": createStock("STOK", "Stoke Therapeutics", "Genomics", "Healthcare", 82, "2026-02-15"),
   "CRSP": createStock("CRSP", "CRISPR Therapeutics", "Genomics", "Healthcare", 86, "2026-02-15"),
   "NTLA": createStock("NTLA", "Intellia Therapeutics", "Genomics", "Healthcare", 78, "2026-02-15"),

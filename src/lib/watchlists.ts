@@ -1,42 +1,42 @@
-// Portfolio data for PM Research
+// Watchlist data for PM Research
 
-// Simplified portfolio position - just ticker and weight
+// Simplified watchlist position - just ticker and weight
 // All other data (name, assetClass, yearlyClose, pmScore) comes from stockDatabase
-export interface PortfolioPosition {
+export interface WatchlistPosition {
     ticker: string;
-    weight: number; // Percentage (0-100), should sum to 100 per portfolio
+    weight: number; // Percentage (0-100), should sum to 100 per watchlist
     thesis?: string; // One-line investment rationale
 }
 
-// Portfolio category for filtering
-export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech';
+// Watchlist category for filtering
+export type WatchlistCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech';
 
-// Portfolio structure
-export interface Portfolio {
+// Watchlist structure
+export interface Watchlist {
     id: string;
     name: string;
     description: string;
-    category: PortfolioCategory;
-    positions: PortfolioPosition[];
+    category: WatchlistCategory;
+    positions: WatchlistPosition[];
 }
 
-// AI Infrastructure Portfolio Tickers
-export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS', 'WULF'];
+// AI Infrastructure Watchlist Tickers
+export const AI_Infrastructure_Watchlist = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS', 'WULF'];
 
-// Energy Renaissance Portfolio Tickers
-export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR'];
+// Energy Renaissance Watchlist Tickers
+export const Energy_Renaissance_Watchlist = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR'];
 
-// Quantum Computing Portfolio Tickers
-export const Quantum_Portfolio = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
+// Quantum Computing Watchlist Tickers
+export const Quantum_Watchlist = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
 
-// Defense & Intelligence Portfolio Tickers
-export const Defense_Intelligence_Portfolio = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
+// Defense & Intelligence Watchlist Tickers
+export const Defense_Intelligence_Watchlist = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
 
-// Biotech Portfolio Tickers
-export const Biotech_Portfolio = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
+// Biotech Watchlist Tickers
+export const Biotech_Watchlist = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
 
-// Default portfolios
-export const defaultPortfolios: Portfolio[] = [
+// Default watchlists
+export const defaultWatchlists: Watchlist[] = [
     {
         id: "pm-research",
         name: "9 MAGS",
@@ -56,7 +56,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "robotics",
-        name: "Robotics Portfolio",
+        name: "Robotics",
         description: "Automation & Robotics",
         category: "Magnificent 7",
         positions: [
@@ -69,7 +69,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "ai-infrastructure",
-        name: "AI Infrastructure Portfolio",
+        name: "AI Infrastructure",
         description: "Data Centers, Mining & Compute Infrastructure",
         category: "AI Infrastructure",
         positions: [
@@ -83,7 +83,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "energy-renaissance",
-        name: "Energy Renaissance Portfolio",
+        name: "Energy Renaissance",
         description: "Nuclear, Grid & Power Infrastructure",
         category: "Energy Renaissance",
         positions: [
@@ -97,7 +97,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "orbital-space",
-        name: "Orbital & Space Portfolio",
+        name: "Orbital & Space",
         description: "Orbital Data Centers, Launch & Space Infrastructure",
         category: "Orbital & Space",
         positions: [
@@ -111,7 +111,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "quantum",
-        name: "Quantum Computing Portfolio",
+        name: "Quantum Computing",
         description: "Quantum Hardware, Software & Error Correction",
         category: "Quantum",
         positions: [
@@ -124,7 +124,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "defense-intelligence",
-        name: "Defense & Intelligence Portfolio",
+        name: "Defense & Intelligence",
         description: "Defense AI, Cybersecurity & Autonomous Systems",
         category: "Defense & Intelligence",
         positions: [
@@ -138,7 +138,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "biotech",
-        name: "Biotech Portfolio",
+        name: "Biotech",
         description: "Genomics, Gene Editing & Precision Medicine",
         category: "Biotech",
         positions: [
@@ -152,9 +152,9 @@ export const defaultPortfolios: Portfolio[] = [
     },
 ];
 
-// Historical quarterly returns by portfolio ID
-// Each portfolio has its own performance history reflecting sector-specific dynamics
-export const portfolioQuarterlyReturns: Record<string, { quarter: string; return: number }[]> = {
+// Historical quarterly returns by watchlist ID
+// Each watchlist has its own performance history reflecting sector-specific dynamics
+export const watchlistQuarterlyReturns: Record<string, { quarter: string; return: number }[]> = {
     "pm-research": [
         { quarter: "Q4 2025", return: 12.8 },
         { quarter: "Q3 2025", return: 7.4 },

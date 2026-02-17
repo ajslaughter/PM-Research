@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdmin } from "@/context/AdminContext";
-import { ResearchNote } from "@/lib/portfolios";
+import { ResearchNote } from "@/lib/watchlists";
 import { StockData } from "@/data/stockDatabase";
 import {
     Settings,
@@ -39,16 +39,16 @@ export default function AdminPanel() {
     const {
         isAdmin,
         researchNotes,
-        portfolios,
-        activePortfolioId,
-        setActivePortfolioId,
+        watchlists,
+        activeWatchlistId,
+        setActiveWatchlistId,
         stockDb,
         addResearchNote,
         updateResearchNote,
         deleteResearchNote,
-        addPortfolio,
-        updatePortfolio,
-        deletePortfolio,
+        addWatchlist,
+        updateWatchlist,
+        deleteWatchlist,
         addPosition,
         updatePosition,
         removePosition,
@@ -57,7 +57,7 @@ export default function AdminPanel() {
     } = useAdmin();
 
     const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<"research" | "portfolio">("portfolio");
+    const [activeTab, setActiveTab] = useState<"research" | "watchlist">("watchlist");
 
     // Research form state
     const [showResearchForm, setShowResearchForm] = useState(false);
@@ -73,10 +73,10 @@ export default function AdminPanel() {
         relatedTickers: "",
     });
 
-    // Portfolio form state
-    const [showNewPortfolioForm, setShowNewPortfolioForm] = useState(false);
-    const [newPortfolioName, setNewPortfolioName] = useState("");
-    const [newPortfolioDesc, setNewPortfolioDesc] = useState("");
+    // Watchlist form state
+    const [showNewWatchlistForm, setShowNewWatchlistForm] = useState(false);
+    const [newWatchlistName, setNewWatchlistName] = useState("");
+    const [newWatchlistDesc, setNewWatchlistDesc] = useState("");
 
     // Add position state
     const [newTicker, setNewTicker] = useState("");
@@ -84,11 +84,11 @@ export default function AdminPanel() {
     const [isSearching, setIsSearching] = useState(false);
     const [searchError, setSearchError] = useState("");
 
-    // Get current portfolio
-    const currentPortfolio = portfolios.find((p) => p.id === activePortfolioId);
+    // Get current watchlist
+    const currentWatchlist = watchlists.find((p) => p.id === activeWatchlistId);
 
-    // Calculate total weight for current portfolio
-    const totalWeight = currentPortfolio?.positions.reduce((acc, p) => acc + p.weight, 0) || 0;
+    // Calculate total weight for current watchlist
+    const totalWeight = currentWatchlist?.positions.reduce((acc, p) => acc + p.weight, 0) || 0;
     const weightWarning = totalWeight !== 100;
 
     // Don't render if not admin
@@ -151,32 +151,32 @@ export default function AdminPanel() {
         setShowResearchForm(true);
     };
 
-    // Handle new portfolio submit
-    const handleNewPortfolioSubmit = () => {
-        if (newPortfolioName.trim()) {
-            addPortfolio(newPortfolioName.trim(), newPortfolioDesc.trim());
-            setNewPortfolioName("");
-            setNewPortfolioDesc("");
-            setShowNewPortfolioForm(false);
+    // Handle new watchlist submit
+    const handleNewWatchlistSubmit = () => {
+        if (newWatchlistName.trim()) {
+            addWatchlist(newWatchlistName.trim(), newWatchlistDesc.trim());
+            setNewWatchlistName("");
+            setNewWatchlistDesc("");
+            setShowNewWatchlistForm(false);
         }
     };
 
     // Handle add position
     const handleAddPosition = async () => {
-        if (!newTicker.trim() || !currentPortfolio) return;
+        if (!newTicker.trim() || !currentWatchlist) return;
 
         const ticker = newTicker.trim().toUpperCase();
         setSearchError("");
 
-        // Check if already in portfolio
-        if (currentPortfolio.positions.find((p) => p.ticker === ticker)) {
-            setSearchError("Ticker already in portfolio");
+        // Check if already in watchlist
+        if (currentWatchlist.positions.find((p) => p.ticker === ticker)) {
+            setSearchError("Ticker already in watchlist");
             return;
         }
 
         // Check if in stock database
         if (stockDb[ticker]) {
-            addPosition(currentPortfolio.id, ticker, newWeight);
+            addPosition(currentWatchlist.id, ticker, newWeight);
             setNewTicker("");
             return;
         }
@@ -198,7 +198,7 @@ export default function AdminPanel() {
                     lastUpdated: data.lastUpdated || new Date().toISOString().split('T')[0],
                 };
                 addStock(newStock);
-                addPosition(currentPortfolio.id, ticker, newWeight);
+                addPosition(currentWatchlist.id, ticker, newWeight);
                 setNewTicker("");
             } else {
                 setSearchError("Ticker not found");
@@ -212,8 +212,8 @@ export default function AdminPanel() {
 
     // Handle weight change
     const handleWeightChange = (ticker: string, weight: number) => {
-        if (currentPortfolio) {
-            updatePosition(currentPortfolio.id, ticker, weight);
+        if (currentWatchlist) {
+            updatePosition(currentWatchlist.id, ticker, weight);
         }
     };
 
@@ -246,7 +246,7 @@ export default function AdminPanel() {
                                 </div>
                                 <div>
                                     <h2 className="font-bold text-lg">Admin Panel</h2>
-                                    <p className="text-xs text-pm-muted">Manage portfolios & content</p>
+                                    <p className="text-xs text-pm-muted">Manage watchlists & content</p>
                                 </div>
                             </div>
                             <button
@@ -260,14 +260,14 @@ export default function AdminPanel() {
                         {/* Tabs */}
                         <div className="flex border-b border-pm-border">
                             <button
-                                onClick={() => setActiveTab("portfolio")}
-                                className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${activeTab === "portfolio"
+                                onClick={() => setActiveTab("watchlist")}
+                                className={`flex-1 px-4 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${activeTab === "watchlist"
                                     ? "bg-pm-charcoal text-pm-green border-b-2 border-pm-green"
                                     : "text-pm-muted hover:text-white"
                                     }`}
                             >
                                 <Briefcase className="w-4 h-4" />
-                                Portfolio
+                                Watchlists
                             </button>
                             <button
                                 onClick={() => setActiveTab("research")}
@@ -283,90 +283,90 @@ export default function AdminPanel() {
 
                         {/* Content */}
                         <div className="p-4">
-                            {activeTab === "portfolio" && (
+                            {activeTab === "watchlist" && (
                                 <div className="space-y-4">
-                                    {/* Portfolio Selector */}
+                                    {/* Watchlist Selector */}
                                     <div className="space-y-2">
                                         <label className="text-xs text-pm-muted uppercase tracking-wider">
-                                            Select Portfolio
+                                            Select Watchlist
                                         </label>
                                         <div className="flex gap-2">
                                             <select
-                                                value={activePortfolioId}
-                                                onChange={(e) => setActivePortfolioId(e.target.value)}
+                                                value={activeWatchlistId}
+                                                onChange={(e) => setActiveWatchlistId(e.target.value)}
                                                 className="flex-1 px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
                                             >
-                                                {portfolios.map((p) => (
+                                                {watchlists.map((p) => (
                                                     <option key={p.id} value={p.id}>
                                                         {p.name}
                                                     </option>
                                                 ))}
                                             </select>
                                             <button
-                                                onClick={() => setShowNewPortfolioForm(true)}
+                                                onClick={() => setShowNewWatchlistForm(true)}
                                                 className="px-3 py-2 bg-pm-green/10 text-pm-green border border-pm-green/30 rounded-lg hover:bg-pm-green/20 transition-colors"
-                                                title="Create new portfolio"
+                                                title="Create new watchlist"
                                             >
                                                 <Plus className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </div>
 
-                                    {/* New Portfolio Form */}
-                                    {showNewPortfolioForm && (
+                                    {/* New Watchlist Form */}
+                                    {showNewWatchlistForm && (
                                         <motion.div
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             className="bg-pm-charcoal rounded-lg border border-pm-border p-4 space-y-3"
                                         >
                                             <div className="flex items-center justify-between">
-                                                <h3 className="font-bold text-sm">New Portfolio</h3>
-                                                <button onClick={() => setShowNewPortfolioForm(false)} className="p-1 hover:bg-white/10 rounded">
+                                                <h3 className="font-bold text-sm">New Watchlist</h3>
+                                                <button onClick={() => setShowNewWatchlistForm(false)} className="p-1 hover:bg-white/10 rounded">
                                                     <X className="w-4 h-4" />
                                                 </button>
                                             </div>
                                             <input
                                                 type="text"
-                                                placeholder="Portfolio Name"
-                                                value={newPortfolioName}
-                                                onChange={(e) => setNewPortfolioName(e.target.value)}
+                                                placeholder="Watchlist Name"
+                                                value={newWatchlistName}
+                                                onChange={(e) => setNewWatchlistName(e.target.value)}
                                                 className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
                                             />
                                             <input
                                                 type="text"
                                                 placeholder="Description"
-                                                value={newPortfolioDesc}
-                                                onChange={(e) => setNewPortfolioDesc(e.target.value)}
+                                                value={newWatchlistDesc}
+                                                onChange={(e) => setNewWatchlistDesc(e.target.value)}
                                                 className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
                                             />
                                             <button
-                                                onClick={handleNewPortfolioSubmit}
-                                                disabled={!newPortfolioName.trim()}
+                                                onClick={handleNewWatchlistSubmit}
+                                                disabled={!newWatchlistName.trim()}
                                                 className="w-full py-2 rounded-lg bg-pm-green text-pm-black font-medium flex items-center justify-center gap-2 hover:bg-pm-green/90 transition-colors disabled:opacity-50"
                                             >
                                                 <Plus className="w-4 h-4" />
-                                                Create Portfolio
+                                                Create Watchlist
                                             </button>
                                         </motion.div>
                                     )}
 
-                                    {/* Current Portfolio Info */}
-                                    {currentPortfolio && (
+                                    {/* Current Watchlist Info */}
+                                    {currentWatchlist && (
                                         <div className="bg-pm-charcoal/50 rounded-lg border border-pm-border p-4 space-y-4">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <h3 className="font-bold">{currentPortfolio.name}</h3>
-                                                    <p className="text-xs text-pm-muted">{currentPortfolio.description}</p>
+                                                    <h3 className="font-bold">{currentWatchlist.name}</h3>
+                                                    <p className="text-xs text-pm-muted">{currentWatchlist.description}</p>
                                                 </div>
-                                                {portfolios.length > 1 && (
+                                                {watchlists.length > 1 && (
                                                     <button
                                                         onClick={() => {
-                                                            if (confirm(`Delete "${currentPortfolio.name}"?`)) {
-                                                                deletePortfolio(currentPortfolio.id);
+                                                            if (confirm(`Delete "${currentWatchlist.name}"?`)) {
+                                                                deleteWatchlist(currentWatchlist.id);
                                                             }
                                                         }}
                                                         className="p-2 rounded hover:bg-red-500/20 text-pm-muted hover:text-red-400 transition-colors"
-                                                        title="Delete portfolio"
+                                                        title="Delete watchlist"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
                                                     </button>
@@ -394,8 +394,8 @@ export default function AdminPanel() {
                                             {/* Actions */}
                                             <div className="flex gap-2">
                                                 <button
-                                                    onClick={() => rebalanceWeights(currentPortfolio.id)}
-                                                    disabled={currentPortfolio.positions.length === 0}
+                                                    onClick={() => rebalanceWeights(currentWatchlist.id)}
+                                                    disabled={currentWatchlist.positions.length === 0}
                                                     className="flex-1 py-2 rounded-lg bg-pm-purple/10 text-pm-purple border border-pm-purple/30 text-xs font-medium flex items-center justify-center gap-2 hover:bg-pm-purple/20 transition-colors disabled:opacity-50"
                                                 >
                                                     <RefreshCw className="w-3 h-3" />
@@ -453,9 +453,9 @@ export default function AdminPanel() {
                                     {/* Positions List */}
                                     <div className="space-y-2">
                                         <h4 className="text-sm text-pm-muted font-semibold uppercase tracking-wider">
-                                            Positions ({currentPortfolio?.positions.length || 0})
+                                            Positions ({currentWatchlist?.positions.length || 0})
                                         </h4>
-                                        {currentPortfolio?.positions.map((position) => {
+                                        {currentWatchlist?.positions.map((position) => {
                                             const stock = stockDb[position.ticker];
                                             return (
                                                 <div
@@ -487,7 +487,7 @@ export default function AdminPanel() {
                                                             <span className="text-xs text-pm-muted">%</span>
                                                         </div>
                                                         <button
-                                                            onClick={() => removePosition(currentPortfolio.id, position.ticker)}
+                                                            onClick={() => removePosition(currentWatchlist.id, position.ticker)}
                                                             className="p-2 rounded hover:bg-red-500/20 text-pm-muted hover:text-red-400 transition-colors"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
@@ -496,7 +496,7 @@ export default function AdminPanel() {
                                                 </div>
                                             );
                                         })}
-                                        {(!currentPortfolio?.positions || currentPortfolio.positions.length === 0) && (
+                                        {(!currentWatchlist?.positions || currentWatchlist.positions.length === 0) && (
                                             <p className="text-sm text-pm-muted text-center py-4">
                                                 No positions. Add some above.
                                             </p>

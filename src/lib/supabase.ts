@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { ResearchNote } from './portfolios';
+import { ResearchNote } from './watchlists';
 
 // Get and sanitize environment variables (remove any whitespace/newlines that could cause Headers errors)
 const rawSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
