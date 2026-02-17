@@ -1,5 +1,5 @@
--- User Portfolios table for customizable portfolio feature
--- Each user can create multiple portfolios with their own stock selections
+-- User watchlists table for customizable watchlist feature
+-- Each user can create multiple watchlists with their own stock selections
 
 CREATE TABLE IF NOT EXISTS user_portfolios (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -14,25 +14,25 @@ CREATE TABLE IF NOT EXISTS user_portfolios (
 -- Index for fast user-specific queries
 CREATE INDEX IF NOT EXISTS idx_user_portfolios_user_id ON user_portfolios(user_id);
 
--- Row-Level Security: users can only access their own portfolios
+-- Row-Level Security: users can only access their own watchlists
 ALTER TABLE user_portfolios ENABLE ROW LEVEL SECURITY;
 
--- Policy: Users can read their own portfolios
+-- Policy: Users can read their own watchlists
 CREATE POLICY "Users can read own portfolios"
     ON user_portfolios FOR SELECT
     USING (auth.uid() = user_id);
 
--- Policy: Users can insert their own portfolios
+-- Policy: Users can insert their own watchlists
 CREATE POLICY "Users can insert own portfolios"
     ON user_portfolios FOR INSERT
     WITH CHECK (auth.uid() = user_id);
 
--- Policy: Users can update their own portfolios
+-- Policy: Users can update their own watchlists
 CREATE POLICY "Users can update own portfolios"
     ON user_portfolios FOR UPDATE
     USING (auth.uid() = user_id);
 
--- Policy: Users can delete their own portfolios
+-- Policy: Users can delete their own watchlists
 CREATE POLICY "Users can delete own portfolios"
     ON user_portfolios FOR DELETE
     USING (auth.uid() = user_id);

@@ -54,10 +54,10 @@ export function UserWatchlistProvider({ children }: { children: ReactNode }) {
         setError(null);
 
         try {
-            const res = await fetch('/api/user-portfolios', { headers: headers() });
+            const res = await fetch('/api/user-watchlists', { headers: headers() });
             if (res.ok) {
                 const data = await res.json();
-                setWatchlists(data.portfolios || []);
+                setWatchlists(data.watchlists || []);
             } else {
                 const data = await res.json();
                 setError(data.error || 'Failed to load watchlists');
@@ -91,7 +91,7 @@ export function UserWatchlistProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-            const res = await fetch('/api/user-portfolios', {
+            const res = await fetch('/api/user-watchlists', {
                 method: 'POST',
                 headers: headers(),
                 body: JSON.stringify({ name, description, positions }),
@@ -100,8 +100,8 @@ export function UserWatchlistProvider({ children }: { children: ReactNode }) {
             const data = await res.json();
 
             if (res.ok) {
-                setWatchlists(prev => [data.portfolio, ...prev]);
-                return data.portfolio;
+                setWatchlists(prev => [data.watchlist, ...prev]);
+                return data.watchlist;
             } else {
                 setError(data.error || 'Failed to create watchlist');
                 return null;
@@ -119,7 +119,7 @@ export function UserWatchlistProvider({ children }: { children: ReactNode }) {
         if (!accessToken) return false;
 
         try {
-            const res = await fetch('/api/user-portfolios', {
+            const res = await fetch('/api/user-watchlists', {
                 method: 'PUT',
                 headers: headers(),
                 body: JSON.stringify({ id, ...updates }),
@@ -129,7 +129,7 @@ export function UserWatchlistProvider({ children }: { children: ReactNode }) {
 
             if (res.ok) {
                 setWatchlists(prev =>
-                    prev.map(p => p.id === id ? data.portfolio : p)
+                    prev.map(p => p.id === id ? data.watchlist : p)
                 );
                 return true;
             } else {
@@ -146,7 +146,7 @@ export function UserWatchlistProvider({ children }: { children: ReactNode }) {
         if (!accessToken) return false;
 
         try {
-            const res = await fetch(`/api/user-portfolios?id=${id}`, {
+            const res = await fetch(`/api/user-watchlists?id=${id}`, {
                 method: 'DELETE',
                 headers: headers(),
             });
