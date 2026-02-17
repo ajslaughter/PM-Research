@@ -40,7 +40,7 @@ export const defaultWatchlists: Watchlist[] = [
     {
         id: "pm-research",
         name: "9 MAGS",
-        description: "Mag 7 + Bitcoin + Broadcom - Core Holdings",
+        description: "Mag 7 + Bitcoin + Broadcom",
         category: "Magnificent 7",
         positions: [
             { ticker: "NVDA", weight: 11.11 },
