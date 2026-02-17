@@ -3,36 +3,36 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 
-export interface UserPortfolioPosition {
+export interface UserWatchlistPosition {
     ticker: string;
     weight: number;
 }
 
-export interface UserPortfolio {
+export interface UserWatchlist {
     id: string;
     user_id: string;
     name: string;
     description: string;
-    positions: UserPortfolioPosition[];
+    positions: UserWatchlistPosition[];
     created_at: string;
     updated_at: string;
 }
 
-interface UserPortfolioContextType {
-    portfolios: UserPortfolio[];
+interface UserWatchlistContextType {
+    watchlists: UserWatchlist[];
     isLoading: boolean;
     error: string | null;
-    createPortfolio: (name: string, description: string, positions: UserPortfolioPosition[]) => Promise<UserPortfolio | null>;
-    updatePortfolio: (id: string, updates: { name?: string; description?: string; positions?: UserPortfolioPosition[] }) => Promise<boolean>;
-    deletePortfolio: (id: string) => Promise<boolean>;
-    refreshPortfolios: () => Promise<void>;
+    createWatchlist: (name: string, description: string, positions: UserWatchlistPosition[]) => Promise<UserWatchlist | null>;
+    updateWatchlist: (id: string, updates: { name?: string; description?: string; positions?: UserWatchlistPosition[] }) => Promise<boolean>;
+    deleteWatchlist: (id: string) => Promise<boolean>;
+    refreshWatchlists: () => Promise<void>;
 }
 
-const UserPortfolioContext = createContext<UserPortfolioContextType | undefined>(undefined);
+const UserWatchlistContext = createContext<UserWatchlistContextType | undefined>(undefined);
 
-export function UserPortfolioProvider({ children }: { children: ReactNode }) {
+export function UserWatchlistProvider({ children }: { children: ReactNode }) {
     const { user, accessToken } = useAuth();
-    const [portfolios, setPortfolios] = useState<UserPortfolio[]>([]);
+    const [watchlists, setWatchlists] = useState<UserWatchlist[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -44,9 +44,9 @@ export function UserPortfolioProvider({ children }: { children: ReactNode }) {
         return h;
     }, [accessToken]);
 
-    const refreshPortfolios = useCallback(async () => {
+    const refreshWatchlists = useCallback(async () => {
         if (!user || !accessToken) {
-            setPortfolios([]);
+            setWatchlists([]);
             return;
         }
 
@@ -57,36 +57,36 @@ export function UserPortfolioProvider({ children }: { children: ReactNode }) {
             const res = await fetch('/api/user-portfolios', { headers: headers() });
             if (res.ok) {
                 const data = await res.json();
-                setPortfolios(data.portfolios || []);
+                setWatchlists(data.portfolios || []);
             } else {
                 const data = await res.json();
-                setError(data.error || 'Failed to load portfolios');
+                setError(data.error || 'Failed to load watchlists');
             }
         } catch {
-            setError('Failed to load portfolios');
+            setError('Failed to load watchlists');
         } finally {
             setIsLoading(false);
         }
     }, [user, accessToken, headers]);
 
-    // Fetch portfolios when user logs in
+    // Fetch watchlists when user logs in
     useEffect(() => {
         if (user && accessToken) {
-            refreshPortfolios();
+            refreshWatchlists();
         } else {
-            setPortfolios([]);
+            setWatchlists([]);
         }
-    }, [user, accessToken, refreshPortfolios]);
+    }, [user, accessToken, refreshWatchlists]);
 
-    const createPortfolio = useCallback(async (
+    const createWatchlist = useCallback(async (
         name: string,
         description: string,
-        positions: UserPortfolioPosition[]
-    ): Promise<UserPortfolio | null> => {
+        positions: UserWatchlistPosition[]
+    ): Promise<UserWatchlist | null> => {
         if (!accessToken) return null;
 
-        if (portfolios.length > 0) {
-            setError("You can only create one custom portfolio.");
+        if (watchlists.length > 0) {
+            setError("You can only create one custom watchlist.");
             return null;
         }
 
@@ -100,21 +100,21 @@ export function UserPortfolioProvider({ children }: { children: ReactNode }) {
             const data = await res.json();
 
             if (res.ok) {
-                setPortfolios(prev => [data.portfolio, ...prev]);
+                setWatchlists(prev => [data.portfolio, ...prev]);
                 return data.portfolio;
             } else {
-                setError(data.error || 'Failed to create portfolio');
+                setError(data.error || 'Failed to create watchlist');
                 return null;
             }
         } catch {
-            setError('Failed to create portfolio');
+            setError('Failed to create watchlist');
             return null;
         }
-    }, [accessToken, headers, portfolios.length]);
+    }, [accessToken, headers, watchlists.length]);
 
-    const updatePortfolio = useCallback(async (
+    const updateWatchlist = useCallback(async (
         id: string,
-        updates: { name?: string; description?: string; positions?: UserPortfolioPosition[] }
+        updates: { name?: string; description?: string; positions?: UserWatchlistPosition[] }
     ): Promise<boolean> => {
         if (!accessToken) return false;
 
@@ -128,21 +128,21 @@ export function UserPortfolioProvider({ children }: { children: ReactNode }) {
             const data = await res.json();
 
             if (res.ok) {
-                setPortfolios(prev =>
+                setWatchlists(prev =>
                     prev.map(p => p.id === id ? data.portfolio : p)
                 );
                 return true;
             } else {
-                setError(data.error || 'Failed to update portfolio');
+                setError(data.error || 'Failed to update watchlist');
                 return false;
             }
         } catch {
-            setError('Failed to update portfolio');
+            setError('Failed to update watchlist');
             return false;
         }
     }, [accessToken, headers]);
 
-    const deletePortfolio = useCallback(async (id: string): Promise<boolean> => {
+    const deleteWatchlist = useCallback(async (id: string): Promise<boolean> => {
         if (!accessToken) return false;
 
         try {
@@ -152,38 +152,38 @@ export function UserPortfolioProvider({ children }: { children: ReactNode }) {
             });
 
             if (res.ok) {
-                setPortfolios(prev => prev.filter(p => p.id !== id));
+                setWatchlists(prev => prev.filter(p => p.id !== id));
                 return true;
             } else {
                 const data = await res.json();
-                setError(data.error || 'Failed to delete portfolio');
+                setError(data.error || 'Failed to delete watchlist');
                 return false;
             }
         } catch {
-            setError('Failed to delete portfolio');
+            setError('Failed to delete watchlist');
             return false;
         }
     }, [accessToken, headers]);
 
     return (
-        <UserPortfolioContext.Provider value={{
-            portfolios,
+        <UserWatchlistContext.Provider value={{
+            watchlists,
             isLoading,
             error,
-            createPortfolio,
-            updatePortfolio,
-            deletePortfolio,
-            refreshPortfolios,
+            createWatchlist,
+            updateWatchlist,
+            deleteWatchlist,
+            refreshWatchlists,
         }}>
             {children}
-        </UserPortfolioContext.Provider>
+        </UserWatchlistContext.Provider>
     );
 }
 
-export function useUserPortfolios() {
-    const context = useContext(UserPortfolioContext);
+export function useUserWatchlists() {
+    const context = useContext(UserWatchlistContext);
     if (context === undefined) {
-        throw new Error("useUserPortfolios must be used within a UserPortfolioProvider");
+        throw new Error("useUserWatchlists must be used within a UserWatchlistProvider");
     }
     return context;
 }

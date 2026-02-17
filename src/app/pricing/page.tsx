@@ -11,7 +11,7 @@ export default function PricingPage() {
         "Full Research Hub Access",
         "Weekly Market Analysis",
         "PM Score Methodology",
-        "Full Model Portfolio Access",
+        "Full Research Watchlist Access",
         "PM Research Bot Access",
         "Automated Research Reports",
         "Advanced Analytics Dashboard",
@@ -44,7 +44,7 @@ export default function PricingPage() {
                         Currently <span className="text-pm-green">Free</span>
                     </h1>
                     <p className="text-xl text-pm-muted max-w-2xl mx-auto">
-                        Access all research, model portfolios, and analytics.
+                        Access all research, model watchlists, and analytics.
                         No subscription currently required.
                     </p>
                 </motion.div>
@@ -95,11 +95,11 @@ export default function PricingPage() {
                             },
                             {
                                 q: "Is this personalized investment advice?",
-                                a: "No. PM Research provides general research content and model portfolios. We don't know your financial situation, so nothing here constitutes personalized advice or recommendations to buy or sell specific securities.",
+                                a: "No. PM Research provides general research content and research watchlists. We don't know your financial situation, so nothing here constitutes personalized advice or recommendations to buy or sell specific securities.",
                             },
                             {
-                                q: "How does the model portfolio work?",
-                                a: "The model portfolio displays hypothetical positions based on our research. Performance metrics reflect how these model positions would have performed—not actual trades.",
+                                q: "How does the research watchlist work?",
+                                a: "The research watchlist tracks positions we have deeply researched. Performance metrics are hypothetical and reflect how these positions would have performed. Inclusion indicates active research coverage, not a recommendation to purchase.",
                             },
                             {
                                 q: "What are Automated Research Reports?",
@@ -126,9 +126,9 @@ export default function PricingPage() {
                     className="mt-16 text-center"
                 >
                     <p className="text-xs text-pm-muted leading-relaxed max-w-2xl mx-auto">
-                        Model portfolio performance is hypothetical. Past performance does not guarantee future results.
-                        PM Research provides research content and model portfolios—not personalized investment advice.
-                        PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
+                        Watchlist performance shown is hypothetical and for research tracking purposes only. Past performance does not guarantee future results.
+                        PM Research provides research content and curated watchlists reflecting our analytical coverage — not personalized investment advice or buy/sell recommendations.
+                        Inclusion on a watchlist indicates active research coverage, not a recommendation to purchase. PM Scores reflect research depth and thesis conviction, not return predictions. Always conduct your own due diligence before making investment decisions.
                     </p>
                 </motion.div>
             </div>

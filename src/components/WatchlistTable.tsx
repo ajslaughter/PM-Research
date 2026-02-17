@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore, getPmScoreCategory } from "@/services/stockService";
 import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
-import { PortfolioCategory, portfolioQuarterlyReturns } from "@/lib/portfolios";
+import { WatchlistCategory, watchlistQuarterlyReturns } from "@/lib/watchlists";
 import SectorBadge from "@/components/SectorBadge";
 import {
     TrendingUp,
@@ -32,7 +32,7 @@ interface PriceApiResponse {
 }
 
 // Available categories for filtering
-const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
+const WATCHLIST_CATEGORIES: WatchlistCategory[] = [
     'Magnificent 7',
     'AI Infrastructure',
     'Energy Renaissance',
@@ -41,11 +41,11 @@ const PORTFOLIO_CATEGORIES: PortfolioCategory[] = [
 ];
 
 // Props for the component
-interface PortfolioTableProps {
-    portfolioId: string;
-    portfolioName: string;
-    category?: PortfolioCategory;
-    onCategoryChange?: (category: PortfolioCategory) => void;
+interface WatchlistTableProps {
+    watchlistId: string;
+    watchlistName: string;
+    category?: WatchlistCategory;
+    onCategoryChange?: (category: WatchlistCategory) => void;
     showCategoryFilter?: boolean;
 }
 
@@ -68,20 +68,20 @@ const formatPercent = (value: number): string => {
     return rounded.toFixed(2);
 };
 
-export default function PortfolioTable({
-    portfolioId,
-    portfolioName,
+export default function WatchlistTable({
+    watchlistId,
+    watchlistName,
     category,
     onCategoryChange,
     showCategoryFilter = false
-}: PortfolioTableProps) {
-    const { portfolios, stockDb } = useAdmin();
+}: WatchlistTableProps) {
+    const { watchlists, stockDb } = useAdmin();
 
     // Internal category state if not controlled externally
-    const [internalCategory, setInternalCategory] = useState<PortfolioCategory>(category || 'Magnificent 7');
+    const [internalCategory, setInternalCategory] = useState<WatchlistCategory>(category || 'Magnificent 7');
     const activeCategory = category ?? internalCategory;
 
-    const handleCategoryChange = useCallback((newCategory: PortfolioCategory) => {
+    const handleCategoryChange = useCallback((newCategory: WatchlistCategory) => {
         if (onCategoryChange) {
             onCategoryChange(newCategory);
         } else {
@@ -102,26 +102,26 @@ export default function PortfolioTable({
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const isMountedRef = useRef(true);
 
-    // Get portfolios filtered by category
-    const filteredPortfolios = useMemo(() => {
-        if (!showCategoryFilter) return portfolios;
-        return portfolios.filter((p) => p.category === activeCategory);
-    }, [portfolios, activeCategory, showCategoryFilter]);
+    // Get watchlists filtered by category
+    const filteredWatchlists = useMemo(() => {
+        if (!showCategoryFilter) return watchlists;
+        return watchlists.filter((p) => p.category === activeCategory);
+    }, [watchlists, activeCategory, showCategoryFilter]);
 
-    // Get current portfolio (respecting category filter)
-    const currentPortfolio = useMemo(() => {
-        if (showCategoryFilter && filteredPortfolios.length > 0) {
-            // When filtering, use the first portfolio in the filtered list if current doesn't match
-            const found = filteredPortfolios.find((p) => p.id === portfolioId);
-            return found || filteredPortfolios[0];
+    // Get current watchlist (respecting category filter)
+    const currentWatchlist = useMemo(() => {
+        if (showCategoryFilter && filteredWatchlists.length > 0) {
+            // When filtering, use the first watchlist in the filtered list if current doesn't match
+            const found = filteredWatchlists.find((p) => p.id === watchlistId);
+            return found || filteredWatchlists[0];
         }
-        return portfolios.find((p) => p.id === portfolioId);
-    }, [portfolios, filteredPortfolios, portfolioId, showCategoryFilter]);
+        return watchlists.find((p) => p.id === watchlistId);
+    }, [watchlists, filteredWatchlists, watchlistId, showCategoryFilter]);
 
-    // Get positions from current portfolio
-    const positions = currentPortfolio?.positions || [];
+    // Get positions from current watchlist
+    const positions = currentWatchlist?.positions || [];
 
-    // Build ticker list dynamically from current portfolio
+    // Build ticker list dynamically from current watchlist
     const tickerList = useMemo(() => {
         return positions.map((p) => p.ticker).join(',');
     }, [positions]);
@@ -247,8 +247,8 @@ export default function PortfolioTable({
         fetchPrices(true);
     }, [fetchPrices]);
 
-    // Merge portfolio data with stock database and live prices
-    const livePortfolio = positions.map((position) => {
+    // Merge watchlist data with stock database and live prices
+    const liveWatchlist = positions.map((position) => {
         const stock = stockDb[position.ticker.toUpperCase()];
         const liveData = prices[position.ticker];
         const isStale = staleTickers.has(position.ticker);
@@ -279,14 +279,14 @@ export default function PortfolioTable({
         };
     });
 
-    // Calculate portfolio aggregate stats using weighted calculations
+    // Calculate watchlist aggregate stats using weighted calculations
     const weightedYTD = calculateWeightedYTD(positions, prices, stockDb);
     const weightedDayChange = calculateWeightedDayChange(positions, prices);
     const avgPmScore = calculateAvgPmScore(positions, stockDb);
     const totalWeight = positions.reduce((acc, p) => acc + p.weight, 0);
 
-    // Quarterly Performance - historical returns are per-portfolio
-    const historicalReturns = currentPortfolio ? portfolioQuarterlyReturns[currentPortfolio.id] : undefined;
+    // Quarterly Performance - historical returns are per-watchlist
+    const historicalReturns = currentWatchlist ? watchlistQuarterlyReturns[currentWatchlist.id] : undefined;
     const quarterlyPerformance = [
         { quarter: "Q1 2026", return: weightedYTD, isCurrent: true },
         ...(historicalReturns || []).map((q) => ({
@@ -306,10 +306,10 @@ export default function PortfolioTable({
         });
     };
 
-    if (!currentPortfolio) {
+    if (!currentWatchlist) {
         return (
             <div className="pm-card p-8 text-center">
-                <p className="text-pm-muted">Portfolio not found</p>
+                <p className="text-pm-muted">Watchlist not found</p>
             </div>
         );
     }
@@ -317,7 +317,7 @@ export default function PortfolioTable({
     if (positions.length === 0) {
         return (
             <div className="pm-card p-8 text-center">
-                <p className="text-pm-muted">No positions in this portfolio. Use the admin panel to add positions.</p>
+                <p className="text-pm-muted">No positions in this watchlist. Use the admin panel to add positions.</p>
             </div>
         );
     }
@@ -332,7 +332,7 @@ export default function PortfolioTable({
                         <span className="text-xs uppercase tracking-wider">Category:</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        {PORTFOLIO_CATEGORIES.map((cat) => (
+                        {WATCHLIST_CATEGORIES.map((cat) => (
                             <button
                                 key={cat}
                                 onClick={() => handleCategoryChange(cat)}
@@ -349,20 +349,20 @@ export default function PortfolioTable({
                 </div>
             )}
 
-            {/* Portfolio Name (when category filter is active) */}
-            {showCategoryFilter && currentPortfolio && (
+            {/* Watchlist Name (when category filter is active) */}
+            {showCategoryFilter && currentWatchlist && (
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-xl font-bold text-white">{currentPortfolio.name}</h2>
-                        <p className="text-sm text-pm-muted">{currentPortfolio.description}</p>
+                        <h2 className="text-xl font-bold text-white">{currentWatchlist.name}</h2>
+                        <p className="text-sm text-pm-muted">{currentWatchlist.description}</p>
                     </div>
-                    {filteredPortfolios.length > 1 && (
+                    {filteredWatchlists.length > 1 && (
                         <div className="flex gap-2">
-                            {filteredPortfolios.map((p) => (
+                            {filteredWatchlists.map((p) => (
                                 <span
                                     key={p.id}
                                     className={`px-2 py-1 text-xs rounded ${
-                                        p.id === currentPortfolio.id
+                                        p.id === currentWatchlist.id
                                             ? 'bg-pm-green/20 text-pm-green'
                                             : 'bg-pm-charcoal text-pm-muted'
                                     }`}
@@ -517,7 +517,7 @@ export default function PortfolioTable({
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-pm-border">
-                        {livePortfolio.map((position) => (
+                        {liveWatchlist.map((position) => (
                             <tr
                                 key={position.ticker}
                                 className="hover:bg-pm-charcoal/80 transition-colors group"

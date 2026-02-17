@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
-import { useUserPortfolios, UserPortfolioPosition } from "@/context/UserPortfolioContext";
+import { useUserWatchlists, UserWatchlistPosition } from "@/context/UserWatchlistContext";
 import { useStockDatabase } from "@/context/AdminContext";
 import {
     Search,
@@ -21,15 +21,15 @@ import {
 import Link from "next/link";
 import SectorBadge from "@/components/SectorBadge";
 
-export default function CreatePortfolioPage() {
+export default function CreateWatchlistPage() {
     const router = useRouter();
     const { user, isLoading: authLoading } = useAuth();
-    const { createPortfolio, portfolios } = useUserPortfolios();
+    const { createWatchlist, watchlists } = useUserWatchlists();
     const { stockDb } = useStockDatabase();
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [positions, setPositions] = useState<UserPortfolioPosition[]>([]);
+    const [positions, setPositions] = useState<UserWatchlistPosition[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -97,25 +97,25 @@ export default function CreatePortfolioPage() {
         setError(null);
 
         if (!name.trim()) {
-            setError("Portfolio name is required");
+            setError("Watchlist name is required");
             return;
         }
         if (positions.length === 0) {
-            setError("Add at least one stock to your portfolio");
+            setError("Add at least one stock to your watchlist");
             return;
         }
 
         setIsSaving(true);
 
         try {
-            const portfolio = await createPortfolio(name.trim(), description.trim(), positions);
-            if (portfolio) {
-                router.push("/portfolio");
+            const result = await createWatchlist(name.trim(), description.trim(), positions);
+            if (result) {
+                router.push("/watchlist");
             } else {
-                setError("Failed to save portfolio. Please try again.");
+                setError("Failed to save watchlist. Please try again.");
             }
         } catch {
-            setError("Failed to save portfolio. Please try again.");
+            setError("Failed to save watchlist. Please try again.");
         } finally {
             setIsSaving(false);
         }
@@ -133,20 +133,20 @@ export default function CreatePortfolioPage() {
                         className="pm-card p-12"
                     >
                         <Briefcase className="w-16 h-16 text-pm-green mx-auto mb-6" />
-                        <h1 className="text-3xl font-bold mb-4">Create Your Portfolio</h1>
+                        <h1 className="text-3xl font-bold mb-4">Create Your Watchlist</h1>
                         <p className="text-pm-muted mb-8">
-                            Create an account to build and track your own custom stock portfolio.
+                            Create an account to build and track your own custom stock watchlist.
                             An account is only needed for this feature -- everything else is open.
                         </p>
                         <div className="flex gap-4 justify-center">
                             <Link
-                                href="/login?redirectTo=/portfolio/create"
+                                href="/login?redirectTo=/watchlist/create"
                                 className="btn-primary px-6 py-3"
                             >
                                 Sign In
                             </Link>
                             <Link
-                                href="/signup?redirectTo=/portfolio/create"
+                                href="/signup?redirectTo=/watchlist/create"
                                 className="px-6 py-3 rounded-lg border border-pm-border text-pm-text hover:border-pm-green transition-colors"
                             >
                                 Create Account
@@ -166,8 +166,8 @@ export default function CreatePortfolioPage() {
         );
     }
 
-    // Limit to one portfolio
-    if (portfolios.length > 0) {
+    // Limit to one watchlist
+    if (watchlists.length > 0) {
         return (
             <div className="relative min-h-screen pb-20 md:pb-0">
                 <div className="absolute inset-0 grid-bg opacity-30" />
@@ -178,16 +178,16 @@ export default function CreatePortfolioPage() {
                         className="pm-card p-12"
                     >
                         <Briefcase className="w-16 h-16 text-pm-green mx-auto mb-6" />
-                        <h1 className="text-3xl font-bold mb-4">Portfolio Already Created</h1>
+                        <h1 className="text-3xl font-bold mb-4">Watchlist Already Created</h1>
                         <p className="text-pm-muted mb-8">
-                            You already have a custom portfolio. You can view and manage it from the Portfolio page.
+                            You already have a custom watchlist. You can view and manage it from the Watchlists page.
                         </p>
                         <Link
-                            href="/portfolio"
+                            href="/watchlist"
                             className="btn-primary inline-flex items-center gap-2 px-6 py-3"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            Go to Portfolios
+                            Go to Watchlists
                         </Link>
                     </motion.div>
                 </div>
@@ -203,11 +203,11 @@ export default function CreatePortfolioPage() {
             <div className="relative max-w-4xl mx-auto px-6 py-12">
                 {/* Back Button */}
                 <Link
-                    href="/portfolio"
+                    href="/watchlist"
                     className="inline-flex items-center gap-2 text-pm-muted hover:text-pm-green transition-colors mb-6"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Back to Portfolios
+                    Back to Watchlists
                 </Link>
 
                 {/* Header */}
@@ -217,10 +217,10 @@ export default function CreatePortfolioPage() {
                     className="mb-8"
                 >
                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                        <span className="text-pm-green">Create</span> Your Portfolio
+                        <span className="text-pm-green">Create</span> Your Watchlist
                     </h1>
                     <p className="text-pm-muted mt-2">
-                        Select stocks, set weights, and save your custom portfolio.
+                        Select stocks, set weights, and save your custom watchlist.
                     </p>
                 </motion.div>
 
@@ -243,26 +243,26 @@ export default function CreatePortfolioPage() {
                 </AnimatePresence>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Left column: Portfolio details + stock search */}
+                    {/* Left column: Watchlist details + stock search */}
                     <div className="lg:col-span-2 space-y-6">
-                        {/* Portfolio Name & Description */}
+                        {/* Watchlist Name & Description */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
                             className="pm-card p-6"
                         >
-                            <h2 className="text-lg font-semibold mb-4">Portfolio Details</h2>
+                            <h2 className="text-lg font-semibold mb-4">Watchlist Details</h2>
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-pm-text mb-2">
-                                        Portfolio Name
+                                        Watchlist Name
                                     </label>
                                     <input
                                         type="text"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
-                                        placeholder="e.g. My Growth Portfolio"
+                                        placeholder="e.g. My Growth Watchlist"
                                         maxLength={100}
                                         className="w-full px-4 py-3 bg-pm-black border border-pm-border rounded-lg text-pm-text placeholder:text-pm-muted focus:outline-none focus:border-pm-green transition-colors"
                                     />
@@ -360,7 +360,7 @@ export default function CreatePortfolioPage() {
                                 <div className="py-12 text-center">
                                     <Briefcase className="w-10 h-10 text-pm-muted mx-auto mb-3" />
                                     <p className="text-sm text-pm-muted">
-                                        Search and add stocks to build your portfolio.
+                                        Search and add stocks to build your watchlist.
                                     </p>
                                 </div>
                             ) : (
@@ -431,7 +431,7 @@ export default function CreatePortfolioPage() {
                                 ) : (
                                     <>
                                         <Save className="w-5 h-5" />
-                                        Save Portfolio
+                                        Save Watchlist
                                     </>
                                 )}
                             </button>

@@ -53,7 +53,7 @@ export default function LandingPage() {
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                            <Link href="/portfolio" className="btn-primary flex items-center gap-2">
+                            <Link href="/watchlist" className="btn-primary flex items-center gap-2">
                                 <Briefcase className="w-5 h-5" />
                                 Watchlists
                                 <ArrowRight className="w-5 h-5" />

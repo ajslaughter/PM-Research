@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import { ResearchNote } from "@/lib/portfolios";
+import { ResearchNote } from "@/lib/watchlists";
 
 interface UseResearchReturn {
     researchNotes: ResearchNote[];

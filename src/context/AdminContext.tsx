@@ -1,10 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
-import { PortfolioProvider, usePortfolio } from "./PortfolioContext";
+import { WatchlistProvider, useWatchlist } from "./WatchlistContext";
 import { ResearchProvider, useResearch } from "./ResearchContext";
 import { StockDatabaseProvider, useStockDatabase } from "./StockDatabaseContext";
-import { ResearchNote, Portfolio } from "@/lib/portfolios";
+import { ResearchNote, Watchlist } from "@/lib/watchlists";
 import { StockData } from "@/data/stockDatabase";
 
 // Admin mode context (lightweight - just handles admin toggle)
@@ -55,11 +55,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     return (
         <AdminModeProvider>
             <StockDatabaseProvider>
-                <PortfolioProvider>
+                <WatchlistProvider>
                     <ResearchProvider>
                         {children}
                     </ResearchProvider>
-                </PortfolioProvider>
+                </WatchlistProvider>
             </StockDatabaseProvider>
         </AdminModeProvider>
     );
@@ -68,7 +68,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 // Backward-compatible useAdmin hook that combines all contexts
 export function useAdmin() {
     const adminMode = useContext(AdminModeContext);
-    const portfolio = usePortfolio();
+    const watchlistCtx = useWatchlist();
     const research = useResearch();
     const stockDb = useStockDatabase();
 
@@ -89,17 +89,17 @@ export function useAdmin() {
         updateResearchNote: research.updateResearchNote,
         deleteResearchNote: research.deleteResearchNote,
 
-        // Portfolios (from PortfolioContext)
-        portfolios: portfolio.portfolios,
-        activePortfolioId: portfolio.activePortfolioId,
-        setActivePortfolioId: portfolio.setActivePortfolioId,
-        addPortfolio: portfolio.addPortfolio,
-        updatePortfolio: portfolio.updatePortfolio,
-        deletePortfolio: portfolio.deletePortfolio,
-        addPosition: portfolio.addPosition,
-        updatePosition: portfolio.updatePosition,
-        removePosition: portfolio.removePosition,
-        rebalanceWeights: portfolio.rebalanceWeights,
+        // Watchlists (from WatchlistContext)
+        watchlists: watchlistCtx.watchlists,
+        activeWatchlistId: watchlistCtx.activeWatchlistId,
+        setActiveWatchlistId: watchlistCtx.setActiveWatchlistId,
+        addWatchlist: watchlistCtx.addWatchlist,
+        updateWatchlist: watchlistCtx.updateWatchlist,
+        deleteWatchlist: watchlistCtx.deleteWatchlist,
+        addPosition: watchlistCtx.addPosition,
+        updatePosition: watchlistCtx.updatePosition,
+        removePosition: watchlistCtx.removePosition,
+        rebalanceWeights: watchlistCtx.rebalanceWeights,
 
         // Stock database (from StockDatabaseContext)
         stockDb: stockDb.stockDb,
@@ -109,7 +109,7 @@ export function useAdmin() {
 }
 
 // Export individual hooks for more focused usage
-export { usePortfolio } from "./PortfolioContext";
+export { useWatchlist } from "./WatchlistContext";
 export { useResearch } from "./ResearchContext";
 export { useStockDatabase } from "./StockDatabaseContext";
 
@@ -121,16 +121,16 @@ export interface AdminContextType {
     addResearchNote: (note: Omit<ResearchNote, "id">) => void;
     updateResearchNote: (id: string, updates: Partial<ResearchNote>) => void;
     deleteResearchNote: (id: string) => void;
-    portfolios: Portfolio[];
-    activePortfolioId: string;
-    setActivePortfolioId: (id: string) => void;
-    addPortfolio: (name: string, description: string) => void;
-    updatePortfolio: (id: string, updates: Partial<Portfolio>) => void;
-    deletePortfolio: (id: string) => void;
-    addPosition: (portfolioId: string, ticker: string, weight: number) => void;
-    updatePosition: (portfolioId: string, ticker: string, weight: number) => void;
-    removePosition: (portfolioId: string, ticker: string) => void;
-    rebalanceWeights: (portfolioId: string) => void;
+    watchlists: Watchlist[];
+    activeWatchlistId: string;
+    setActiveWatchlistId: (id: string) => void;
+    addWatchlist: (name: string, description: string) => void;
+    updateWatchlist: (id: string, updates: Partial<Watchlist>) => void;
+    deleteWatchlist: (id: string) => void;
+    addPosition: (watchlistId: string, ticker: string, weight: number) => void;
+    updatePosition: (watchlistId: string, ticker: string, weight: number) => void;
+    removePosition: (watchlistId: string, ticker: string) => void;
+    rebalanceWeights: (watchlistId: string) => void;
     stockDb: Record<string, StockData>;
     addStock: (stock: StockData) => void;
     updateStock: (ticker: string, updates: Partial<StockData>) => void;

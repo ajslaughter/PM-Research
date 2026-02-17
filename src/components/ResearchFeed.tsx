@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdmin } from "@/context/AdminContext";
-import { ResearchNote } from "@/lib/portfolios";
+import { ResearchNote } from "@/lib/watchlists";
 import { getPmScoreCategory } from "@/services/stockService";
 import {
     Sparkles,

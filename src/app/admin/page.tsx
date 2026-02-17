@@ -14,7 +14,7 @@ import {
     Trash2,
     LogOut,
 } from "lucide-react";
-import { ResearchNote } from "@/lib/portfolios";
+import { ResearchNote } from "@/lib/watchlists";
 import { useResearch } from "@/context/ResearchContext";
 import { supabase } from "@/lib/supabase";
 

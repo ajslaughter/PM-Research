@@ -78,11 +78,11 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 }
 
-// Specialized error boundary for portfolio components
-export function PortfolioErrorBoundary({ children }: { children: ReactNode }) {
+// Specialized error boundary for watchlist components
+export function WatchlistErrorBoundary({ children }: { children: ReactNode }) {
     return (
         <ErrorBoundary
-            componentName="Portfolio Table"
+            componentName="Watchlist Table"
             fallback={
                 <div className="pm-card p-8 text-center border-orange-500/30">
                     <div className="flex flex-col items-center gap-4">
@@ -91,10 +91,10 @@ export function PortfolioErrorBoundary({ children }: { children: ReactNode }) {
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-white mb-2">
-                                Portfolio Data Unavailable
+                                Watchlist Data Unavailable
                             </h3>
                             <p className="text-sm text-pm-muted mb-4 max-w-md">
-                                We&apos;re having trouble loading your portfolio data.
+                                We&apos;re having trouble loading your watchlist data.
                                 This might be due to a temporary issue with our price feeds.
                             </p>
                         </div>

@@ -1,6 +1,6 @@
 # PM Research
 
-**Predictive Modeling Research** — An institutional-grade stock research platform delivering model portfolios, AI-powered analysis, and real-time market data. Built with Next.js 14 and deployed on Vercel.
+**Predictive Modeling Research** — An institutional-grade stock research platform delivering research-driven watchlists, AI-powered analysis, and real-time market data. Built with Next.js 14 and deployed on Vercel.
 
 ## Live Demo
 
@@ -52,12 +52,16 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## Features
 
-### Model Portfolios
-Four curated model portfolios with hypothetical positions:
-- **9 MAGS**: Mag 7 (NVDA, MSFT, AAPL, GOOGL, AMZN, META, TSLA) + Bitcoin + AVGO
-- **Robotics Portfolio**: Automation & robotics (ISRG, FANUY, PATH)
-- **AI Infrastructure Portfolio**: Data centers & compute (IREN, CORZ, CRWV, APLD, NBIS)
-- **Energy Renaissance Portfolio**: Nuclear & power infrastructure (CEG, OKLO, VRT, BWXT)
+### Research Watchlists
+Research-driven watchlists tracking our highest-conviction themes across AI, robotics, energy, and infrastructure:
+- **9 MAGS**: Core coverage of mega-cap tech and Bitcoin — the gravitational center of the innovation economy
+- **Robotics**: Tracking leaders in automation, surgical robotics, and industrial AI
+- **AI Infrastructure**: Research coverage of data center operators and GPU-accelerated compute buildout
+- **Energy Renaissance**: Tracking the nuclear revival and power infrastructure required to fuel the AI era
+- **Orbital & Space**: Tracking orbital data centers, launch providers, and space infrastructure pioneers
+- **Quantum Computing**: Tracking quantum hardware, software, and error correction breakthroughs
+- **Defense & Intelligence**: Tracking defense AI, cybersecurity, and autonomous systems reshaping modern warfare
+- **Biotech**: Tracking genomics, gene editing, and precision medicine breakthroughs
 
 ### PM Score System
 Proprietary ranking system (0-100) combining momentum, fundamentals, and predictive signals. Higher scores indicate stronger conviction.
@@ -83,7 +87,7 @@ Protected admin interface for managing research articles, generating AI content,
 | Page | Route | Description |
 |------|-------|-------------|
 | Landing | `/` | Hero, stats, features, and CTAs |
-| Model Portfolios | `/portfolio` | Portfolio selector with position tables and live prices |
+| Research Watchlists | `/watchlist` | Watchlist selector with position tables and live prices |
 | Research | `/research` | The Feed — research hub with filterable articles |
 | PM Bot | `/pmbot` | Conversational AI research assistant |
 | Pricing | `/pricing` | Subscription tiers and FAQ |
@@ -122,7 +126,7 @@ src/
 │   ├── layout.tsx                 # Root layout with providers
 │   ├── page.tsx                   # Landing page
 │   ├── middleware.ts              # Auth middleware for protected routes
-│   ├── portfolio/page.tsx         # Model portfolios
+│   ├── watchlist/page.tsx         # Research watchlists
 │   ├── research/page.tsx          # The Feed (research hub)
 │   ├── pmbot/page.tsx             # PM Bot conversational AI
 │   ├── pricing/page.tsx           # Subscription tiers
@@ -130,7 +134,7 @@ src/
 │   └── admin/page.tsx             # Admin panel (protected)
 ├── components/
 │   ├── Navbar.tsx                 # Navigation with demo toggle
-│   ├── PortfolioTable.tsx         # Data table with live prices
+│   ├── WatchlistTable.tsx         # Data table with live prices
 │   ├── ResearchFeed.tsx           # Research cards grid with filters
 │   ├── AdminPanel.tsx             # Admin controls for articles
 │   ├── PremiumModal.tsx           # Article detail modal
@@ -139,17 +143,17 @@ src/
 │   └── ErrorBoundary.tsx          # Error handling wrapper
 ├── context/
 │   ├── AdminContext.tsx           # Admin state (articles, generation)
-│   ├── PortfolioContext.tsx       # Portfolio selection & data state
+│   ├── WatchlistContext.tsx       # Watchlist selection & data state
 │   ├── ResearchContext.tsx        # Research articles & filtering state
 │   ├── StockDatabaseContext.tsx   # Stock metadata registry
 │   └── SubscriptionContext.tsx    # Subscription mode toggle
 ├── hooks/
 │   ├── usePrices.ts              # Real-time price polling
-│   ├── usePortfolio.ts           # Portfolio utilities
+│   ├── useWatchlist.ts           # Watchlist utilities
 │   ├── useResearch.ts            # Research filtering utilities
 │   └── index.ts                  # Barrel export
 ├── lib/
-│   ├── portfolios.ts             # Portfolio data & research notes
+│   ├── watchlists.ts             # Watchlist data & research notes
 │   ├── security.ts               # Auth verification, rate limiting
 │   ├── supabase.ts               # Supabase client initialization
 │   ├── dateUtils.ts              # YTD baseline utilities
@@ -190,4 +194,4 @@ Deployed on Vercel with auto-deploy on push. See [DEPLOYMENT.md](DEPLOYMENT.md) 
 
 ## Disclaimer
 
-Model portfolio performance is hypothetical. Past performance does not guarantee future results. PM Research provides research content and model portfolios—not personalized investment advice. PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
+Watchlist performance shown is hypothetical and for research tracking purposes only. Past performance does not guarantee future results. PM Research provides research content and curated watchlists reflecting our analytical coverage — not personalized investment advice or buy/sell recommendations. Inclusion on a watchlist indicates active research coverage, not a recommendation to purchase. PM Scores reflect research depth and thesis conviction, not return predictions. Always conduct your own due diligence before making investment decisions.

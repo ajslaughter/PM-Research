@@ -16,7 +16,7 @@ function SignUpForm() {
     const [success, setSuccess] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const redirectTo = searchParams.get("redirectTo") || "/portfolio";
+    const redirectTo = searchParams.get("redirectTo") || "/watchlist";
     const { signUp } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -69,7 +69,7 @@ function SignUpForm() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">Create Account</h1>
-                            <p className="text-pm-muted text-sm">Only needed to create your own portfolio</p>
+                            <p className="text-pm-muted text-sm">Only needed to create your own watchlist</p>
                         </div>
                     </div>
 

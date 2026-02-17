@@ -119,7 +119,7 @@ interface Message {
 
 const SUGGESTED_QUESTIONS = [
     "What can I do on PM Live?",
-    "What's in the Defense & Intelligence portfolio?",
+    "What's on the Defense & Intelligence watchlist?",
     "Explain the PM Score methodology",
     "What features does PM Research offer?",
 ];
@@ -265,7 +265,7 @@ export default function PMbotPage() {
                                     <Bot className="w-8 h-8 text-pm-green" />
                                 </div>
                                 <p className="text-pm-muted text-center mb-6 max-w-md">
-                                    Ask me about PM Research&apos;s model portfolios, sector analysis, or research methodology.
+                                    Ask me about PM Research&apos;s research watchlists, sector analysis, or research methodology.
                                 </p>
                                 <div className="flex flex-wrap justify-center gap-2 max-w-lg">
                                     {SUGGESTED_QUESTIONS.map((question, index) => (
@@ -375,7 +375,7 @@ export default function PMbotPage() {
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder={isAtMessageLimit ? "Start a new conversation..." : "Ask about portfolios, sectors, methodology..."}
+                                placeholder={isAtMessageLimit ? "Start a new conversation..." : "Ask about watchlists, sectors, methodology..."}
                                 disabled={isLoading || isAtMessageLimit}
                                 className="flex-1 bg-pm-charcoal border border-pm-border rounded-lg px-4 py-3 text-pm-text placeholder:text-pm-muted focus:outline-none focus:ring-2 focus:ring-pm-green/50 focus:border-pm-green/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             />

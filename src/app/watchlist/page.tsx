@@ -3,11 +3,11 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import PortfolioTable from "@/components/PortfolioTable";
-import { PortfolioErrorBoundary } from "@/components/ErrorBoundary";
+import WatchlistTable from "@/components/WatchlistTable";
+import { WatchlistErrorBoundary } from "@/components/ErrorBoundary";
 import { useAdmin, useStockDatabase } from "@/context/AdminContext";
 import { useAuth } from "@/context/AuthContext";
-import { useUserPortfolios, UserPortfolio } from "@/context/UserPortfolioContext";
+import { useUserWatchlists, UserWatchlist } from "@/context/UserWatchlistContext";
 import { calculateYTD } from "@/services/stockService";
 import {
     Briefcase,
@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import SectorBadge from "@/components/SectorBadge";
 
-// ─── User's Custom Portfolio Card ────────────────────────────────────
+// ─── User's Custom Watchlist Card ────────────────────────────────────
 interface PriceData {
     price: number | null;
     change: number;
@@ -31,12 +31,12 @@ interface PriceData {
     isLive: boolean;
 }
 
-function MyPortfolioCard({
-    portfolio,
+function MyWatchlistCard({
+    watchlist,
     onDelete,
     stockDb,
 }: {
-    portfolio: UserPortfolio;
+    watchlist: UserWatchlist;
     onDelete: (id: string) => void;
     stockDb: Record<string, { name: string; assetClass: string; yearlyClose: number; pmScore: number }>;
 }) {
@@ -46,7 +46,7 @@ function MyPortfolioCard({
     const [confirmDelete, setConfirmDelete] = useState(false);
     const hasFetchedRef = useRef(false);
 
-    const tickers = portfolio.positions.map(p => p.ticker).join(',');
+    const tickers = watchlist.positions.map(p => p.ticker).join(',');
 
     useEffect(() => {
         if (!expanded || hasFetchedRef.current || !tickers) return;
@@ -66,7 +66,7 @@ function MyPortfolioCard({
         if (Object.keys(prices).length === 0) return null;
         let totalWeightedReturn = 0;
         let totalWeight = 0;
-        for (const pos of portfolio.positions) {
+        for (const pos of watchlist.positions) {
             const priceData = prices[pos.ticker];
             const stock = stockDb[pos.ticker];
             if (priceData?.price && stock?.yearlyClose && stock.yearlyClose > 0) {
@@ -76,11 +76,11 @@ function MyPortfolioCard({
             }
         }
         return totalWeight > 0 ? totalWeightedReturn / totalWeight : 0;
-    }, [prices, portfolio.positions, stockDb]);
+    }, [prices, watchlist.positions, stockDb]);
 
     const handleDelete = () => {
         if (confirmDelete) {
-            onDelete(portfolio.id);
+            onDelete(watchlist.id);
         } else {
             setConfirmDelete(true);
             setTimeout(() => setConfirmDelete(false), 3000);
@@ -102,10 +102,10 @@ function MyPortfolioCard({
                         <FolderHeart className="w-5 h-5 text-pm-purple" />
                     </div>
                     <div className="min-w-0">
-                        <h3 className="font-bold text-white truncate">{portfolio.name}</h3>
+                        <h3 className="font-bold text-white truncate">{watchlist.name}</h3>
                         <p className="text-xs text-pm-muted truncate">
-                            {portfolio.positions.length} position{portfolio.positions.length !== 1 ? 's' : ''}
-                            {portfolio.description ? ` \u00B7 ${portfolio.description}` : ''}
+                            {watchlist.positions.length} position{watchlist.positions.length !== 1 ? 's' : ''}
+                            {watchlist.description ? ` \u00B7 ${watchlist.description}` : ''}
                         </p>
                     </div>
                 </div>
@@ -151,7 +151,7 @@ function MyPortfolioCard({
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-pm-border/50">
-                                            {portfolio.positions.map(pos => {
+                                            {watchlist.positions.map(pos => {
                                                 const stock = stockDb[pos.ticker];
                                                 const priceData = prices[pos.ticker];
                                                 const currentPrice = priceData?.price ?? 0;
@@ -206,7 +206,7 @@ function MyPortfolioCard({
 
                             <div className="flex items-center justify-between mt-4 pt-4 border-t border-pm-border">
                                 <span className="text-xs text-pm-muted">
-                                    Created {new Date(portfolio.created_at).toLocaleDateString()}
+                                    Created {new Date(watchlist.created_at).toLocaleDateString()}
                                 </span>
                                 <button
                                     onClick={handleDelete}
@@ -228,35 +228,35 @@ function MyPortfolioCard({
     );
 }
 
-// ─── Main Portfolio Page ─────────────────────────────────────────────
-export default function PortfolioPage() {
-    const { portfolios, activePortfolioId, setActivePortfolioId } = useAdmin();
+// ─── Main Watchlist Page ─────────────────────────────────────────────
+export default function WatchlistPage() {
+    const { watchlists, activeWatchlistId, setActiveWatchlistId } = useAdmin();
     const { user } = useAuth();
-    const { portfolios: userPortfolios, isLoading: userPortfoliosLoading, deletePortfolio } = useUserPortfolios();
+    const { watchlists: userWatchlists, isLoading: userWatchlistsLoading, deleteWatchlist } = useUserWatchlists();
     const { stockDb } = useStockDatabase();
 
-    const selectedPortfolio = portfolios.find(p => p.id === activePortfolioId) || portfolios[0];
+    const selectedWatchlist = watchlists.find(p => p.id === activeWatchlistId) || watchlists[0];
 
     useEffect(() => {
-        if (!selectedPortfolio && portfolios.length > 0) {
-            setActivePortfolioId(portfolios[0].id);
+        if (!selectedWatchlist && watchlists.length > 0) {
+            setActiveWatchlistId(watchlists[0].id);
         }
-    }, [portfolios, selectedPortfolio, setActivePortfolioId]);
+    }, [watchlists, selectedWatchlist, setActiveWatchlistId]);
 
-    const handleDeleteUserPortfolio = useCallback(async (id: string) => {
-        await deletePortfolio(id);
-    }, [deletePortfolio]);
+    const handleDeleteUserWatchlist = useCallback(async (id: string) => {
+        await deleteWatchlist(id);
+    }, [deleteWatchlist]);
 
-    if (!selectedPortfolio) {
+    if (!selectedWatchlist) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <p className="text-pm-muted">Loading portfolios...</p>
+                <p className="text-pm-muted">Loading watchlists...</p>
             </div>
         );
     }
 
-    const userPortfolio = userPortfolios[0] ?? null;
-    const showCreateButton = user && !userPortfoliosLoading && userPortfolios.length === 0;
+    const userWatchlistItem = userWatchlists[0] ?? null;
+    const showCreateButton = user && !userWatchlistsLoading && userWatchlists.length === 0;
 
     return (
         <div className="relative min-h-screen pb-20 md:pb-0">
@@ -280,12 +280,12 @@ export default function PortfolioPage() {
                             <div className="absolute inset-0 blur-md bg-pm-green/30" />
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                            Portfolios
+                            Research Watchlists
                         </h1>
                     </div>
                 </motion.div>
 
-                {/* User's Custom Portfolio Section */}
+                {/* User's Custom Watchlist Section */}
                 {user && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -296,43 +296,43 @@ export default function PortfolioPage() {
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-semibold text-pm-text flex items-center gap-2">
                                 <FolderHeart className="w-5 h-5 text-pm-purple" />
-                                My Portfolio
+                                My Watchlist
                             </h2>
                             {showCreateButton && (
                                 <Link
-                                    href="/portfolio/create"
+                                    href="/watchlist/create"
                                     className="btn-primary flex items-center gap-2 px-4 py-2 text-sm"
                                 >
                                     <Plus className="w-4 h-4" />
-                                    Create Portfolio
+                                    Create Watchlist
                                 </Link>
                             )}
                         </div>
 
-                        {userPortfolio ? (
-                            <MyPortfolioCard
-                                portfolio={userPortfolio}
-                                onDelete={handleDeleteUserPortfolio}
+                        {userWatchlistItem ? (
+                            <MyWatchlistCard
+                                watchlist={userWatchlistItem}
+                                onDelete={handleDeleteUserWatchlist}
                                 stockDb={stockDb}
                             />
-                        ) : !userPortfoliosLoading ? (
+                        ) : !userWatchlistsLoading ? (
                             <div className="pm-card p-6 text-center border-dashed border-pm-border">
                                 <p className="text-sm text-pm-muted mb-3">
-                                    You haven&apos;t created a custom portfolio yet.
+                                    You haven&apos;t created a custom watchlist yet.
                                 </p>
                                 <Link
-                                    href="/portfolio/create"
+                                    href="/watchlist/create"
                                     className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm"
                                 >
                                     <Plus className="w-4 h-4" />
-                                    Create Portfolio
+                                    Create Watchlist
                                 </Link>
                             </div>
                         ) : null}
                     </motion.div>
                 )}
 
-                {/* Model Portfolios Section */}
+                {/* Research Watchlists Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -342,73 +342,73 @@ export default function PortfolioPage() {
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-pm-text flex items-center gap-2">
                             <Briefcase className="w-5 h-5 text-pm-green" />
-                            Model Portfolios
+                            Research Watchlists
                         </h2>
                         {user && showCreateButton && (
                             <Link
-                                href="/portfolio/create"
+                                href="/watchlist/create"
                                 className="btn-primary flex items-center gap-2 px-4 py-2 text-sm"
                             >
                                 <Plus className="w-4 h-4" />
-                                Create Portfolio
+                                Create Watchlist
                             </Link>
                         )}
                     </div>
                 </motion.div>
 
-                {/* Portfolio Selector Cards */}
+                {/* Watchlist Selector Cards */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10"
                 >
-                    {portfolios.map((portfolio, index) => (
+                    {watchlists.map((watchlist, index) => (
                         <motion.button
-                            key={portfolio.id}
+                            key={watchlist.id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.05 * index }}
-                            onClick={() => setActivePortfolioId(portfolio.id)}
+                            onClick={() => setActiveWatchlistId(watchlist.id)}
                             className={`text-left p-4 rounded-lg border transition-all ${
-                                portfolio.id === activePortfolioId
+                                watchlist.id === activeWatchlistId
                                     ? 'bg-pm-green/10 border-pm-green text-pm-text'
                                     : 'bg-pm-charcoal/50 border-pm-border hover:border-pm-green/50 text-pm-muted hover:text-pm-text'
                             }`}
                         >
                             <div className="flex items-center gap-2 mb-2">
-                                <Briefcase className={`w-4 h-4 ${portfolio.id === activePortfolioId ? 'text-pm-green' : ''}`} />
-                                <span className="font-semibold text-sm truncate">{portfolio.name}</span>
+                                <Briefcase className={`w-4 h-4 ${watchlist.id === activeWatchlistId ? 'text-pm-green' : ''}`} />
+                                <span className="font-semibold text-sm truncate">{watchlist.name}</span>
                             </div>
-                            <p className="text-xs text-pm-muted line-clamp-2">{portfolio.description}</p>
+                            <p className="text-xs text-pm-muted line-clamp-2">{watchlist.description}</p>
                         </motion.button>
                     ))}
                 </motion.div>
 
-                {/* Selected Portfolio Header */}
+                {/* Selected Watchlist Header */}
                 <motion.div
-                    key={`header-${activePortfolioId}`}
+                    key={`header-${activeWatchlistId}`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="mb-6"
                 >
-                    <h2 className="text-2xl font-bold text-pm-green">{selectedPortfolio.name}</h2>
-                    <p className="text-pm-muted text-sm">{selectedPortfolio.description}</p>
+                    <h2 className="text-2xl font-bold text-pm-green">{selectedWatchlist.name}</h2>
+                    <p className="text-pm-muted text-sm">{selectedWatchlist.description}</p>
                 </motion.div>
 
-                {/* Portfolio Table */}
+                {/* Watchlist Table */}
                 <motion.div
-                    key={activePortfolioId}
+                    key={activeWatchlistId}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
-                    <PortfolioErrorBoundary>
-                        <PortfolioTable
-                            portfolioId={selectedPortfolio.id}
-                            portfolioName={selectedPortfolio.name}
+                    <WatchlistErrorBoundary>
+                        <WatchlistTable
+                            watchlistId={selectedWatchlist.id}
+                            watchlistName={selectedWatchlist.name}
                         />
-                    </PortfolioErrorBoundary>
+                    </WatchlistErrorBoundary>
                 </motion.div>
 
                 {/* Disclaimer */}
@@ -419,9 +419,9 @@ export default function PortfolioPage() {
                     className="mt-12 text-center"
                 >
                     <p className="text-xs text-pm-muted max-w-2xl mx-auto">
-                        Model portfolio performance is hypothetical. Past performance does not guarantee future results.
-                        PM Research provides research content and model portfolios—not personalized investment advice.
-                        PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
+                        Watchlist performance shown is hypothetical and for research tracking purposes only. Past performance does not guarantee future results.
+                        PM Research provides research content and curated watchlists reflecting our analytical coverage — not personalized investment advice or buy/sell recommendations.
+                        Inclusion on a watchlist indicates active research coverage, not a recommendation to purchase. PM Scores reflect research depth and thesis conviction, not return predictions. Always conduct your own due diligence before making investment decisions.
                     </p>
                 </motion.div>
             </div>

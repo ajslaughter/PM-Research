@@ -1,42 +1,42 @@
-// Portfolio data for PM Research
+// Watchlist data for PM Research
 
-// Simplified portfolio position - just ticker and weight
+// Simplified watchlist position - just ticker and weight
 // All other data (name, assetClass, yearlyClose, pmScore) comes from stockDatabase
-export interface PortfolioPosition {
+export interface WatchlistPosition {
     ticker: string;
-    weight: number; // Percentage (0-100), should sum to 100 per portfolio
+    weight: number; // Percentage (0-100), should sum to 100 per watchlist
     thesis?: string; // One-line investment rationale
 }
 
-// Portfolio category for filtering
-export type PortfolioCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech';
+// Watchlist category for filtering
+export type WatchlistCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech';
 
-// Portfolio structure
-export interface Portfolio {
+// Watchlist structure
+export interface Watchlist {
     id: string;
     name: string;
     description: string;
-    category: PortfolioCategory;
-    positions: PortfolioPosition[];
+    category: WatchlistCategory;
+    positions: WatchlistPosition[];
 }
 
-// AI Infrastructure Portfolio Tickers
-export const AI_Infrastructure_Portfolio = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS', 'WULF'];
+// AI Infrastructure Watchlist Tickers
+export const AI_Infrastructure_Watchlist = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS', 'WULF'];
 
-// Energy Renaissance Portfolio Tickers
-export const Energy_Renaissance_Portfolio = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR'];
+// Energy Renaissance Watchlist Tickers
+export const Energy_Renaissance_Watchlist = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR'];
 
-// Quantum Computing Portfolio Tickers
-export const Quantum_Portfolio = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
+// Quantum Computing Watchlist Tickers
+export const Quantum_Watchlist = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
 
-// Defense & Intelligence Portfolio Tickers
-export const Defense_Intelligence_Portfolio = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
+// Defense & Intelligence Watchlist Tickers
+export const Defense_Intelligence_Watchlist = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
 
-// Biotech Portfolio Tickers
-export const Biotech_Portfolio = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
+// Biotech Watchlist Tickers
+export const Biotech_Watchlist = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
 
-// Default portfolios
-export const defaultPortfolios: Portfolio[] = [
+// Default watchlists
+export const defaultWatchlists: Watchlist[] = [
     {
         id: "pm-research",
         name: "9 MAGS",
@@ -56,7 +56,7 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "robotics",
-        name: "Robotics Portfolio",
+        name: "Robotics",
         description: "Automation & Robotics",
         category: "Magnificent 7",
         positions: [
@@ -69,92 +69,92 @@ export const defaultPortfolios: Portfolio[] = [
     },
     {
         id: "ai-infrastructure",
-        name: "AI Infrastructure Portfolio",
+        name: "AI Infrastructure",
         description: "Data Centers, Mining & Compute Infrastructure",
         category: "AI Infrastructure",
         positions: [
-            { ticker: "IREN", weight: 17 },
-            { ticker: "CORZ", weight: 17 },
-            { ticker: "CRWV", weight: 17 },
-            { ticker: "APLD", weight: 17 },
-            { ticker: "NBIS", weight: 16 },
-            { ticker: "WULF", weight: 16 },
+            { ticker: "IREN", weight: 16.67 },
+            { ticker: "CORZ", weight: 16.67 },
+            { ticker: "CRWV", weight: 16.67 },
+            { ticker: "APLD", weight: 16.67 },
+            { ticker: "NBIS", weight: 16.66 },
+            { ticker: "WULF", weight: 16.66 },
         ],
     },
     {
         id: "energy-renaissance",
-        name: "Energy Renaissance Portfolio",
+        name: "Energy Renaissance",
         description: "Nuclear, Grid & Power Infrastructure",
         category: "Energy Renaissance",
         positions: [
-            { ticker: "CEG", weight: 17 },
-            { ticker: "OKLO", weight: 17 },
-            { ticker: "VRT", weight: 17 },
-            { ticker: "BWXT", weight: 17 },
-            { ticker: "SMR", weight: 16, thesis: "Only NRC-certified SMR design; Entra1 $25B partnership and TVA 6-GW program de-risk commercialization" },
-            { ticker: "PWR", weight: 16, thesis: "Largest U.S. electrical grid contractor; $2.5T grid modernization tailwind through 2035" },
+            { ticker: "CEG", weight: 16.67 },
+            { ticker: "OKLO", weight: 16.67 },
+            { ticker: "VRT", weight: 16.67 },
+            { ticker: "BWXT", weight: 16.67 },
+            { ticker: "SMR", weight: 16.66, thesis: "Only NRC-certified SMR design; Entra1 $25B partnership and TVA 6-GW program de-risk commercialization" },
+            { ticker: "PWR", weight: 16.66, thesis: "Largest U.S. electrical grid contractor; $2.5T grid modernization tailwind through 2035" },
         ],
     },
     {
         id: "orbital-space",
-        name: "Orbital & Space Portfolio",
+        name: "Orbital & Space",
         description: "Orbital Data Centers, Launch & Space Infrastructure",
         category: "Orbital & Space",
         positions: [
-            { ticker: "RKLB", weight: 20, thesis: "Clear #2 launch provider; Neutron medium-lift catalyst in H2 2026" },
-            { ticker: "ASTS", weight: 18, thesis: "Direct-to-device satellite monopoly; carrier partnerships de-risk revenue" },
-            { ticker: "LUNR", weight: 17, thesis: "NASA lunar lander prime contractor; multi-mission backlog" },
-            { ticker: "RDW", weight: 15, thesis: "On-orbit manufacturing & space infrastructure; defense contracts" },
-            { ticker: "PL", weight: 15, thesis: "Largest Earth observation satellite fleet; recurring data revenue" },
-            { ticker: "TSLA", weight: 15, thesis: "SpaceX ecosystem adjacency; Starship manufacturing & Optimus for space" },
+            { ticker: "RKLB", weight: 16.67, thesis: "Clear #2 launch provider; Neutron medium-lift catalyst in H2 2026" },
+            { ticker: "ASTS", weight: 16.67, thesis: "Direct-to-device satellite monopoly; carrier partnerships de-risk revenue" },
+            { ticker: "LUNR", weight: 16.67, thesis: "NASA lunar lander prime contractor; multi-mission backlog" },
+            { ticker: "RDW", weight: 16.67, thesis: "On-orbit manufacturing & space infrastructure; defense contracts" },
+            { ticker: "PL", weight: 16.66, thesis: "Largest Earth observation satellite fleet; recurring data revenue" },
+            { ticker: "TSLA", weight: 16.66, thesis: "SpaceX ecosystem adjacency; Starship manufacturing & Optimus for space" },
         ],
     },
     {
         id: "quantum",
-        name: "Quantum Computing Portfolio",
+        name: "Quantum Computing",
         description: "Quantum Hardware, Software & Error Correction",
         category: "Quantum",
         positions: [
-            { ticker: "IONQ", weight: 25, thesis: "Pure-play trapped-ion leader; AQ 35 highest commercially available; expanding enterprise base" },
-            { ticker: "GOOGL", weight: 25, thesis: "Willow chip below-threshold error rates; quantum as free option on core business" },
+            { ticker: "IONQ", weight: 20, thesis: "Pure-play trapped-ion leader; AQ 35 highest commercially available; expanding enterprise base" },
+            { ticker: "GOOGL", weight: 20, thesis: "Willow chip below-threshold error rates; quantum as free option on core business" },
             { ticker: "RGTI", weight: 20, thesis: "Superconducting qubit architecture; hybrid classical-quantum cloud platform" },
-            { ticker: "QBTS", weight: 15, thesis: "Commercial quantum annealing systems; enterprise optimization workloads in production" },
-            { ticker: "QUBT", weight: 15, thesis: "Photonic quantum computing; thin-film lithium niobate technology for quantum networking" },
+            { ticker: "QBTS", weight: 20, thesis: "Commercial quantum annealing systems; enterprise optimization workloads in production" },
+            { ticker: "QUBT", weight: 20, thesis: "Photonic quantum computing; thin-film lithium niobate technology for quantum networking" },
         ],
     },
     {
         id: "defense-intelligence",
-        name: "Defense & Intelligence Portfolio",
+        name: "Defense & Intelligence",
         description: "Defense AI, Cybersecurity & Autonomous Systems",
         category: "Defense & Intelligence",
         positions: [
-            { ticker: "PLTR", weight: 25, thesis: "Defense AI operating system; Gotham/AIP embedded across DoD, IC, NATO; TITAN Army contract" },
-            { ticker: "CRWD", weight: 20, thesis: "Endpoint cybersecurity standard for federal agencies; FedRAMP High; Zero Trust mandate" },
-            { ticker: "PANW", weight: 17, thesis: "Network/cloud security & SASE for government; platformization consolidates defense cyber spend" },
-            { ticker: "KTOS", weight: 15, thesis: "Autonomous drones (Valkyrie/XQ-58A); hypersonic targets; C5ISR defense tech disruptor" },
-            { ticker: "BAH", weight: 13, thesis: "Defense AI/ML consulting; bridges cutting-edge tech to government adoption at scale" },
-            { ticker: "LDOS", weight: 10, thesis: "Largest defense IT contractor; $37B+ backlog; digital transformation & cyber operations" },
+            { ticker: "PLTR", weight: 16.67, thesis: "Defense AI operating system; Gotham/AIP embedded across DoD, IC, NATO; TITAN Army contract" },
+            { ticker: "CRWD", weight: 16.67, thesis: "Endpoint cybersecurity standard for federal agencies; FedRAMP High; Zero Trust mandate" },
+            { ticker: "PANW", weight: 16.67, thesis: "Network/cloud security & SASE for government; platformization consolidates defense cyber spend" },
+            { ticker: "KTOS", weight: 16.67, thesis: "Autonomous drones (Valkyrie/XQ-58A); hypersonic targets; C5ISR defense tech disruptor" },
+            { ticker: "BAH", weight: 16.66, thesis: "Defense AI/ML consulting; bridges cutting-edge tech to government adoption at scale" },
+            { ticker: "LDOS", weight: 16.66, thesis: "Largest defense IT contractor; $37B+ backlog; digital transformation & cyber operations" },
         ],
     },
     {
         id: "biotech",
-        name: "Biotech Portfolio",
+        name: "Biotech",
         description: "Genomics, Gene Editing & Precision Medicine",
         category: "Biotech",
         positions: [
-            { ticker: "STOK", weight: 17, thesis: "RNA-based medicines targeting genetic diseases; TANGO antisense platform unlocks undruggable targets" },
-            { ticker: "CRSP", weight: 20, thesis: "Gene editing pioneer; CASGEVY first approved CRISPR therapy for sickle cell & beta-thalassemia" },
-            { ticker: "NTLA", weight: 17, thesis: "In vivo CRISPR gene editing leader; NTLA-2002 for hereditary angioedema advancing toward pivotal data" },
-            { ticker: "BEAM", weight: 17, thesis: "Next-gen base editing avoids double-strand breaks; precision single-letter DNA edits for blood diseases" },
-            { ticker: "EDIT", weight: 14, thesis: "CRISPR pioneer with in vivo editing programs; reni-cel for sickle cell disease in clinical development" },
-            { ticker: "TWST", weight: 15, thesis: "Synthetic biology infrastructure; silicon-based DNA synthesis platform enables genomics R&D at scale" },
+            { ticker: "STOK", weight: 16.67, thesis: "RNA-based medicines targeting genetic diseases; TANGO antisense platform unlocks undruggable targets" },
+            { ticker: "CRSP", weight: 16.67, thesis: "Gene editing pioneer; CASGEVY first approved CRISPR therapy for sickle cell & beta-thalassemia" },
+            { ticker: "NTLA", weight: 16.67, thesis: "In vivo CRISPR gene editing leader; NTLA-2002 for hereditary angioedema advancing toward pivotal data" },
+            { ticker: "BEAM", weight: 16.67, thesis: "Next-gen base editing avoids double-strand breaks; precision single-letter DNA edits for blood diseases" },
+            { ticker: "EDIT", weight: 16.66, thesis: "CRISPR pioneer with in vivo editing programs; reni-cel for sickle cell disease in clinical development" },
+            { ticker: "TWST", weight: 16.66, thesis: "Synthetic biology infrastructure; silicon-based DNA synthesis platform enables genomics R&D at scale" },
         ],
     },
 ];
 
-// Historical quarterly returns by portfolio ID
-// Each portfolio has its own performance history reflecting sector-specific dynamics
-export const portfolioQuarterlyReturns: Record<string, { quarter: string; return: number }[]> = {
+// Historical quarterly returns by watchlist ID
+// Each watchlist has its own performance history reflecting sector-specific dynamics
+export const watchlistQuarterlyReturns: Record<string, { quarter: string; return: number }[]> = {
     "pm-research": [
         { quarter: "Q4 2025", return: 12.8 },
         { quarter: "Q3 2025", return: 7.4 },

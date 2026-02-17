@@ -20,7 +20,7 @@ export const BASELINE_YEAR = 2025;
 export const TRACKING_YEAR = 2026;
 
 /**
- * Core Portfolio - Mag 7 + Bitcoin
+ * Core Watchlist - Mag 7 + Bitcoin
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
@@ -37,7 +37,7 @@ export const coreBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
- * Robotics Portfolio
+ * Robotics Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
@@ -50,7 +50,7 @@ export const roboticsBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
- * AI Infrastructure Portfolio
+ * AI Infrastructure Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
@@ -64,7 +64,7 @@ export const aiInfraBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
- * Energy Renaissance Portfolio
+ * Energy Renaissance Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
@@ -78,7 +78,7 @@ export const energyBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
- * Orbital & Space Portfolio
+ * Orbital & Space Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
@@ -91,7 +91,7 @@ export const spaceBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
- * Quantum Computing Portfolio
+ * Quantum Computing Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via Polygon.io / Yahoo Finance
  */
@@ -103,7 +103,7 @@ export const quantumBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
- * Defense & Intelligence Portfolio
+ * Defense & Intelligence Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via StockAnalysis / Yahoo Finance
  */
@@ -117,7 +117,7 @@ export const defenseBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
- * Biotech Portfolio
+ * Biotech Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Official exchange data via StockAnalysis / Yahoo Finance
  */
