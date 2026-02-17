@@ -410,20 +410,6 @@ export default function WatchlistPage() {
                         />
                     </WatchlistErrorBoundary>
                 </motion.div>
-
-                {/* Disclaimer */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="mt-12 text-center"
-                >
-                    <p className="text-xs text-pm-muted max-w-2xl mx-auto">
-                        Watchlist performance shown is hypothetical and for research tracking purposes only. Past performance does not guarantee future results.
-                        PM Research provides research content and curated watchlists reflecting our analytical coverage — not personalized investment advice or buy/sell recommendations.
-                        Inclusion on a watchlist indicates active research coverage, not a recommendation to purchase. PM Scores reflect research depth and thesis conviction, not return predictions. Always conduct your own due diligence before making investment decisions.
-                    </p>
-                </motion.div>
             </div>
         </div>
     );
