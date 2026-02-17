@@ -12,6 +12,7 @@ import {
     Search,
     LineChart,
     Tag,
+    Layers,
 } from "lucide-react";
 import React from "react";
 
@@ -82,12 +83,20 @@ function ResearchCard({ note, onReadClick }: ResearchCardProps) {
         <div className="pm-card group hover:border-pm-green/30 transition-all duration-300 flex flex-col h-full">
             {/* Header */}
             <div className="flex items-start justify-between gap-4 mb-4">
-                <span
-                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryStyles[note.category]}`}
-                >
-                    {categoryIcons[note.category]}
-                    {note.category}
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                    <span
+                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryStyles[note.category]}`}
+                    >
+                        {categoryIcons[note.category]}
+                        {note.category}
+                    </span>
+                    {note.linkedWatchlist && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium text-pm-muted border border-pm-border bg-pm-charcoal/50">
+                            <Layers className="w-2.5 h-2.5" />
+                            {note.linkedWatchlist}
+                        </span>
+                    )}
+                </div>
             </div>
 
             {/* Title */}
@@ -156,6 +165,12 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                                     {categoryIcons[note.category]}
                                     {note.category}
                                 </span>
+                                {note.linkedWatchlist && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium text-pm-muted border border-pm-border bg-pm-charcoal/50">
+                                        <Layers className="w-2.5 h-2.5" />
+                                        {note.linkedWatchlist}
+                                    </span>
+                                )}
                                 <span className="text-pm-muted text-xs">{note.date}</span>
                             </div>
                             <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">

@@ -23,6 +23,17 @@ import {
 // Types for forms
 type ResearchCategory = "Sector Analysis" | "Deep Dive";
 
+const WATCHLIST_NAMES = [
+    "9 MAGS",
+    "Robotics",
+    "AI Infrastructure",
+    "Energy Renaissance",
+    "Orbital & Space",
+    "Quantum Computing",
+    "Defense & Intelligence",
+    "Biotech",
+] as const;
+
 interface ResearchFormData {
     title: string;
     summary: string;
@@ -32,6 +43,7 @@ interface ResearchFormData {
     readTime: string;
     author: string;
     relatedTickers: string;
+    linkedWatchlist: string;
 }
 
 // Admin Panel Component
@@ -71,6 +83,7 @@ export default function AdminPanel() {
         readTime: "5 min",
         author: "",
         relatedTickers: "",
+        linkedWatchlist: "",
     });
 
     // Watchlist form state
@@ -105,6 +118,7 @@ export default function AdminPanel() {
             readTime: "5 min",
             author: "",
             relatedTickers: "",
+            linkedWatchlist: "",
         });
         setEditingResearch(null);
         setShowResearchForm(false);
@@ -122,6 +136,9 @@ export default function AdminPanel() {
             author: researchForm.author || undefined,
             relatedTickers: researchForm.relatedTickers
                 ? researchForm.relatedTickers.split(",").map((t) => t.trim())
+                : undefined,
+            linkedWatchlist: researchForm.category === "Sector Analysis" && researchForm.linkedWatchlist
+                ? researchForm.linkedWatchlist
                 : undefined,
             date: new Date().toISOString().split("T")[0],
         };
@@ -147,6 +164,7 @@ export default function AdminPanel() {
             readTime: note.readTime,
             author: note.author || "",
             relatedTickers: note.relatedTickers?.join(", ") || "",
+            linkedWatchlist: note.linkedWatchlist || "",
         });
         setShowResearchForm(true);
     };
@@ -564,7 +582,7 @@ export default function AdminPanel() {
                                             <div className="grid grid-cols-2 gap-3">
                                                 <select
                                                     value={researchForm.category}
-                                                    onChange={(e) => setResearchForm({ ...researchForm, category: e.target.value as ResearchCategory })}
+                                                    onChange={(e) => setResearchForm({ ...researchForm, category: e.target.value as ResearchCategory, linkedWatchlist: e.target.value === "Deep Dive" ? "" : researchForm.linkedWatchlist })}
                                                     className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
                                                 >
                                                     <option value="Sector Analysis">Sector Analysis</option>
@@ -581,6 +599,19 @@ export default function AdminPanel() {
                                                     className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
                                                 />
                                             </div>
+
+                                            {researchForm.category === "Sector Analysis" && (
+                                                <select
+                                                    value={researchForm.linkedWatchlist}
+                                                    onChange={(e) => setResearchForm({ ...researchForm, linkedWatchlist: e.target.value })}
+                                                    className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
+                                                >
+                                                    <option value="">Select Linked Watchlist...</option>
+                                                    {WATCHLIST_NAMES.map(name => (
+                                                        <option key={name} value={name}>{name}</option>
+                                                    ))}
+                                                </select>
+                                            )}
 
                                             <div className="grid grid-cols-2 gap-3">
                                                 <input

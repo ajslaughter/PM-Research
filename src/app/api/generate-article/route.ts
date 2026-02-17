@@ -24,8 +24,13 @@ When generating research, you MUST return valid JSON with this exact structure:
   "pmScore": 75-98 (higher = more conviction),
   "category": "Sector Analysis" | "Deep Dive",
   "relatedTickers": ["TICK1", "TICK2"],
-  "author": "PM Research Alpha Desk"
-}`;
+  "author": "PM Research Alpha Desk",
+  "linkedWatchlist": "Watchlist Name (only if category is Sector Analysis)"
+}
+
+CATEGORY RULES:
+- "Sector Analysis": ONLY for pure sector-level analysis tied to one of the platform watchlists: 9 MAGS, Robotics, AI Infrastructure, Energy Renaissance, Orbital & Space, Quantum Computing, Defense & Intelligence, Biotech. Must include "linkedWatchlist" matching the relevant watchlist name.
+- "Deep Dive": For company-specific deep dives, thematic analyses, market notes, and any article that is NOT a pure sector analysis of a watchlist sector.`;
 
 export async function POST(request: NextRequest) {
     // Security: Rate limiting (10 requests per hour per IP)

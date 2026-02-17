@@ -54,6 +54,7 @@ export interface DbResearchNote {
     category: string;
     related_tickers: string[] | null;
     author: string | null;
+    linked_watchlist: string | null;
     created_at: string;
 }
 
@@ -100,6 +101,7 @@ export function dbToResearchNote(db: DbResearchNote): ResearchNote {
         readTime: `${Math.ceil(db.full_content.split(' ').length / 200)} min`,
         relatedTickers: db.related_tickers || undefined,
         author: db.author || undefined,
+        linkedWatchlist: db.linked_watchlist || undefined,
     };
 }
 
@@ -142,6 +144,7 @@ export async function saveResearchNote(note: Omit<ResearchNote, 'id' | 'readTime
         category: note.category,
         related_tickers: note.relatedTickers || null,
         author: note.author || null,
+        linked_watchlist: note.linkedWatchlist || null,
     };
 
     const { data, error } = await supabase

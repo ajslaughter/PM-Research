@@ -209,6 +209,7 @@ export interface ResearchNote {
     readTime: string;
     relatedTickers?: string[];
     author?: string;
+    linkedWatchlist?: string;
 }
 
 export const researchNotes: ResearchNote[] = [
@@ -412,7 +413,8 @@ The quantum computing thesis has transitioned from "technology bet" to "infrastr
         category: "Sector Analysis",
         readTime: "12 min",
         relatedTickers: ["IONQ", "GOOGL"],
-        author: "PM Research"
+        author: "PM Research",
+        linkedWatchlist: "Quantum Computing"
     },
     {
         id: "r5",
@@ -520,7 +522,8 @@ The grid infrastructure thesis offers a rare combination: visible multi-decade d
         category: "Sector Analysis",
         readTime: "11 min",
         relatedTickers: ["PWR", "VRT", "ETN"],
-        author: "PM Research"
+        author: "PM Research",
+        linkedWatchlist: "Energy Renaissance"
     },
     {
         id: "r6",
@@ -585,10 +588,11 @@ The SMR sector spans a range of company profiles: pre-revenue development-stage 
     `,
         date: "2026-01-26",
         pmScore: 91,
-        category: "Deep Dive",
+        category: "Sector Analysis",
         readTime: "14 min",
         relatedTickers: ["OKLO", "SMR", "CEG"],
-        author: "PM Research"
+        author: "PM Research",
+        linkedWatchlist: "Energy Renaissance"
     },
     {
         id: "r7",
@@ -639,7 +643,7 @@ The Cowork architecture demonstrates Anthropic's strategic vision: own the agent
 Claude Cowork represents the first mass-market implementation of autonomous AI agents for non-developers. The Mac Mini repurposing trend supports the thesis that AI infrastructure will decentralize into homes and small offices. This convergence of local AI agents and dedicated hardware creates a new computing paradigm worth monitoring.`,
         date: "2026-01-25",
         pmScore: 94,
-        category: "Sector Analysis",
+        category: "Deep Dive",
         readTime: "11 min",
         relatedTickers: ["NVDA", "AAPL"],
         author: "PM Research"
@@ -785,7 +789,7 @@ The GPU shortage ended.
 The packaging shortage just started.`,
         date: "2026-01-28",
         pmScore: 91,
-        category: "Sector Analysis",
+        category: "Deep Dive",
         readTime: "2 min",
         relatedTickers: ["TSM", "NVDA", "AMD", "AMAT"],
         author: "PM Research"
@@ -1129,10 +1133,11 @@ The watchlist is designed for a 10-year horizon: PLTR provides the growth engine
 PM Score: 91. High-conviction structural thesis with defense modernization as a multi-decade tailwind.`,
         date: "2026-02-14",
         pmScore: 91,
-        category: "Deep Dive",
+        category: "Sector Analysis",
         readTime: "15 min",
         relatedTickers: ["PLTR", "CRWD", "PANW", "KTOS", "BAH", "LDOS"],
-        author: "PM Research"
+        author: "PM Research",
+        linkedWatchlist: "Defense & Intelligence"
     },
     {
         id: "r15",
