@@ -1,20 +1,20 @@
 # YTD Baseline Audit Log
 
-**Date:** January 29, 2026
-**Change:** Reverted YTD baseline to December 31, 2025 (TradingView standard)
+Date: January 29, 2026
+Change: Reverted YTD baseline to December 31, 2025 (TradingView standard)
 
 ## Summary
 
-All YTD calculations now use the **December 31, 2025 close price** as the anchor, matching TradingView's YTD standard.
+All YTD calculations now use the December 31, 2025 close price as the anchor, matching TradingView's YTD standard.
 
 Formula: `YTD Return = (current / dec_31_close - 1) * 100`, rounded to 2 decimals
 
 ## Baseline Alignment
 
 This update aligns our YTD calculations with TradingView's methodology:
-- **TradingView Standard**: Uses December 31 close as the YTD starting price (displayed as "2026 Open" in their UI)
-- **Previous Implementation**: Used January 2, 2026 (first trading day)
-- **Current Implementation**: Uses December 31, 2025 close (TradingView-aligned)
+- TradingView Standard: Uses December 31 close as the YTD starting price (displayed as "2026 Open" in their UI)
+- Previous Implementation: Used January 2, 2026 (first trading day)
+- Current Implementation: Uses December 31, 2025 close (TradingView-aligned)
 
 ## Price Values by Symbol (Dec 31, 2025 Baseline)
 
@@ -40,26 +40,26 @@ This update aligns our YTD calculations with TradingView's methodology:
 
 ## Files Modified
 
-1. **src/data/stockDatabase.ts**
+1. src/data/stockDatabase.ts
    - Updated `YTD_START` constant: `'2025-12-31'`
    - Reverted all `yearlyClose` values to Dec 31, 2025 close prices
    - Updated comments to reflect TradingView alignment
 
-2. **src/app/api/stock-info/route.ts**
+2. src/app/api/stock-info/route.ts
    - Updated `YTD_START` constant to `'2025-12-31'`
    - Updated `getYTDBaselineClose()` date range to fetch Dec 31, 2025 prices
 
-3. **src/components/PortfolioTable.tsx**
+3. src/components/WatchlistTable.tsx
    - Changed table header from "2025 Close" to "2026 Open" (TradingView terminology)
    - Removed "PM Score" column from the table
 
 ## Rationale
 
-TradingView and most financial platforms calculate YTD returns using the **last trading day of the previous year** (December 31, 2025) as the baseline, rather than the first trading day of the current year. This change aligns PM Research with industry-standard YTD calculations.
+TradingView and most financial platforms calculate YTD returns using the last trading day of the previous year (December 31, 2025) as the baseline, rather than the first trading day of the current year. This change aligns PM Research with industry-standard YTD calculations.
 
 ## Impact Analysis
 
-### Portfolio YTD Calculations
+### Watchlist YTD Calculations
 
 With the Dec 31, 2025 baseline, YTD returns now match TradingView's methodology:
 - Uses the last trading day close of the previous year
@@ -69,7 +69,7 @@ With the Dec 31, 2025 baseline, YTD returns now match TradingView's methodology:
 
 For NVDA with Dec 31, 2025 close = $189.84:
 - If current price = $188.52
-- YTD Return = (188.52 / 189.84 - 1) * 100 = **-0.70%**
+- YTD Return = (188.52 / 189.84 - 1) * 100 = -0.70%
 
 (This matches TradingView's YTD calculation for NVDA)
 

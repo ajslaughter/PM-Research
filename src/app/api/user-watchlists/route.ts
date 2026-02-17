@@ -11,7 +11,7 @@ function getSupabaseAdmin() {
     });
 }
 
-// GET /api/user-portfolios - Fetch all portfolios for the authenticated user
+// GET /api/user-watchlists - Fetch all watchlists for the authenticated user
 export async function GET(request: NextRequest) {
     const auth = await verifyAuth(request);
     if (!auth) {
@@ -43,10 +43,10 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ portfolios: data || [] });
+    return NextResponse.json({ watchlists: data || [] });
 }
 
-// POST /api/user-portfolios - Create a new portfolio
+// POST /api/user-watchlists - Create a new watchlist
 export async function POST(request: NextRequest) {
     const auth = await verifyAuth(request);
     if (!auth) {
@@ -68,11 +68,11 @@ export async function POST(request: NextRequest) {
     const { name, description, positions } = body;
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
-        return NextResponse.json({ error: 'Portfolio name is required' }, { status: 400 });
+        return NextResponse.json({ error: 'Watchlist name is required' }, { status: 400 });
     }
 
     if (name.trim().length > 100) {
-        return NextResponse.json({ error: 'Portfolio name must be 100 characters or less' }, { status: 400 });
+        return NextResponse.json({ error: 'Watchlist name must be 100 characters or less' }, { status: 400 });
     }
 
     if (!Array.isArray(positions) || positions.length === 0) {
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (positions.length > 50) {
-        return NextResponse.json({ error: 'Maximum 50 positions per portfolio' }, { status: 400 });
+        return NextResponse.json({ error: 'Maximum 50 positions per watchlist' }, { status: 400 });
     }
 
     // Validate each position
@@ -121,10 +121,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ portfolio: data }, { status: 201 });
+    return NextResponse.json({ watchlist: data }, { status: 201 });
 }
 
-// PUT /api/user-portfolios - Update an existing portfolio
+// PUT /api/user-watchlists - Update an existing watchlist
 export async function PUT(request: NextRequest) {
     const auth = await verifyAuth(request);
     if (!auth) {
@@ -141,17 +141,17 @@ export async function PUT(request: NextRequest) {
     const { id, name, description, positions } = body;
 
     if (!id || typeof id !== 'string') {
-        return NextResponse.json({ error: 'Portfolio ID is required' }, { status: 400 });
+        return NextResponse.json({ error: 'Watchlist ID is required' }, { status: 400 });
     }
 
     const updates: Record<string, unknown> = {};
 
     if (name !== undefined) {
         if (typeof name !== 'string' || name.trim().length === 0) {
-            return NextResponse.json({ error: 'Portfolio name cannot be empty' }, { status: 400 });
+            return NextResponse.json({ error: 'Watchlist name cannot be empty' }, { status: 400 });
         }
         if (name.trim().length > 100) {
-            return NextResponse.json({ error: 'Portfolio name must be 100 characters or less' }, { status: 400 });
+            return NextResponse.json({ error: 'Watchlist name must be 100 characters or less' }, { status: 400 });
         }
         updates.name = name.trim();
     }
@@ -165,7 +165,7 @@ export async function PUT(request: NextRequest) {
             return NextResponse.json({ error: 'At least one position is required' }, { status: 400 });
         }
         if (positions.length > 50) {
-            return NextResponse.json({ error: 'Maximum 50 positions per portfolio' }, { status: 400 });
+            return NextResponse.json({ error: 'Maximum 50 positions per watchlist' }, { status: 400 });
         }
         for (const pos of positions) {
             if (!pos.ticker || typeof pos.ticker !== 'string') {
@@ -206,10 +206,10 @@ export async function PUT(request: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ portfolio: data });
+    return NextResponse.json({ watchlist: data });
 }
 
-// DELETE /api/user-portfolios - Delete a portfolio
+// DELETE /api/user-watchlists - Delete a watchlist
 export async function DELETE(request: NextRequest) {
     const auth = await verifyAuth(request);
     if (!auth) {
@@ -220,7 +220,7 @@ export async function DELETE(request: NextRequest) {
     const id = searchParams.get('id');
 
     if (!id) {
-        return NextResponse.json({ error: 'Portfolio ID is required' }, { status: 400 });
+        return NextResponse.json({ error: 'Watchlist ID is required' }, { status: 400 });
     }
 
     const token = request.headers.get('Authorization')?.replace('Bearer ', '') || '';

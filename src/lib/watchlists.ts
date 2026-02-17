@@ -367,7 +367,7 @@ IonQ's approach of maximizing per-qubit quality (vs. Google's qubit quantity) cr
 
 The enterprise quantum computing pipeline has expanded dramatically:
 
-*   Financial Services: JPMorgan, Goldman Sachs, and Fidelity have moved from research partnerships to production pilot programs for portfolio optimization and risk modeling
+*   Financial Services: JPMorgan, Goldman Sachs, and Fidelity have moved from research partnerships to production pilot programs for investment optimization and risk modeling
 *   Pharmaceutical: Merck, Roche, and Pfizer are running molecular simulation workloads that demonstrate clear quantum advantage timelines
 *   Logistics: BMW and Airbus have deployed quantum optimization for supply chain and routing problems
 *   Chemistry: BASF and Dow are evaluating catalyst discovery applications with measurable speedup potential
@@ -803,7 +803,7 @@ Bitcoin's narrative has fundamentally shifted. The 2024-2025 ETF cycle was Phase
 The spot Bitcoin ETF complex has accumulated over $120B in AUM, making it the most successful ETF launch category in history. But the composition of flows has shifted:
 
 *   Institutional Allocation: Pension funds, endowments, and sovereign wealth funds now represent 35%+ of inflows, up from <10% at launch.
-*   Rebalancing Flows: Bitcoin ETFs are being added to model portfolios at major wirehouses (Morgan Stanley, Merrill Lynch), creating systematic monthly inflows independent of price action.
+*   Rebalancing Flows: Bitcoin ETFs are being added to model allocations at major wirehouses (Morgan Stanley, Merrill Lynch), creating systematic monthly inflows independent of price action.
 *   Options Market Development: The launch of ETF options has enabled institutional hedging strategies, unlocking allocations from risk-constrained mandates.
 
 This is not speculative retail flow—it is structural institutional allocation with multi-year duration.
@@ -953,7 +953,7 @@ Key benchmarks tell the story:
 
 The model ships with a 1 million token context window (beta), 128K token output, adaptive thinking with four effort levels, and context compaction for long-running agent sessions. Claude Code—Anthropic's developer tool—has reached $1B ARR alone, representing ~12% of total revenue.
 
-**Anthropic by the numbers:** ~$9B ARR exiting 2025, projecting $20-26B in 2026. Current fundraise targeting ~$350B valuation with $20B in new capital (6x oversubscribed). Total primary funding: $23B+. Strategic backing from Amazon (~$8B) and Google (~$8B). The company has committed $30B in compute purchases from Microsoft Azure running on Nvidia systems.
+Anthropic by the numbers: ~$9B ARR exiting 2025, projecting $20-26B in 2026. Current fundraise targeting ~$350B valuation with $20B in new capital (6x oversubscribed). Total primary funding: $23B+. Strategic backing from Amazon (~$8B) and Google (~$8B). The company has committed $30B in compute purchases from Microsoft Azure running on Nvidia systems.
 
 ### 2. GPT-5.3-Codex: The Self-Improving Coding Agent
 
@@ -961,7 +961,7 @@ Released the same day as Opus 4.6—February 5, 2026—GPT-5.3-Codex is OpenAI's
 
 The Codex platform has evolved from a research preview (May 2025) into a full software lifecycle tool supporting debugging, deploying, monitoring, writing PRDs, editing copy, user research, tests, and metrics. It ships as a native macOS app, CLI, IDE extension, and cloud service, with native integration into Cursor and VS Code.
 
-**OpenAI by the numbers:** $12.7-14.2B in 2025 revenue. 520M+ weekly ChatGPT users. Seeking up to $100B in new funding at a $730-830B valuation, with participants including Nvidia (~$30B), Amazon ($20B+), Microsoft (~$10B), and SoftBank (~$30B). Confidential IPO filing expected February 2026, with a Q2-Q3 2026 debut targeting $550-600B public market valuation.
+OpenAI by the numbers: $12.7-14.2B in 2025 revenue. 520M+ weekly ChatGPT users. Seeking up to $100B in new funding at a $730-830B valuation, with participants including Nvidia (~$30B), Amazon ($20B+), Microsoft (~$10B), and SoftBank (~$30B). Confidential IPO filing expected February 2026, with a Q2-Q3 2026 debut targeting $550-600B public market valuation.
 
 The profitability picture remains challenging: OpenAI projects $14B in losses for 2026 and cumulative 2023-2028 losses of ~$44B. The company has committed $1.4T in data center spending through 2033.
 
@@ -971,7 +971,7 @@ xAI's Grok 4.1 (released November 2025) currently ranks #2 on the LMArena Text L
 
 The structural shift occurred on February 2, 2026, when SpaceX acquired xAI at a $250B xAI valuation, creating a combined entity worth ~$1.25T. This merger integrates AI capabilities directly into SpaceX's satellite constellation, launch operations, and Starlink network—a vertical integration play with no parallel in the industry.
 
-**xAI/SpaceX by the numbers:** $20B Series E (January 2026, upsized from $15B target). ~$500M in 2025 revenue, projecting $2B+ in 2026. $200M Department of Defense contract. Pentagon's GenAI.mil launching early 2026 with Grok integration at IL5 clearance for 3M personnel. ~600M monthly active users across X and Grok. Burn rate: ~$1B/month.
+xAI/SpaceX by the numbers: $20B Series E (January 2026, upsized from $15B target). ~$500M in 2025 revenue, projecting $2B+ in 2026. $200M Department of Defense contract. Pentagon's GenAI.mil launching early 2026 with Grok integration at IL5 clearance for 3M personnel. ~600M monthly active users across X and Grok. Burn rate: ~$1B/month.
 
 ## The Infrastructure Supercycle
 
@@ -1029,7 +1029,7 @@ The bear case: Circular financing structures—where Nvidia invests in OpenAI, w
 
 The February 2026 model releases confirm that the AI capability curve is steepening, not flattening. Opus 4.6's Agent Teams, GPT-5.3-Codex's self-improvement loop, and Grok 5's 6T-parameter architecture each represent genuine capability advances that will drive enterprise adoption and infrastructure demand through 2027-2028.
 
-For portfolio positioning: overweight the infrastructure layer (NVDA, TSM, AVGO, AMD) where revenue visibility is highest and demand is hardware-constrained. Maintain exposure to cloud platforms (MSFT, GOOGL, AMZN, ORCL) as AI workload migration accelerates. Monitor the IPO calendar closely—Databricks in Q1 will set the tone, and Anthropic/OpenAI debuts in H1-H2 will be the defining liquidity events of the decade.
+For watchlist positioning: overweight the infrastructure layer (NVDA, TSM, AVGO, AMD) where revenue visibility is highest and demand is hardware-constrained. Maintain exposure to cloud platforms (MSFT, GOOGL, AMZN, ORCL) as AI workload migration accelerates. Monitor the IPO calendar closely—Databricks in Q1 will set the tone, and Anthropic/OpenAI debuts in H1-H2 will be the defining liquidity events of the decade.
 
 The risk is not that AI spending slows—it is that the market has already priced in perfection at current multiples. Position for the infrastructure supercycle, but size for the possibility that the IPO wave disappoints. PM Score: 94, reflecting high-conviction structural thesis with execution risk concentrated in IPO timing and valuation sustainability.`,
         date: "2026-02-11",
@@ -1053,10 +1053,10 @@ This is not a cyclical shift. It is a generational replatforming of how wars are
 
 Palantir Technologies has evolved from a niche intelligence community tool into the operating system for modern Western defense:
 
-*   **Gotham Platform:** Deployed across the DoD, Five Eyes intelligence alliance, and NATO. Gotham integrates signals intelligence, geospatial data, and operational planning into a single decision-making layer. It is the connective tissue between sensors and shooters.
-*   **AIP (Artificial Intelligence Platform):** Launched in 2023, AIP enables military operators to deploy AI models directly on classified networks. The "AI bootcamp" model—hands-on workshops with military units—has generated over $1B in contracted value since inception.
-*   **TITAN Contract:** The U.S. Army's $618M TITAN (Tactical Intelligence Targeting Access Node) contract positions Palantir as the integrator for next-generation ground-based targeting. This is not a one-off contract—it is a program of record with multi-decade sustainment revenue.
-*   **NATO Expansion:** Palantir has secured contracts with 20+ NATO member nations, creating a coalition-wide data fabric that becomes more valuable as more allies adopt the platform. Network effects in defense software are unprecedented.
+*   Gotham Platform: Deployed across the DoD, Five Eyes intelligence alliance, and NATO. Gotham integrates signals intelligence, geospatial data, and operational planning into a single decision-making layer. It is the connective tissue between sensors and shooters.
+*   AIP (Artificial Intelligence Platform): Launched in 2023, AIP enables military operators to deploy AI models directly on classified networks. The "AI bootcamp" model—hands-on workshops with military units—has generated over $1B in contracted value since inception.
+*   TITAN Contract: The U.S. Army's $618M TITAN (Tactical Intelligence Targeting Access Node) contract positions Palantir as the integrator for next-generation ground-based targeting. This is not a one-off contract—it is a program of record with multi-decade sustainment revenue.
+*   NATO Expansion: Palantir has secured contracts with 20+ NATO member nations, creating a coalition-wide data fabric that becomes more valuable as more allies adopt the platform. Network effects in defense software are unprecedented.
 
 PM Score: 93. The combination of platform stickiness, expanding TAM, and classified revenue visibility makes PLTR the highest-conviction defense tech name.
 
@@ -1068,17 +1068,17 @@ Nation-state cyber attacks have increased 300% since 2020. The DoD's Zero Trust 
 
 CrowdStrike's Falcon platform has become the endpoint security standard for federal agencies:
 
-*   **FedRAMP High Authorization:** The highest level of cloud security certification, enabling deployment across classified and unclassified DoD networks.
-*   **Charlotte AI:** CrowdStrike's generative AI security analyst, purpose-built for threat hunting and incident response. Reduces mean time to detect from hours to seconds.
-*   **Federal Revenue Growth:** Government segment growing 40%+ YoY, outpacing commercial. The July 2024 outage created a buying opportunity that the market has overcorrected—the technology moat remains intact.
+*   FedRAMP High Authorization: The highest level of cloud security certification, enabling deployment across classified and unclassified DoD networks.
+*   Charlotte AI: CrowdStrike's generative AI security analyst, purpose-built for threat hunting and incident response. Reduces mean time to detect from hours to seconds.
+*   Federal Revenue Growth: Government segment growing 40%+ YoY, outpacing commercial. The July 2024 outage created a buying opportunity that the market has overcorrected—the technology moat remains intact.
 
 ### Palo Alto Networks (PANW) — PM Score: 88
 
 Complementary to CrowdStrike (network security vs. endpoint), Palo Alto's platformization strategy consolidates defense cyber spend:
 
-*   **SASE & Zero Trust:** Prisma Access and Prisma Cloud provide the network security fabric for DoD's zero-trust transition.
-*   **DISA Contracts:** Defense Information Systems Agency contracts provide direct access to DoD network infrastructure modernization.
-*   **Platformization:** The strategy of consolidating 30+ point security products into a single platform aligns with DoD procurement modernization goals (reduce vendor sprawl, improve interoperability).
+*   SASE & Zero Trust: Prisma Access and Prisma Cloud provide the network security fabric for DoD's zero-trust transition.
+*   DISA Contracts: Defense Information Systems Agency contracts provide direct access to DoD network infrastructure modernization.
+*   Platformization: The strategy of consolidating 30+ point security products into a single platform aligns with DoD procurement modernization goals (reduce vendor sprawl, improve interoperability).
 
 ## Autonomous Systems: The Next Battlefield
 
@@ -1088,9 +1088,9 @@ The Ukraine conflict has demonstrated that autonomous and semi-autonomous system
 
 Kratos represents the purest play on autonomous military systems:
 
-*   **Valkyrie (XQ-58A):** The Air Force's autonomous collaborative combat aircraft. Designed to fly alongside manned fighters as "loyal wingmen," Valkyrie can conduct ISR, electronic warfare, and strike missions at a fraction of the cost of manned aircraft ($3M per unit vs. $80M for an F-35).
-*   **Hypersonic Targets:** Kratos is the leading provider of hypersonic target drones for DoD testing. As hypersonic threats proliferate (China, Russia), testing demand creates a durable revenue stream.
-*   **C5ISR Systems:** Command, control, communications, computers, cyber, intelligence, surveillance, and reconnaissance—the backbone of modern battlefield networks.
+*   Valkyrie (XQ-58A): The Air Force's autonomous collaborative combat aircraft. Designed to fly alongside manned fighters as "loyal wingmen," Valkyrie can conduct ISR, electronic warfare, and strike missions at a fraction of the cost of manned aircraft ($3M per unit vs. $80M for an F-35).
+*   Hypersonic Targets: Kratos is the leading provider of hypersonic target drones for DoD testing. As hypersonic threats proliferate (China, Russia), testing demand creates a durable revenue stream.
+*   C5ISR Systems: Command, control, communications, computers, cyber, intelligence, surveillance, and reconnaissance—the backbone of modern battlefield networks.
 
 The Valkyrie program alone could be worth $10B+ over the next decade if the USAF moves to full-rate production of autonomous wingmen.
 
@@ -1100,31 +1100,31 @@ The Valkyrie program alone could be worth $10B+ over the next decade if the USAF
 
 Booz Allen is the brain trust that bridges cutting-edge technology to government adoption:
 
-*   **AI/ML Practice:** The largest AI/ML consulting practice in the federal sector. BAH teams embed directly with military units to deploy AI capabilities in operationally relevant timeframes.
-*   **Digital Transformation:** Modernizing legacy defense IT systems (many dating to the 1980s-90s) into cloud-native, AI-ready architectures.
-*   **Cyber Operations:** Offensive and defensive cyber capabilities for the intelligence community and DoD.
+*   AI/ML Practice: The largest AI/ML consulting practice in the federal sector. BAH teams embed directly with military units to deploy AI capabilities in operationally relevant timeframes.
+*   Digital Transformation: Modernizing legacy defense IT systems (many dating to the 1980s-90s) into cloud-native, AI-ready architectures.
+*   Cyber Operations: Offensive and defensive cyber capabilities for the intelligence community and DoD.
 
 ### Leidos Holdings (LDOS) — PM Score: 80
 
 The largest pure-play defense IT contractor with unmatched scale:
 
-*   **$37B+ Backlog:** Provides multi-year revenue visibility across defense, intelligence, and civil government.
-*   **Digital Modernization:** Prime contractor on multiple DoD IT infrastructure programs including enterprise cloud migration and network modernization.
-*   **Cyber & Intelligence:** Deep presence in classified programs for the intelligence community.
+*   $37B+ Backlog: Provides multi-year revenue visibility across defense, intelligence, and civil government.
+*   Digital Modernization: Prime contractor on multiple DoD IT infrastructure programs including enterprise cloud migration and network modernization.
+*   Cyber & Intelligence: Deep presence in classified programs for the intelligence community.
 
 ## Risk Factors
 
-*   **Budget Uncertainty:** Defense budgets face continuing resolution risk and potential sequestration in future administrations.
-*   **Valuation Premium:** PLTR trades at elevated multiples (50x+ forward revenue); any growth deceleration creates significant downside.
-*   **Procurement Cycles:** Government contracting timelines remain slow; program of record status takes years to achieve.
-*   **Classification Opacity:** Classified revenue streams limit transparency for fundamental analysis.
-*   **Concentration Risk:** Heavy reliance on U.S. DoD; allied nation adoption is growing but remains early-stage.
+*   Budget Uncertainty: Defense budgets face continuing resolution risk and potential sequestration in future administrations.
+*   Valuation Premium: PLTR trades at elevated multiples (50x+ forward revenue); any growth deceleration creates significant downside.
+*   Procurement Cycles: Government contracting timelines remain slow; program of record status takes years to achieve.
+*   Classification Opacity: Classified revenue streams limit transparency for fundamental analysis.
+*   Concentration Risk: Heavy reliance on U.S. DoD; allied nation adoption is growing but remains early-stage.
 
 ## Thesis Conclusion
 
 The defense sector's transformation from hardware to software creates a structural investment opportunity that will unfold over the next decade. Palantir sits at the center as the AI operating system, supported by cybersecurity leaders (CrowdStrike, Palo Alto Networks), autonomous systems disruptors (Kratos), and defense IT modernizers (Booz Allen, Leidos).
 
-The portfolio is designed for a 10-year horizon: PLTR provides the growth engine and platform optionality, cybersecurity names capture the Zero Trust mandate cycle, Kratos offers asymmetric upside on autonomous warfare adoption, and BAH/LDOS provide ballast through contracted government revenue.
+The watchlist is designed for a 10-year horizon: PLTR provides the growth engine and platform optionality, cybersecurity names capture the Zero Trust mandate cycle, Kratos offers asymmetric upside on autonomous warfare adoption, and BAH/LDOS provide ballast through contracted government revenue.
 
 PM Score: 91. High-conviction structural thesis with defense modernization as a multi-decade tailwind.`,
         date: "2026-02-14",
