@@ -11,7 +11,7 @@ export default function PricingPage() {
         "Full Research Hub Access",
         "Weekly Market Analysis",
         "PM Score Methodology",
-        "Full Research Watchlist Access",
+        "Full PM Watchlist Access",
         "PM Research Bot Access",
         "Automated Research Reports",
         "Advanced Analytics Dashboard",
@@ -95,11 +95,11 @@ export default function PricingPage() {
                             },
                             {
                                 q: "Is this personalized investment advice?",
-                                a: "No. PM Research provides general research content and research watchlists. We don't know your financial situation, so nothing here constitutes personalized advice or recommendations to buy or sell specific securities.",
+                                a: "No. PM Research provides general research content and PM watchlists. We don't know your financial situation, so nothing here constitutes personalized advice or recommendations to buy or sell specific securities.",
                             },
                             {
-                                q: "How does the research watchlist work?",
-                                a: "The research watchlist tracks positions we have deeply researched. Performance metrics are hypothetical and reflect how these positions would have performed. Inclusion indicates active research coverage, not a recommendation to purchase.",
+                                q: "How does the PM watchlist work?",
+                                a: "The PM watchlist tracks positions we have deeply researched. Performance metrics are hypothetical and reflect how these positions would have performed. Inclusion indicates active research coverage, not a recommendation to purchase.",
                             },
                             {
                                 q: "What are Automated Research Reports?",

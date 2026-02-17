@@ -55,7 +55,7 @@ export default function LandingPage() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                             <Link href="/watchlist" className="btn-primary flex items-center gap-2">
                                 <Briefcase className="w-5 h-5" />
-                                Watchlists
+                                PM Watchlist
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
                             <Link href="/research" className="btn-secondary flex items-center gap-2">
