@@ -22,7 +22,7 @@ export default function Navbar() {
     const navLinks = [
         { href: "/", label: "Home", icon: Activity },
         { href: "/pm-live", label: "PM Live", icon: Radio },
-        { href: "/watchlist", label: "Watchlists", icon: Briefcase },
+        { href: "/watchlist", label: "Watchlist", icon: Briefcase },
         { href: "/research", label: "Research", icon: BookOpen },
         { href: "/pmbot", label: "PMbot", icon: Bot },
     ];

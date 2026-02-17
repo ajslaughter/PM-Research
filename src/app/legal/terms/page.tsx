@@ -14,7 +14,7 @@ export default function TermsPage() {
                 <h2 className="text-pm-text font-medium pt-2">No Financial Advice</h2>
                 <p>
                     Nothing on this site constitutes financial, investment, or
-                    trading advice. All content, research watchlists, scores, and
+                    trading advice. All content, PM watchlists, scores, and
                     AI-generated research are for informational and educational
                     purposes only. You are solely responsible for your own
                     investment decisions.

@@ -280,7 +280,7 @@ export default function WatchlistPage() {
                             <div className="absolute inset-0 blur-md bg-pm-green/30" />
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                            Research Watchlists
+                            PM Watchlist
                         </h1>
                     </div>
                 </motion.div>
@@ -332,7 +332,7 @@ export default function WatchlistPage() {
                     </motion.div>
                 )}
 
-                {/* Research Watchlists Section */}
+                {/* PM Watchlists Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -342,7 +342,7 @@ export default function WatchlistPage() {
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-pm-text flex items-center gap-2">
                             <Briefcase className="w-5 h-5 text-pm-green" />
-                            Research Watchlists
+                            PM Watchlists
                         </h2>
                         {user && showCreateButton && (
                             <Link

@@ -265,7 +265,7 @@ export default function PMbotPage() {
                                     <Bot className="w-8 h-8 text-pm-green" />
                                 </div>
                                 <p className="text-pm-muted text-center mb-6 max-w-md">
-                                    Ask me about PM Research&apos;s research watchlists, sector analysis, or research methodology.
+                                    Ask me about PM Research&apos;s PM watchlists, sector analysis, or research methodology.
                                 </p>
                                 <div className="flex flex-wrap justify-center gap-2 max-w-lg">
                                     {SUGGESTED_QUESTIONS.map((question, index) => (
