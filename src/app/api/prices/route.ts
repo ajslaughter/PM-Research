@@ -44,7 +44,7 @@ function isMarketOpen(): boolean {
 
 /**
  * Fetch stock prices from Alpaca Markets (IEX feed)
- * Batches all stock tickers into a single request
+ * Uses the snapshots endpoint to get current price AND previous day's close in one call
  */
 async function fetchAlpacaStocks(tickers: string[]): Promise<Record<string, PriceResult | null>> {
   const results: Record<string, PriceResult | null> = {};
@@ -62,9 +62,9 @@ async function fetchAlpacaStocks(tickers: string[]): Promise<Record<string, Pric
   }
 
   try {
-    // Alpaca Data API v2 - Latest quotes endpoint (batched)
+    // Alpaca Data API v2 - Snapshots endpoint (returns latestTrade, dailyBar, prevDailyBar in one call)
     const tickerParam = tickers.join(',');
-    const url = `https://data.alpaca.markets/v2/stocks/quotes/latest?symbols=${tickerParam}&feed=iex`;
+    const url = `https://data.alpaca.markets/v2/stocks/snapshots?symbols=${tickerParam}&feed=iex`;
 
     const response = await fetch(url, {
       headers: {
@@ -76,47 +76,38 @@ async function fetchAlpacaStocks(tickers: string[]): Promise<Record<string, Pric
     });
 
     if (!response.ok) {
-      console.error(`Alpaca API error: ${response.status}`);
+      console.error(`Alpaca snapshots API error: ${response.status}`);
       return fetchYahooFallback(tickers);
     }
 
-    const data = await response.json();
-    const quotes = data.quotes || {};
-
-    // Also fetch previous day's close for change calculation
-    const barsUrl = `https://data.alpaca.markets/v2/stocks/bars/latest?symbols=${tickerParam}&feed=iex`;
-    const barsResponse = await fetch(barsUrl, {
-      headers: {
-        'APCA-API-KEY-ID': apiKey,
-        'APCA-API-SECRET-KEY': apiSecret,
-        'Accept': 'application/json',
-      },
-      cache: 'no-store',
-    });
-
-    let bars: Record<string, { c: number }> = {};
-    if (barsResponse.ok) {
-      const barsData = await barsResponse.json();
-      bars = barsData.bars || {};
-    }
+    const snapshots = await response.json();
 
     // Process each ticker
     for (const ticker of tickers) {
-      const quote = quotes[ticker];
-      const bar = bars[ticker];
+      const snapshot = snapshots[ticker];
 
-      if (quote) {
-        // Use ask price, bid price midpoint, or last trade price
-        const price = quote.ap || quote.bp || ((quote.ap + quote.bp) / 2) || bar?.c || 0;
-        const previousClose = bar?.c || price;
-        const change = price - previousClose;
-        const changePercent = previousClose > 0 ? (change / previousClose) * 100 : 0;
+      if (snapshot) {
+        // Use latest trade price (most accurate), fall back to daily bar close, then quote midpoint
+        const latestTrade = snapshot.latestTrade?.p || 0;
+        const dailyBarClose = snapshot.dailyBar?.c || 0;
+        const quoteMid = snapshot.latestQuote
+          ? ((snapshot.latestQuote.ap || 0) + (snapshot.latestQuote.bp || 0)) / 2
+          : 0;
+        const price = latestTrade || dailyBarClose || quoteMid || 0;
 
-        results[ticker] = {
-          price,
-          change,
-          changePercent,
-        };
+        // Previous day's close from prevDailyBar - this is the actual previous trading day close
+        const previousClose = snapshot.prevDailyBar?.c || 0;
+
+        if (price > 0 && previousClose > 0) {
+          const change = price - previousClose;
+          const changePercent = (change / previousClose) * 100;
+          results[ticker] = { price, change, changePercent };
+        } else if (price > 0) {
+          // Have price but no previous close - return price with 0 change
+          results[ticker] = { price, change: 0, changePercent: 0 };
+        } else {
+          results[ticker] = null;
+        }
       } else {
         results[ticker] = null;
       }
