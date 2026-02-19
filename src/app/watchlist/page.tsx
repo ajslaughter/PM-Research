@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import WatchlistTable from "@/components/WatchlistTable";
 import { WatchlistErrorBoundary } from "@/components/ErrorBoundary";
 import { useAdmin, useStockDatabase } from "@/context/AdminContext";
@@ -12,7 +11,6 @@ import { calculateYTD } from "@/services/stockService";
 import {
     Briefcase,
     Zap,
-    Plus,
     FolderHeart,
     Trash2,
     TrendingUp,
@@ -22,6 +20,7 @@ import {
     Loader2,
 } from "lucide-react";
 import SectorBadge from "@/components/SectorBadge";
+import CustomWatchlistPanel from "@/components/CustomWatchlistPanel";
 
 // ─── User's Custom Watchlist Card ────────────────────────────────────
 interface PriceData {
@@ -232,7 +231,7 @@ function MyWatchlistCard({
 export default function WatchlistPage() {
     const { watchlists, activeWatchlistId, setActiveWatchlistId } = useAdmin();
     const { user } = useAuth();
-    const { watchlists: userWatchlists, isLoading: userWatchlistsLoading, deleteWatchlist } = useUserWatchlists();
+    const { watchlists: userWatchlists, deleteWatchlist } = useUserWatchlists();
     const { stockDb } = useStockDatabase();
 
     const selectedWatchlist = watchlists.find(p => p.id === activeWatchlistId) || watchlists[0];
@@ -256,7 +255,6 @@ export default function WatchlistPage() {
     }
 
     const userWatchlistItem = userWatchlists[0] ?? null;
-    const showCreateButton = user && !userWatchlistsLoading && userWatchlists.length === 0;
 
     return (
         <div className="relative min-h-screen pb-20 md:pb-0">
@@ -267,7 +265,7 @@ export default function WatchlistPage() {
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-pm-green/5 rounded-full blur-3xl" />
             <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-pm-purple/5 rounded-full blur-3xl" />
 
-            <div className="relative max-w-7xl mx-auto px-6 py-12">
+            <div className="relative max-w-[1440px] mx-auto px-6 py-12">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -285,107 +283,100 @@ export default function WatchlistPage() {
                     </div>
                 </motion.div>
 
-                {/* User's Custom Watchlist Section */}
-                {user && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.05 }}
-                        className="mb-10"
-                    >
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold text-pm-text flex items-center gap-2">
-                                <FolderHeart className="w-5 h-5 text-pm-purple" />
-                                My Watchlist
-                            </h2>
-                            {showCreateButton && (
-                                <Link
-                                    href="/watchlist/create"
-                                    className="btn-primary flex items-center gap-2 px-4 py-2 text-sm"
-                                >
-                                    <Plus className="w-4 h-4" />
-                                    Create Watchlist
-                                </Link>
-                            )}
-                        </div>
+                {/* Two-column layout: Main content + Custom Watchlist Panel */}
+                <div className="flex gap-8">
+                    {/* Left: Main watchlist content */}
+                    <div className="flex-1 min-w-0">
+                        {/* User's Custom Watchlist Section */}
+                        {user && userWatchlistItem && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.05 }}
+                                className="mb-10"
+                            >
+                                <div className="flex items-center justify-between mb-4">
+                                    <h2 className="text-lg font-semibold text-pm-text flex items-center gap-2">
+                                        <FolderHeart className="w-5 h-5 text-pm-purple" />
+                                        My Watchlist
+                                    </h2>
+                                </div>
+                                <MyWatchlistCard
+                                    watchlist={userWatchlistItem}
+                                    onDelete={handleDeleteUserWatchlist}
+                                    stockDb={stockDb}
+                                />
+                            </motion.div>
+                        )}
 
-                        {userWatchlistItem ? (
-                            <MyWatchlistCard
-                                watchlist={userWatchlistItem}
-                                onDelete={handleDeleteUserWatchlist}
-                                stockDb={stockDb}
-                            />
-                        ) : !userWatchlistsLoading ? (
-                            <div className="pm-card p-6 text-center border-dashed border-pm-border">
-                                <p className="text-sm text-pm-muted mb-3">
-                                    You haven&apos;t created a custom watchlist yet.
-                                </p>
-                                <Link
-                                    href="/watchlist/create"
-                                    className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm"
-                                >
-                                    <Plus className="w-4 h-4" />
-                                    Create Watchlist
-                                </Link>
-                            </div>
-                        ) : null}
-                    </motion.div>
-                )}
-
-                {/* Watchlist Selector Cards */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10"
-                >
-                    {watchlists.map((watchlist, index) => (
-                        <motion.button
-                            key={watchlist.id}
-                            initial={{ opacity: 0, y: 10 }}
+                        {/* Watchlist Selector Cards */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.05 * index }}
-                            onClick={() => setActiveWatchlistId(watchlist.id)}
-                            className={`text-left p-4 rounded-lg border transition-all ${
-                                watchlist.id === activeWatchlistId
-                                    ? 'bg-pm-green/10 border-pm-green text-pm-text'
-                                    : 'bg-pm-charcoal/50 border-pm-border hover:border-pm-green/50 text-pm-muted hover:text-pm-text'
-                            }`}
+                            transition={{ delay: 0.1 }}
+                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10"
                         >
-                            <div className="flex items-center gap-2 mb-2">
-                                <Briefcase className={`w-4 h-4 ${watchlist.id === activeWatchlistId ? 'text-pm-green' : ''}`} />
-                                <span className="font-semibold text-sm truncate">{watchlist.name}</span>
-                            </div>
-                            <p className="text-xs text-pm-muted line-clamp-2">{watchlist.description}</p>
-                        </motion.button>
-                    ))}
-                </motion.div>
+                            {watchlists.map((watchlist, index) => (
+                                <motion.button
+                                    key={watchlist.id}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.05 * index }}
+                                    onClick={() => setActiveWatchlistId(watchlist.id)}
+                                    className={`text-left p-4 rounded-lg border transition-all ${
+                                        watchlist.id === activeWatchlistId
+                                            ? 'bg-pm-green/10 border-pm-green text-pm-text'
+                                            : 'bg-pm-charcoal/50 border-pm-border hover:border-pm-green/50 text-pm-muted hover:text-pm-text'
+                                    }`}
+                                >
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Briefcase className={`w-4 h-4 ${watchlist.id === activeWatchlistId ? 'text-pm-green' : ''}`} />
+                                        <span className="font-semibold text-sm truncate">{watchlist.name}</span>
+                                    </div>
+                                    <p className="text-xs text-pm-muted line-clamp-2">{watchlist.description}</p>
+                                </motion.button>
+                            ))}
+                        </motion.div>
 
-                {/* Selected Watchlist Header */}
-                <motion.div
-                    key={`header-${activeWatchlistId}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mb-6"
-                >
-                    <h2 className="text-2xl font-bold text-pm-green">{selectedWatchlist.name}</h2>
-                    <p className="text-pm-muted text-sm">{selectedWatchlist.description}</p>
-                </motion.div>
+                        {/* Selected Watchlist Header */}
+                        <motion.div
+                            key={`header-${activeWatchlistId}`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mb-6"
+                        >
+                            <h2 className="text-2xl font-bold text-pm-green">{selectedWatchlist.name}</h2>
+                            <p className="text-pm-muted text-sm">{selectedWatchlist.description}</p>
+                        </motion.div>
 
-                {/* Watchlist Table */}
-                <motion.div
-                    key={activeWatchlistId}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                >
-                    <WatchlistErrorBoundary>
-                        <WatchlistTable
-                            watchlistId={selectedWatchlist.id}
-                            watchlistName={selectedWatchlist.name}
-                        />
-                    </WatchlistErrorBoundary>
-                </motion.div>
+                        {/* Watchlist Table */}
+                        <motion.div
+                            key={activeWatchlistId}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            <WatchlistErrorBoundary>
+                                <WatchlistTable
+                                    watchlistId={selectedWatchlist.id}
+                                    watchlistName={selectedWatchlist.name}
+                                />
+                            </WatchlistErrorBoundary>
+                        </motion.div>
+                    </div>
+
+                    {/* Right: Custom Watchlist Panel */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="hidden lg:block w-80 xl:w-96 flex-shrink-0"
+                    >
+                        <div className="sticky top-24">
+                            <CustomWatchlistPanel />
+                        </div>
+                    </motion.div>
+                </div>
             </div>
         </div>
     );
