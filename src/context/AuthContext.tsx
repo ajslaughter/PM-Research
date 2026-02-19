@@ -8,16 +8,31 @@ interface User {
     email: string;
 }
 
+interface SignUpResult {
+    error?: string;
+    needsVerification?: boolean;
+}
+
 interface AuthContextType {
     user: User | null;
     isLoading: boolean;
     accessToken: string | null;
     signIn: (email: string, password: string) => Promise<{ error?: string }>;
-    signUp: (email: string, password: string) => Promise<{ error?: string }>;
+    signUp: (email: string, password: string) => Promise<SignUpResult>;
+    verifyOtp: (email: string, token: string) => Promise<{ error?: string }>;
+    resendVerification: (email: string) => Promise<{ error?: string }>;
     signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+async function syncSessionCookies(accessToken: string, refreshToken: string) {
+    await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessToken, refreshToken }),
+    });
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -72,21 +87,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 email: data.session.user.email || '',
             });
             setAccessToken(data.session.access_token);
-            // Sync session cookie for middleware
-            await fetch('/api/auth/session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    accessToken: data.session.access_token,
-                    refreshToken: data.session.refresh_token,
-                }),
-            });
+            await syncSessionCookies(data.session.access_token, data.session.refresh_token);
         }
         return {};
     }, []);
 
-    const signUp = useCallback(async (email: string, password: string) => {
+    const signUp = useCallback(async (email: string, password: string): Promise<SignUpResult> => {
         const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+            return { error: error.message };
+        }
+        // If Supabase returns a session, email confirmation is disabled — log in directly
+        if (data.session) {
+            setUser({
+                id: data.session.user.id,
+                email: data.session.user.email || '',
+            });
+            setAccessToken(data.session.access_token);
+            await syncSessionCookies(data.session.access_token, data.session.refresh_token);
+            return {};
+        }
+        // No session means email confirmation is required
+        return { needsVerification: true };
+    }, []);
+
+    const verifyOtp = useCallback(async (email: string, token: string) => {
+        const { data, error } = await supabase.auth.verifyOtp({
+            email,
+            token,
+            type: 'signup',
+        });
         if (error) {
             return { error: error.message };
         }
@@ -96,14 +126,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 email: data.session.user.email || '',
             });
             setAccessToken(data.session.access_token);
-            await fetch('/api/auth/session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    accessToken: data.session.access_token,
-                    refreshToken: data.session.refresh_token,
-                }),
-            });
+            await syncSessionCookies(data.session.access_token, data.session.refresh_token);
+        }
+        return {};
+    }, []);
+
+    const resendVerification = useCallback(async (email: string) => {
+        const { error } = await supabase.auth.resend({
+            type: 'signup',
+            email,
+        });
+        if (error) {
+            return { error: error.message };
         }
         return {};
     }, []);
@@ -112,10 +146,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await supabase.auth.signOut();
         setUser(null);
         setAccessToken(null);
+        await fetch('/api/auth/session', { method: 'DELETE' });
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, accessToken, signIn, signUp, signOut }}>
+        <AuthContext.Provider value={{ user, isLoading, accessToken, signIn, signUp, verifyOtp, resendVerification, signOut }}>
             {children}
         </AuthContext.Provider>
     );

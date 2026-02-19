@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Lock, Mail, Loader2, AlertCircle, LogIn } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 
 function LoginForm() {
@@ -12,30 +12,20 @@ function LoginForm() {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [checkingAuth, setCheckingAuth] = useState(true);
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTo = searchParams.get("redirectTo") || "/watchlist";
+    const { user, isLoading: authLoading, signIn } = useAuth();
 
-    // Check if user is already authenticated
-    useEffect(() => {
-        const checkSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                await fetch('/api/auth/session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        accessToken: session.access_token,
-                        refreshToken: session.refresh_token,
-                    }),
-                });
-                router.push(redirectTo);
-            }
-            setCheckingAuth(false);
-        };
-        checkSession();
-    }, [router, redirectTo]);
+    // If already authenticated, redirect
+    if (!authLoading && user) {
+        router.push(redirectTo);
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-pm-green" />
+            </div>
+        );
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,25 +33,10 @@ function LoginForm() {
         setError(null);
 
         try {
-            const { data, error: authError } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (authError) {
-                setError(authError.message);
-                return;
-            }
-
-            if (data.session) {
-                await fetch('/api/auth/session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        accessToken: data.session.access_token,
-                        refreshToken: data.session.refresh_token,
-                    }),
-                });
+            const result = await signIn(email, password);
+            if (result.error) {
+                setError(result.error);
+            } else {
                 router.push(redirectTo);
             }
         } catch {
@@ -71,7 +46,7 @@ function LoginForm() {
         }
     };
 
-    if (checkingAuth) {
+    if (authLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-pm-green" />
@@ -158,7 +133,7 @@ function LoginForm() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    Authenticating...
+                                    Signing In...
                                 </>
                             ) : (
                                 <>
@@ -185,7 +160,6 @@ function LoginForm() {
     );
 }
 
-// Loading fallback component
 function LoginLoading() {
     return (
         <div className="min-h-screen flex items-center justify-center">
@@ -194,7 +168,6 @@ function LoginLoading() {
     );
 }
 
-// Main export wrapped in Suspense for useSearchParams
 export default function LoginPage() {
     return (
         <Suspense fallback={<LoginLoading />}>
