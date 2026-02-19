@@ -232,15 +232,24 @@ export default function CustomWatchlistPanel() {
                 <LogIn className="w-10 h-10 text-pm-green mx-auto mb-3" />
                 <h3 className="font-bold text-white mb-2">Custom Watchlist</h3>
                 <p className="text-xs text-pm-muted mb-4">
-                    Sign in to build your own custom watchlist with any stock.
+                    Create an account to build your own custom watchlist with any stock.
                 </p>
-                <Link
-                    href="/login?redirectTo=/watchlist"
-                    className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm"
-                >
-                    <LogIn className="w-4 h-4" />
-                    Sign In
-                </Link>
+                <div className="flex flex-col gap-2">
+                    <Link
+                        href="/signup?redirectTo=/watchlist"
+                        className="btn-primary inline-flex items-center justify-center gap-2 px-4 py-2 text-sm"
+                    >
+                        <ExternalLink className="w-4 h-4" />
+                        Create Account
+                    </Link>
+                    <Link
+                        href="/login?redirectTo=/watchlist"
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm text-pm-muted hover:text-pm-text transition-colors"
+                    >
+                        <LogIn className="w-4 h-4" />
+                        Already have an account? Sign In
+                    </Link>
+                </div>
             </div>
         );
     }

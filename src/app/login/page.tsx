@@ -3,8 +3,9 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Mail, Loader2, AlertCircle, Shield } from "lucide-react";
+import { Lock, Mail, Loader2, AlertCircle, LogIn } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 function LoginForm() {
     const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ function LoginForm() {
     const [checkingAuth, setCheckingAuth] = useState(true);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const redirectTo = searchParams.get("redirectTo") || "/admin";
+    const redirectTo = searchParams.get("redirectTo") || "/watchlist";
 
     // Check if user is already authenticated
     useEffect(() => {
@@ -91,11 +92,11 @@ function LoginForm() {
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-8">
                         <div className="w-12 h-12 rounded-lg bg-pm-green/10 flex items-center justify-center">
-                            <Shield className="w-6 h-6 text-pm-green" />
+                            <LogIn className="w-6 h-6 text-pm-green" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold">Admin Access</h1>
-                            <p className="text-pm-muted text-sm">Authenticated users only</p>
+                            <h1 className="text-2xl font-bold">Sign In</h1>
+                            <p className="text-pm-muted text-sm">Sign in to access your watchlist</p>
                         </div>
                     </div>
 
@@ -123,7 +124,7 @@ function LoginForm() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="admin@example.com"
+                                    placeholder="you@example.com"
                                     required
                                     disabled={isLoading}
                                     className="w-full pl-11 pr-4 py-3 bg-pm-black border border-pm-border rounded-lg text-pm-text placeholder:text-pm-muted focus:outline-none focus:border-pm-green transition-colors"
@@ -161,7 +162,7 @@ function LoginForm() {
                                 </>
                             ) : (
                                 <>
-                                    <Lock className="w-5 h-5" />
+                                    <LogIn className="w-5 h-5" />
                                     Sign In
                                 </>
                             )}
@@ -171,12 +172,12 @@ function LoginForm() {
                     {/* Footer Note */}
                     <p className="mt-6 text-center text-sm text-pm-muted">
                         Don&apos;t have an account?{" "}
-                        <a
+                        <Link
                             href={`/signup?redirectTo=${encodeURIComponent(redirectTo)}`}
                             className="text-pm-green hover:underline"
                         >
                             Create Account
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </motion.div>

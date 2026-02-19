@@ -8,6 +8,7 @@ import {
     TrendingUp,
     LineChart,
     Sparkles,
+    UserPlus,
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -84,12 +85,19 @@ export default function LandingPage() {
                                 Ready to Access the <span className="text-pm-green">Edge</span>?
                             </h2>
                             <p className="text-pm-muted max-w-lg mx-auto mb-8">
-                                Explore our watchlists and AI-powered research.
+                                Create an account to build your own custom watchlist and track your positions.
                             </p>
-                            <Link href="/research" className="btn-primary inline-flex items-center gap-2">
-                                Explore Research
-                                <ArrowRight className="w-5 h-5" />
-                            </Link>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <Link href="/signup?redirectTo=/watchlist" className="btn-primary inline-flex items-center gap-2">
+                                    <UserPlus className="w-5 h-5" />
+                                    Create Free Account
+                                    <ArrowRight className="w-5 h-5" />
+                                </Link>
+                                <Link href="/research" className="btn-secondary inline-flex items-center gap-2">
+                                    Explore Research
+                                    <ArrowRight className="w-5 h-5" />
+                                </Link>
+                            </div>
                         </div>
                     </motion.div>
                 </div>
