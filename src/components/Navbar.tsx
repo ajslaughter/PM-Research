@@ -88,13 +88,13 @@ export default function Navbar() {
                             ) : (
                                 <>
                                     <Link
-                                        href="/login"
+                                        href="/login?redirectTo=/watchlist"
                                         className="px-3 py-2 rounded-lg text-sm text-pm-muted hover:text-pm-text transition-colors"
                                     >
                                         Sign In
                                     </Link>
                                     <Link
-                                        href="/signup"
+                                        href="/signup?redirectTo=/watchlist"
                                         className="px-4 py-2 rounded-lg text-sm font-medium bg-pm-green text-pm-black hover:bg-pm-green/90 transition-colors"
                                     >
                                         Sign Up
@@ -127,6 +127,23 @@ export default function Navbar() {
                             </Link>
                         );
                     })}
+                    {user ? (
+                        <button
+                            onClick={() => signOut()}
+                            className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-pm-muted hover:text-pm-text transition-colors"
+                        >
+                            <LogOut className="w-5 h-5" />
+                            <span className="text-[10px] font-medium">Logout</span>
+                        </button>
+                    ) : (
+                        <Link
+                            href="/signup?redirectTo=/watchlist"
+                            className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-pm-green transition-colors"
+                        >
+                            <User className="w-5 h-5" />
+                            <span className="text-[10px] font-medium">Sign Up</span>
+                        </Link>
+                    )}
                 </div>
             </div>
         </>
