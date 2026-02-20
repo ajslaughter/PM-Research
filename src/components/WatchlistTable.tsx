@@ -503,12 +503,11 @@ export default function WatchlistTable({
 
             {/* Table View */}
             <div className="overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50">
-                <table className="w-full text-left border-collapse min-w-[900px]">
+                <table className="w-full text-left border-collapse min-w-[800px]">
                     <thead>
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
                             <th className="p-4 sticky left-0 bg-pm-black/90 z-10">Ticker</th>
                             <th className="p-4">Asset Class</th>
-                            <th className="p-4 text-right">Mkt Cap</th>
                             <th className="p-4 text-right">Weight</th>
                             <th className="p-4 text-right">{YTD_OPEN_YEAR} Open</th>
                             <th className="p-4 text-right">
@@ -542,6 +541,13 @@ export default function WatchlistTable({
                                         <span className="text-xs text-pm-muted">
                                             {position.name}
                                         </span>
+                                        <span className="text-[10px] font-mono text-pm-muted/70 mt-0.5">
+                                            {isLoadingPrices ? (
+                                                <SkeletonCell width="w-14" />
+                                            ) : (
+                                                <>Mkt Cap: {formatMarketCap(position.marketCap)}</>
+                                            )}
+                                        </span>
                                     </div>
                                 </td>
                                 <td className="p-4">
@@ -550,16 +556,6 @@ export default function WatchlistTable({
                                         size="sm"
                                         interactive={false}
                                     />
-                                </td>
-                                <td className="p-4 text-right font-mono text-sm text-white">
-                                    {isLoadingPrices ? (
-                                        <div className="flex items-center justify-end gap-2">
-                                            <LoadingSpinner size="w-3 h-3" />
-                                            <SkeletonCell width="w-16" />
-                                        </div>
-                                    ) : (
-                                        <span>{formatMarketCap(position.marketCap)}</span>
-                                    )}
                                 </td>
                                 <td className="p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
