@@ -581,7 +581,7 @@ export default function WatchlistTable({
                         {/* Row 3: Price stats */}
                         <div className="grid grid-cols-3 gap-2 pt-3 border-t border-pm-border/50">
                             <div>
-                                <div className="text-[10px] text-pm-muted uppercase mb-0.5">Open</div>
+                                <div className="text-[10px] text-pm-muted uppercase mb-0.5">{YTD_OPEN_YEAR} Open</div>
                                 <div className="text-xs font-mono text-pm-muted">
                                     ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </div>
