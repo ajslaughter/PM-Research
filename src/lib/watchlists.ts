@@ -1364,7 +1364,7 @@ Neutral atoms offer structural advantages for scaling: identical qubits (atoms a
 This paper strengthens the structural thesis for the Quantum Computing watchlist. The transition from "error correction is theoretically possible" to "logical qubits outperform physical qubits on real hardware" is the single most important milestone on the path to practical quantum computing. Infleqtion's NVIDIA partnership and hybrid QPU-GPU architecture position it as a key beneficiary of the convergence between quantum computing and AI infrastructure.
 
 For existing quantum holdings: IONQ benefits from the sector-wide validation of logical qubit performance. GOOGL's Willow results and Infleqtion's Sqale results together establish that multiple hardware modalities can achieve fault-tolerant operation, de-risking the sector thesis broadly.`,
-        date: "2026-02-20",
+        date: "2026-02-19",
         pmScore: 90,
         category: "Deep Dive",
         readTime: "12 min",
