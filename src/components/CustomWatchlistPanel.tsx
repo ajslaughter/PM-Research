@@ -19,7 +19,6 @@ import {
     Scale,
     Trash2,
     LogIn,
-    ExternalLink,
     TrendingUp,
     TrendingDown,
     RefreshCw,
@@ -304,35 +303,6 @@ export default function CustomWatchlistPanel() {
             setIsSaving(false);
         }
     };
-
-    // Not logged in state
-    if (!user) {
-        return (
-            <div className="pm-card p-6 text-center">
-                <LogIn className="w-10 h-10 text-pm-green mx-auto mb-3" />
-                <h3 className="font-bold text-white mb-2">Custom Watchlist</h3>
-                <p className="text-xs text-pm-muted mb-4">
-                    Create an account to build your own custom watchlist with any stock.
-                </p>
-                <div className="flex flex-col gap-2">
-                    <Link
-                        href="/signup?redirectTo=/watchlist"
-                        className="btn-primary inline-flex items-center justify-center gap-2 px-4 py-2 text-sm"
-                    >
-                        <ExternalLink className="w-4 h-4" />
-                        Create Account
-                    </Link>
-                    <Link
-                        href="/login?redirectTo=/watchlist"
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm text-pm-muted hover:text-pm-text transition-colors"
-                    >
-                        <LogIn className="w-4 h-4" />
-                        Already have an account? Sign In
-                    </Link>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="space-y-3">
@@ -680,24 +650,34 @@ export default function CustomWatchlistPanel() {
                             )}
                         </AnimatePresence>
 
-                        {/* Save Button */}
-                        <button
-                            onClick={handleSave}
-                            disabled={isSaving || positions.length === 0 || !name.trim()}
-                            className="btn-primary w-full flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isSaving ? (
-                                <>
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                    Saving...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="w-4 h-4" />
-                                    {existingWatchlist ? "Update Watchlist" : "Save Watchlist"}
-                                </>
-                            )}
-                        </button>
+                        {/* Save Button or Sign In Prompt */}
+                        {user ? (
+                            <button
+                                onClick={handleSave}
+                                disabled={isSaving || positions.length === 0 || !name.trim()}
+                                className="btn-primary w-full flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-4 h-4" />
+                                        {existingWatchlist ? "Update Watchlist" : "Save Watchlist"}
+                                    </>
+                                )}
+                            </button>
+                        ) : (
+                            <Link
+                                href="/login?redirectTo=/watchlist"
+                                className="btn-primary w-full flex items-center justify-center gap-2 text-sm"
+                            >
+                                <LogIn className="w-4 h-4" />
+                                Sign In to Save
+                            </Link>
+                        )}
                     </div>
                 </div>
             )}
