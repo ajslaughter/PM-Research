@@ -98,6 +98,8 @@ export default function WatchlistTable({
         }
     }, [onCategoryChange]);
 
+    const [activePopupTicker, setActivePopupTicker] = useState<string | null>(null);
+
     const [prices, setPrices] = useState<Record<string, PriceData>>({});
     const [marketOpen, setMarketOpen] = useState(false);
     const [staleTickers, setStaleTickers] = useState<Set<string>>(new Set());
@@ -110,6 +112,7 @@ export default function WatchlistTable({
     const abortControllerRef = useRef<AbortController | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const isMountedRef = useRef(true);
+    const popupRef = useRef<HTMLDivElement | null>(null);
 
     // Get watchlists filtered by category
     const filteredWatchlists = useMemo(() => {
@@ -316,6 +319,18 @@ export default function WatchlistTable({
         });
     };
 
+    // Close popup on click outside
+    useEffect(() => {
+        if (!activePopupTicker) return;
+        const handleClickOutside = (e: MouseEvent) => {
+            if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+                setActivePopupTicker(null);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [activePopupTicker]);
+
     if (!currentWatchlist) {
         return (
             <div className="pm-card p-8 text-center">
@@ -508,7 +523,6 @@ export default function WatchlistTable({
                             <th className="p-3 md:p-4 sticky left-0 bg-pm-black/90 z-10">Ticker</th>
                             <th className="p-3 md:p-4">Asset Class</th>
                             <th className="p-3 md:p-4 text-right">Weight</th>
-                            <th className="p-3 md:p-4 text-right">Mkt Cap</th>
                             <th className="p-3 md:p-4 text-right">{YTD_OPEN_YEAR} Open</th>
                             <th className="p-3 md:p-4 text-right">
                                 Current
@@ -534,13 +548,34 @@ export default function WatchlistTable({
                                 className="hover:bg-pm-charcoal/80 transition-colors group"
                             >
                                 <td className="p-3 md:p-4 sticky left-0 bg-pm-dark/95 z-10">
-                                    <div className="flex flex-col">
-                                        <span className="font-bold text-white group-hover:text-pm-green transition-colors">
-                                            {position.ticker}
-                                        </span>
-                                        <span className="text-xs text-pm-muted hidden md:inline-block">
-                                            {position.name}
-                                        </span>
+                                    <div className="relative">
+                                        <button
+                                            type="button"
+                                            onClick={() => setActivePopupTicker(activePopupTicker === position.ticker ? null : position.ticker)}
+                                            className="flex flex-col text-left cursor-pointer"
+                                        >
+                                            <span className="font-bold text-white group-hover:text-pm-green transition-colors">
+                                                {position.ticker}
+                                            </span>
+                                            <span className="text-xs text-pm-muted hidden md:inline-block">
+                                                {position.name}
+                                            </span>
+                                        </button>
+                                        {activePopupTicker === position.ticker && (
+                                            <div
+                                                ref={popupRef}
+                                                className="absolute top-full left-0 mt-1 z-50 bg-pm-black border border-pm-border rounded-lg shadow-lg shadow-black/50 px-4 py-3 whitespace-nowrap"
+                                            >
+                                                <div className="text-[10px] text-pm-muted uppercase tracking-wider mb-1">Market Cap</div>
+                                                <div className="text-sm font-mono font-semibold text-white">
+                                                    {isLoadingPrices ? (
+                                                        <SkeletonCell width="w-16" />
+                                                    ) : (
+                                                        formatMarketCap(position.marketCap)
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="p-3 md:p-4">
@@ -552,15 +587,6 @@ export default function WatchlistTable({
                                 </td>
                                 <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
-                                </td>
-                                <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
-                                    {isLoadingPrices ? (
-                                        <div className="flex items-center justify-end">
-                                            <SkeletonCell width="w-16" />
-                                        </div>
-                                    ) : (
-                                        formatMarketCap(position.marketCap)
-                                    )}
                                 </td>
                                 <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
                                     ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
