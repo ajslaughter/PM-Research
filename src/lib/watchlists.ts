@@ -1268,4 +1268,107 @@ PM Score: 88. High-conviction structural thesis with the personal agent revoluti
         relatedTickers: ["NVDA", "MSFT", "GOOGL", "AMZN", "AVGO", "PATH", "META"],
         author: "PM Research"
     },
+    {
+        id: "r16",
+        title: "Infleqtion x NVIDIA: Fault-Tolerant Logical Qubits on Neutral Atoms",
+        summary: "Infleqtion and NVIDIA demonstrate fault-tolerant logical qubit operation on the Sqale neutral atom QPU, with logical performance surpassing physical across multiple circuits.",
+        fullContent: `## Thesis Update
+
+Infleqtion (NYSE: INFQ) and NVIDIA have published a landmark paper in npj Quantum Information demonstrating fault-tolerant operation of logical qubits on Infleqtion's Sqale neutral atom quantum computer. This result, combined with Infleqtion's February 2026 NYSE listing, marks a structural inflection for the neutral atom quantum computing modality.
+
+### Why This Matters
+
+Physical qubits are noisy. Every gate operation, every measurement introduces errors that compound across a circuit. Quantum error correction encodes information across multiple physical qubits to form a single "logical qubit," enabling error detection and, eventually, correction at scale. The gap between demonstrating error correction in theory and achieving it on real hardware has been the central bottleneck for the entire sector. This paper closes that gap for neutral atoms.
+
+## The Paper: Key Results
+
+### The [[4,2,2]] Error-Detecting Code
+
+Infleqtion implemented the [[4,2,2]] code (also called C4): four physical qubits encoding two logical qubits. This is the smallest error-detecting code -- it can detect (but not correct) single X-type or Z-type errors. While not a full error-correcting code, it serves as the critical building block for concatenated codes (C4/C6) that achieve full fault tolerance at scale.
+
+### Performance Benchmarks
+
+Logical qubit performance surpassed physical qubit performance across multiple circuit types:
+
+*   Bell State Preparation: 12x error reduction -- logical qubits produced entangled states with an order of magnitude fewer errors than raw physical qubits
+*   Random Circuits: 15x error reduction -- the strongest result, demonstrating that logical encoding provides robust protection even for unstructured computation
+*   Anderson Impurity Model Solver: Up to 6x error reduction (non-fault-tolerant) -- the first application of quantum error detection to a materials science problem
+
+### Gottesman Benchmark
+
+This work constitutes the first complete realization of the fault-tolerance benchmarking protocol proposed by Gottesman (2016). The results are consistent with fault-tolerant operation, meaning errors in the encoding/decoding process itself do not cascade to corrupt the logical information.
+
+## Hardware: The Sqale Platform
+
+### Neutral Atom Architecture
+
+Infleqtion's Sqale quantum computer uses individually optically addressable cesium atoms as qubits. Key hardware specs:
+
+*   CZ Gate Fidelity: 99.73% (+/- 0.03%), the highest entangling gate fidelity demonstrated in the neutral atom modality
+*   Individual Optical Addressing: Each atom can be manipulated independently, reducing circuit execution times and enabling more complex algorithms
+*   Reconfigurable Arrays: Up to 1,600 qubit sites with dynamically reconfigurable atom positions, maintaining all-to-all connectivity while minimizing atom-motion errors
+
+### Architecture Upgrade
+
+In September 2025, Infleqtion unveiled a new architecture that combines individual qubit addressing with dynamically reconfigurable arrays. This resolves the key limitation of earlier neutral atom designs: atom motion during computation introduces errors and wall-clock overhead. The new approach maintains connectivity without excessive atom movement.
+
+## NVIDIA Integration: CUDA-Q
+
+The materials science demonstration used NVIDIA's CUDA-Q platform to orchestrate the hybrid classical-quantum workflow. CUDA-Q handled:
+
+*   Circuit compilation and optimization for the Sqale QPU
+*   Real-time classical processing of measurement results
+*   Hybrid algorithm orchestration for the Anderson Impurity Model ground state solver
+
+This integration is a precursor to NVIDIA's NVQLink architecture, which will directly couple quantum processors with GPU-accelerated supercomputers. Infleqtion is among the first companies to deploy NVQLink at the Illinois Quantum and Microelectronics Park.
+
+## Roadmap and Competitive Position
+
+### Accelerated Milestones
+
+*   12 logical qubits with error detection already achieved (ahead of the 2026 target of 10)
+*   30 logical qubits targeted by end of 2026
+*   1,000 logical qubits by 2030
+*   First hardware execution of Shor's algorithm using logical qubits (factoring 15 under real-world noise conditions)
+
+### IPO and Market Context
+
+Infleqtion began trading on the NYSE as INFQ on February 17, 2026 at a $1.8B valuation, following a SPAC merger with Churchill Capital Corp X. It is the first publicly listed neutral atom quantum technology company.
+
+Notable competitive advantages:
+
+*   Revenue Generation: 12-month sales through H1 2025 exceeded D-Wave, Rigetti, and Quantum Computing Inc.
+*   NVIDIA Strategic Partnership: NVIDIA is both a partner and a customer of Infleqtion
+*   Government Contracts: U.S. Department of Defense, NASA, UK government, Royal Navy
+*   Dual Product Lines: Quantum computers and precision quantum sensors (clocks, RF receivers, inertial sensors)
+
+### Competitive Landscape
+
+*   IonQ (IONQ): Trapped-ion approach, AQ 35, strong enterprise pipeline -- different modality, complementary thesis
+*   Rigetti (RGTI): Superconducting qubits, cloud-accessible QPU
+*   Quantinuum: Expected to go public H1 2026, trapped-ion approach backed by Honeywell
+*   Google (GOOGL): Willow chip below-threshold error rates on superconducting qubits
+
+Neutral atoms offer structural advantages for scaling: identical qubits (atoms are fungible), long coherence times, and native all-to-all connectivity. Infleqtion's optical addressing capability differentiates it from other neutral atom players (notably QuEra) by enabling faster circuit execution.
+
+## Risk Factors
+
+*   Execution Risk: Scaling from 12 to 1,000 logical qubits requires multiple architectural generations and sustained engineering progress
+*   Modality Competition: Superconducting (Google, IBM) and trapped-ion (IonQ, Quantinuum) approaches are also advancing rapidly
+*   Revenue Concentration: Government contracts and a small customer base create concentration risk
+*   SPAC Overhang: Post-SPAC companies face structural selling pressure from sponsor shares and warrant dilution
+*   Commercialization Timeline: Fault-tolerant quantum computing at commercially relevant scale remains years away
+
+## Sector Implications
+
+This paper strengthens the structural thesis for the Quantum Computing watchlist. The transition from "error correction is theoretically possible" to "logical qubits outperform physical qubits on real hardware" is the single most important milestone on the path to practical quantum computing. Infleqtion's NVIDIA partnership and hybrid QPU-GPU architecture position it as a key beneficiary of the convergence between quantum computing and AI infrastructure.
+
+For existing quantum holdings: IONQ benefits from the sector-wide validation of logical qubit performance. GOOGL's Willow results and Infleqtion's Sqale results together establish that multiple hardware modalities can achieve fault-tolerant operation, de-risking the sector thesis broadly.`,
+        date: "2026-02-20",
+        pmScore: 90,
+        category: "Deep Dive",
+        readTime: "12 min",
+        relatedTickers: ["IONQ", "GOOGL", "RGTI", "NVDA"],
+        author: "PM Research"
+    },
 ];
