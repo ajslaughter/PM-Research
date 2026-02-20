@@ -14,12 +14,19 @@ interface CacheEntry {
   timestamp: number;
 }
 
+interface MarketCapCacheEntry {
+  data: Record<string, number | null>;
+  timestamp: number;
+}
+
 // Server-side cache - 30 second TTL
 // WARNING: In-memory cache is unreliable in serverless environments (Vercel/Netlify).
 // Each function invocation may get a fresh instance, resetting this cache.
 // For production reliability, migrate to an external store (e.g., Vercel KV / Upstash Redis).
 const CACHE_TTL_MS = 30 * 1000;
+const MARKET_CAP_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 let priceCache: CacheEntry | null = null;
+let marketCapCache: MarketCapCacheEntry | null = null;
 
 /**
  * Check if US stock market is currently open
@@ -221,6 +228,71 @@ async function fetchBitcoin(): Promise<PriceResult | null> {
 }
 
 /**
+ * Fetch market caps from Yahoo Finance batch quote endpoint
+ * Uses a separate 5-minute cache since market cap changes slowly
+ */
+async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number | null>> {
+  // Check market cap cache
+  if (marketCapCache) {
+    const now = Date.now();
+    if (now - marketCapCache.timestamp < MARKET_CAP_CACHE_TTL_MS) {
+      const allCached = tickers.every(t => t in marketCapCache!.data);
+      if (allCached) {
+        const cached: Record<string, number | null> = {};
+        for (const t of tickers) {
+          cached[t] = marketCapCache.data[t] ?? null;
+        }
+        return cached;
+      }
+    }
+  }
+
+  const results: Record<string, number | null> = {};
+
+  if (tickers.length === 0) return results;
+
+  try {
+    const symbols = tickers.join(',');
+    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      },
+      cache: 'no-store',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const quotes = data?.quoteResponse?.result || [];
+
+      for (const quote of quotes) {
+        if (quote.symbol) {
+          results[quote.symbol] = quote.marketCap ?? null;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Market cap fetch error:', error);
+  }
+
+  // Fill missing tickers with null
+  for (const ticker of tickers) {
+    if (!(ticker in results)) {
+      results[ticker] = null;
+    }
+  }
+
+  // Update cache
+  marketCapCache = {
+    data: { ...(marketCapCache?.data || {}), ...results },
+    timestamp: Date.now(),
+  };
+
+  return results;
+}
+
+/**
  * Check if cache is still valid
  */
 function isCacheValid(requestedTickers: string[]): boolean {
@@ -256,9 +328,13 @@ export async function GET(request: NextRequest) {
   const tickers = tickersParam.split(',').map((t: string) => t.trim().toUpperCase());
   const marketOpen = isMarketOpen();
 
-  // Check cache first
+  // Fetch market caps in parallel (uses its own 5-min cache)
+  const marketCapsPromise = fetchMarketCaps(tickers);
+
+  // Check price cache first
   if (isCacheValid(tickers)) {
-    const cachedPrices: Record<string, { price: number | null; change: number; changePercent: number; isLive: boolean }> = {};
+    const marketCaps = await marketCapsPromise;
+    const cachedPrices: Record<string, { price: number | null; change: number; changePercent: number; marketCap: number | null; isLive: boolean }> = {};
 
     for (const ticker of tickers) {
       const cached = priceCache!.data[ticker];
@@ -266,6 +342,7 @@ export async function GET(request: NextRequest) {
         price: cached?.price ?? null,
         change: cached?.change ?? 0,
         changePercent: cached?.changePercent ?? 0,
+        marketCap: marketCaps[ticker] ?? null,
         isLive: cached !== null,
       };
     }
@@ -287,9 +364,10 @@ export async function GET(request: NextRequest) {
   const cryptoTickers = tickers.filter((t: string) => t.includes('-USD'));
 
   // Fetch in parallel
-  const [stockPrices, btcPrice] = await Promise.all([
+  const [stockPrices, btcPrice, marketCaps] = await Promise.all([
     fetchAlpacaStocks(stockTickers),
     cryptoTickers.includes('BTC-USD') ? fetchBitcoin() : Promise.resolve(null),
+    marketCapsPromise,
   ]);
 
   // Combine results
@@ -306,7 +384,7 @@ export async function GET(request: NextRequest) {
   };
 
   // Format response
-  const prices: Record<string, { price: number | null; change: number; changePercent: number; isLive: boolean }> = {};
+  const prices: Record<string, { price: number | null; change: number; changePercent: number; marketCap: number | null; isLive: boolean }> = {};
 
   for (const ticker of tickers) {
     const result = allPrices[ticker];
@@ -314,6 +392,7 @@ export async function GET(request: NextRequest) {
       price: result?.price ?? null,
       change: result?.change ?? 0,
       changePercent: result?.changePercent ?? 0,
+      marketCap: marketCaps[ticker] ?? null,
       isLive: result !== null,
     };
   }
