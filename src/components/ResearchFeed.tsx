@@ -151,16 +151,16 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                     className="max-w-4xl mx-auto bg-pm-dark border border-pm-border rounded-xl shadow-2xl overflow-hidden"
                 >
                     {/* Modal Header / Banner */}
-                    <div className="relative h-32 bg-gradient-to-r from-pm-black to-pm-charcoal border-b border-pm-border p-8 flex items-end justify-between">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                    <div className="relative min-h-[100px] sm:h-32 bg-gradient-to-r from-pm-black to-pm-charcoal border-b border-pm-border p-4 sm:p-8 flex items-end justify-between">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden sm:block">
                             {/* Abstract Background Graphic */}
                             <svg width="300" height="300" viewBox="0 0 100 100">
                                 <path d="M0 0 L100 100 M100 0 L0 100" stroke="currentColor" strokeWidth="0.5" />
                             </svg>
                         </div>
 
-                        <div>
-                            <div className="flex items-center gap-3 mb-2">
+                        <div className="pr-8">
+                            <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
                                 <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryStyles[note.category]}`}>
                                     {categoryIcons[note.category]}
                                     {note.category}
@@ -173,22 +173,22 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                                 )}
                                 <span className="text-pm-muted text-xs">{note.date}</span>
                             </div>
-                            <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
                                 {note.title}
                             </h1>
                         </div>
 
                         <button
                             onClick={onClose}
-                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors text-pm-muted hover:text-white"
+                            className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-full hover:bg-white/10 transition-colors text-pm-muted hover:text-white"
                         >
                             <X className="w-5 h-5" />
                         </button>
                     </div>
 
-                    <div className="grid md:grid-cols-[1fr_280px] min-h-[500px]">
+                    <div className="grid md:grid-cols-[1fr_280px] min-h-[400px] sm:min-h-[500px]">
                         {/* Main Content Area */}
-                        <div className="p-8 md:p-10 border-r border-pm-border bg-pm-black/50">
+                        <div className="p-4 sm:p-8 md:p-10 md:border-r border-pm-border bg-pm-black/50">
                             {/* Author Line */}
                             {note.author && (
                                 <div className="flex items-center gap-3 mb-8 pb-6 border-b border-pm-border/50">

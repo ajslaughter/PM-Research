@@ -28,7 +28,7 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md mx-4 px-4 sm:px-0 sm:mx-0"
                     >
                         <div className="pm-card border-pm-purple/50 relative">
                             {/* Close Button */}
