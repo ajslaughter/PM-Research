@@ -81,7 +81,7 @@ export default function WatchlistPage() {
                                 <Briefcase className={`w-4 h-4 flex-shrink-0 ${watchlist.id === activeWatchlistId ? 'text-pm-green' : ''}`} />
                                 <span className="font-semibold text-xs sm:text-sm truncate">{watchlist.name}</span>
                             </div>
-                            <p className="text-xs text-pm-muted line-clamp-2 hidden sm:block">{watchlist.description}</p>
+                            <p className="text-xs text-pm-muted line-clamp-2">{watchlist.description}</p>
                         </motion.button>
                     ))}
                 </motion.div>
