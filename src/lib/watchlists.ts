@@ -1371,4 +1371,151 @@ For existing quantum holdings: IONQ benefits from the sector-wide validation of 
         relatedTickers: ["IONQ", "GOOGL", "RGTI", "NVDA"],
         author: "PM Research"
     },
+    {
+        id: "r17",
+        title: "Model-Specific Silicon: The Inference ASIC Revolution and Who Benefits",
+        summary: "Taalas HC1 hard-wires LLM weights into transistors at 17,000 tokens/sec, 10x faster and 20x cheaper than GPUs. The structural shift from general-purpose to model-specific inference silicon reshapes the $100B inference chip market and its beneficiaries.",
+        fullContent: `## Cut Through the Noise
+
+Every few months a startup claims it will dethrone NVIDIA. The market has learned to tune these out. Taalas is different, and the reason has nothing to do with Taalas itself. The HC1 chip is a proof point for a structural thesis that is already repricing the semiconductor value chain: inference is splitting away from training, and the silicon that runs AI models is diverging from the silicon that builds them.
+
+This is not a story about one startup. It is a story about a $100B market bifurcation that creates winners across the public equity landscape whether Taalas succeeds or fails.
+
+## What Taalas Actually Did
+
+Taalas, founded in August 2023 by former AMD/NVIDIA architect and Tenstorrent co-founder Ljubisa Bajic, raised $219M total ($169M announced February 19, 2026) from Quiet Capital, Fidelity, and Pierre Lamond. The company's HC1 chip does something no production silicon has done before: it encodes the weights of a trained LLM directly into mask-ROM transistors on the die.
+
+### The Technical Architecture
+
+*   53 billion transistors on TSMC N6 (6nm), 815mm die size
+*   The entire Llama 3.1 8B model fits on a single chip with weights stored in mask-ROM paired with programmable SRAM for fine-tuned weights and KV cache
+*   Only two lithographic masks are customized per model, enabling a 2-month turnaround from model weights to deployable PCIe cards (vs. 6 months for a conventional AI processor)
+*   250W per chip; 10 cards per server at 2.5kW, deployable in standard air-cooled racks
+
+### The Performance Gap Is Not Incremental
+
+*   Taalas HC1 on Llama 3.1 8B: 17,000 tokens/sec per user
+*   Cerebras on the same model: ~2,000 tokens/sec per user
+*   Groq LPU on the same model: ~600 tokens/sec per user
+*   NVIDIA H200 on the same model: ~230 tokens/sec per user
+
+That is not a 2x improvement. It is an order of magnitude. Cost per million tokens: $0.0075 (three-quarters of a cent). The trade-off is absolute: HC1 runs Llama 3.1 8B and nothing else. Change the model, you need a new chip.
+
+## Why This Matters: The Inference Market Bifurcation
+
+### The Macro Setup
+
+By 2026, inference accounts for two-thirds of all AI compute (up from one-third in 2023, per Deloitte). The inference chip market is forecast to reach ~$102B by 2027. Yet nearly all inference still runs on hardware designed for training. This is the structural inefficiency that multiple companies are now attacking from different angles:
+
+*   Taalas: Hard-wires specific model weights into silicon (mask-ROM approach)
+*   Etched: Builds transformer-only ASICs on TSMC 4nm with HBM3 ($500M raised at $5B valuation)
+*   Groq: Deterministic single-core LPU with massive on-chip SRAM ($750M raised at $6.9B, then effectively acquired by NVIDIA for $20B)
+*   Cerebras: Wafer-scale engine with 4 trillion transistors ($1.1B Series G, IPO filed)
+*   Hyperscalers: Google TPU v7, Amazon Inferentia/Trainium, Microsoft Maia, Meta custom silicon
+
+The common thread: general-purpose GPUs are overprovisioned for inference. Custom silicon delivers 10-20x better performance-per-watt for specific workloads. The question is not whether this transition happens. It is who captures the value.
+
+### The NVIDIA Signal
+
+NVIDIA's $20B Groq licensing deal (December 2025) is the single most important data point. Jensen Huang effectively paid 2.9x Groq's valuation to absorb its inference IP and leadership. Groq founder Jonathan Ross is now NVIDIA's chief software architect. This is NVIDIA acknowledging that its GPU-centric architecture is not the optimal endpoint for inference. When the market leader pays $20B to license a competitor's inference technology, the structural shift is confirmed.
+
+NVIDIA's response includes Rubin CPX/VR200 NVL144, a rack concept that separates prefill and decode stages for inference, plus NVIDIA Dynamo, an open-source inference framework claiming 30x throughput improvements on Blackwell. NVIDIA is not standing still, but it is pivoting, and that pivot validates the thesis.
+
+### The ASIC Growth Inflection
+
+TrendForce data quantifies the shift: custom ASIC shipments from cloud providers are projected to grow 44.6% in 2026, while GPU shipments grow 16.1%. Goldman Sachs estimates a 70% reduction in cost-per-token from Google TPU v6 to v7 via Broadcom-designed custom silicon. Reports indicate Meta is in talks to spend billions on Google TPUs from 2027, a direct substitution away from NVIDIA GPUs for inference workloads.
+
+## The Beneficiaries: Who Wins Regardless of Which Chip Wins
+
+The critical insight is that the inference ASIC revolution has clear public-market beneficiaries regardless of which specific startup or architecture prevails. The value chain has chokepoints that every approach must flow through.
+
+### Tier 1: The Indispensable Foundry -- TSMC (TSM)
+
+Every chip in this landscape is manufactured by TSMC. Period.
+
+*   Taalas HC1: TSMC N6
+*   Etched Sohu: TSMC 4nm
+*   Groq LPU: TSMC
+*   Google TPU: TSMC
+*   Amazon Trainium: TSMC
+*   OpenAI custom chip: TSMC 3nm (mass production 2026)
+*   NVIDIA Blackwell/Rubin: TSMC
+
+TSMC captures value on every wafer regardless of the customer's logo. Advanced packaging (CoWoS, SoIC) adds margin as multi-chip inference solutions proliferate. TSMC guided 30% revenue growth for 2026 with $45-56B capex. The inference ASIC boom adds incremental wafer demand on top of the training GPU cycle. TSMC is not a bet on which architecture wins. It is a bet that silicon gets manufactured. PM Score implication: TSM remains structurally undervalued relative to its chokepoint position.
+
+### Tier 2: The Custom Silicon Arms Dealer -- Broadcom (AVGO)
+
+Broadcom is to custom ASICs what TSMC is to fabrication: the indispensable middleman. When hyperscalers design custom inference chips, Broadcom turns those blueprints into functional silicon.
+
+*   OpenAI-Broadcom: 18-month co-design for inference chips optimized through Broadcom's Ethernet stack, with 10GW of custom accelerators contracted for 2026-2029 (estimated $350-500B total deal value)
+*   Google TPU: Broadcom designs the interconnect and networking fabric
+*   AI semiconductor revenue doubling to $8.2B/quarter
+
+Goldman Sachs highlights Broadcom's role in the TPU v6-to-v7 cost-per-token reduction. As inference ASICs proliferate, Broadcom's design services and networking IP become more valuable, not less. The company captures the engineering margin on every custom chip program, win or lose on the model-specific bet. Trading 32% below Morningstar fair value ($480).
+
+### Tier 3: The GPU Incumbent Adapting -- NVIDIA (NVDA)
+
+NVIDIA is both a potential loser and a confirmed beneficiary of this transition:
+
+*   The $20B Groq deal absorbs inference-specific IP directly into NVIDIA's roadmap
+*   Rubin platform (H2 2026) incorporates inference-optimized architectures
+*   CUDA ecosystem remains the default software stack; Goldman Sachs calls it "a key moat for enterprise customers who need to deploy AI now"
+*   Even in a world of custom ASICs, training remains GPU-dominated, and NVIDIA's data center revenue is 88% of total
+
+The bear case on NVIDIA is that inference revenue migrates to custom ASICs over 3-5 years. The bull case is that NVIDIA successfully integrates Groq's inference innovations and the total compute market grows fast enough that NVIDIA's absolute revenue grows even as its market share in inference declines.
+
+### Tier 4: Packaging & Equipment -- The Physical Bottleneck
+
+As inference ASICs proliferate, the packaging and equipment layer becomes the binding constraint:
+
+*   Applied Materials (AMAT): Process equipment for advanced nodes; every new ASIC design requires AMAT tools. Heterogeneous integration and advanced packaging are AMAT growth drivers
+*   ASML (ASML): Lithography monopoly. Taalas uses N6 today but the HC2 roadmap points to more advanced nodes. ASML's High-NA EUV tools are capacity-constrained at ~20 units/year
+*   Marvell (MRVL): Custom silicon and interconnects TAM around $55B; ASIC business roughly doubled as hyperscalers ramp AI. Marvell designs custom ASICs for cloud customers alongside Broadcom
+
+### Tier 5: The Inference Cloud Platforms
+
+Companies that deploy inference at scale benefit from cheaper, faster silicon regardless of vendor:
+
+*   Amazon (AMZN): AWS builds custom Inferentia/Trainium chips and offers Taalas-class startups as infrastructure partners. Every dollar saved on inference cost flows to AWS margin
+*   Alphabet (GOOGL): TPU program is the most mature custom ASIC effort. TPU v7 via Broadcom targets 70% cost-per-token reduction. Google Cloud revenue up 34% YoY
+*   Microsoft (MSFT): Maia custom silicon program plus Azure hosting for every major AI lab. $392B commercial backlog
+
+## The Model-Specific Silicon Thesis: What Consensus Is Missing
+
+### 1. The 2-Month Turnaround Changes the Economics
+
+Taalas demonstrated a 2-month cycle from model weights to deployable PCIe cards via TSMC's foundry-optimized workflow. If validated at scale, this collapses the traditional 12-18 month ASIC development cycle. It means inference hardware can track model releases rather than lagging them by a generation. This dynamic, if it holds, accelerates TSMC wafer demand.
+
+### 2. The DeepSeek Multi-Chip Proof Point
+
+Taalas has simulated DeepSeek R1-671B on a 30-chip configuration, achieving 12,000 tokens/sec per user. This addresses the obvious objection ("it only runs small models") and demonstrates a scaling path to frontier models. The HC2 chip targets GPT-5.2-class models by year-end 2026.
+
+### 3. Air-Cooled Deployment Is Underappreciated
+
+At 250W per chip and 2.5kW per 10-card server, Taalas systems deploy in standard air-cooled racks. This eliminates the liquid cooling dependency that constrains GPU-based inference (GB200 NVL72 requires ~120kW per rack). For edge inference and smaller deployments, this is a structural advantage. It also reduces Vertiv/cooling infrastructure as a bottleneck for inference-specific deployments.
+
+### 4. The Open-Source Model Ecosystem Is the Enabler
+
+Taalas' approach only works because Meta open-sourced Llama. Hard-wiring a model into silicon requires the weights to be publicly available. The proliferation of open-weight models (Llama, DeepSeek, Mistral, Gemma) expands the addressable market for model-specific silicon. Every new open-weight model release is a potential new chip order for TSMC.
+
+## Risk Factors
+
+*   Execution Risk: Taalas has 25 employees and no production-scale deployments. The HC1 is a demonstration chip, not a revenue product
+*   Architecture Rigidity: If model architectures shift away from transformers (e.g., state-space models, mixture-of-experts variants), hard-wired silicon becomes stranded
+*   NVIDIA's Software Moat: CUDA, TensorRT, and the broader NVIDIA ecosystem create switching costs that hardware performance alone cannot overcome
+*   Consolidation: NVIDIA's Groq deal suggests the company will acquire or license inference startups aggressively, potentially leaving public investors in the foundry/equipment layer as the safest exposure
+*   Commoditization: If multiple companies can produce model-specific silicon cheaply, the technology itself may not generate sustainable margins for chip designers, concentrating value at the foundry (TSMC) and equipment (ASML, AMAT) layers
+
+## Research Outlook
+
+The inference ASIC revolution is not a threat to NVIDIA. It is a structural expansion of the total semiconductor TAM. The $100B inference market cannot be served efficiently by repurposed training GPUs. Whether the winning architecture is mask-ROM (Taalas), transformer-only ASIC (Etched), wafer-scale (Cerebras), or in-house hyperscaler designs (Google TPU, Amazon Trainium), the value chain beneficiaries are the same: TSMC fabricates the silicon, Broadcom and Marvell design the custom chips, ASML and AMAT provide the tools, and cloud platforms capture the deployment margin.
+
+The highest-conviction trade is not picking which inference chip startup wins. It is owning the chokepoints that every approach must flow through. PM Score: 90, reflecting high structural conviction in the inference bifurcation thesis with value concentrated in the foundry and equipment layer.`,
+        date: "2026-02-20",
+        pmScore: 90,
+        category: "Deep Dive",
+        readTime: "14 min",
+        relatedTickers: ["TSM", "AVGO", "NVDA", "AMAT", "ASML", "MRVL", "AMZN", "GOOGL", "MSFT"],
+        author: "PM Research"
+    },
 ];
