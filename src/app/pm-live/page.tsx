@@ -26,6 +26,7 @@ import {
 } from "recharts";
 import { AgentTabs } from "@/components/agents/AgentTabs";
 import { TickerTape } from "@/components/TickerTape";
+import { MarketCountdown } from "@/components/MarketCountdown";
 
 // Market indices/assets to chart
 const CHART_SYMBOLS = [
@@ -306,6 +307,12 @@ export default function PMLivePage() {
                                     </span>
                                 )}
                             </span>
+                            {!marketOpen && (
+                                <>
+                                    <span className="text-pm-border">·</span>
+                                    <MarketCountdown />
+                                </>
+                            )}
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight tracking-tight">
