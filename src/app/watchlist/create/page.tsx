@@ -303,7 +303,7 @@ export default function CreateWatchlistPage() {
                             </div>
 
                             {/* Stock Results */}
-                            <div className="max-h-80 overflow-y-auto space-y-1">
+                            <div className="max-h-60 sm:max-h-80 overflow-y-auto space-y-1">
                                 {filteredStocks.length === 0 ? (
                                     <p className="text-center text-pm-muted py-8 text-sm">
                                         {searchQuery ? "No stocks found matching your search." : "All available stocks have been added."}
@@ -315,14 +315,16 @@ export default function CreateWatchlistPage() {
                                             onClick={() => addStock(stock.ticker)}
                                             className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-pm-charcoal/80 transition-colors group text-left"
                                         >
-                                            <div className="flex items-center gap-3 min-w-0">
-                                                <span className="font-bold text-white text-sm w-16 flex-shrink-0">
+                                            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                                                <span className="font-bold text-white text-sm w-14 sm:w-16 flex-shrink-0">
                                                     {stock.ticker}
                                                 </span>
                                                 <span className="text-pm-muted text-sm truncate">
                                                     {stock.name}
                                                 </span>
-                                                <SectorBadge sector={stock.assetClass} size="sm" interactive={false} />
+                                                <span className="hidden sm:inline-flex">
+                                                    <SectorBadge sector={stock.assetClass} size="sm" interactive={false} />
+                                                </span>
                                             </div>
                                             <Plus className="w-4 h-4 text-pm-muted group-hover:text-pm-green flex-shrink-0 transition-colors" />
                                         </button>
@@ -338,7 +340,7 @@ export default function CreateWatchlistPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.15 }}
-                            className="pm-card p-6 sticky top-24"
+                            className="pm-card p-6 lg:sticky lg:top-24"
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-semibold">

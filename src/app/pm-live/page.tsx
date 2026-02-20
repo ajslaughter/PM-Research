@@ -308,12 +308,12 @@ export default function PMLivePage() {
                             </span>
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl font-bold leading-tight tracking-tight">
+                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight tracking-tight">
                             <span className="text-pm-green">PM</span>
                             <span className="text-pm-text"> Live</span>
                         </h1>
 
-                        <p className="text-xl text-pm-muted max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg sm:text-xl text-pm-muted max-w-2xl mx-auto leading-relaxed">
                             Real-time market performance across major indices and assets.
                         </p>
                     </motion.div>
@@ -379,7 +379,7 @@ export default function PMLivePage() {
                                 })}
                             </div>
 
-                            <div className="px-4 py-4" style={{ height: 400 }}>
+                            <div className="px-2 sm:px-4 py-4 h-[280px] sm:h-[350px] md:h-[400px]">
                                 {chartLoading ? (
                                     <div className="flex items-center justify-center h-full gap-3 text-pm-muted">
                                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -548,6 +548,15 @@ export default function PMLivePage() {
                                                                                                 });
                                                                                             }}
                                                                                             onMouseLeave={() => setHoveredStock(null)}
+                                                                                            onClick={(e) => {
+                                                                                                e.stopPropagation();
+                                                                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                                                                setHoveredStock((prev) =>
+                                                                                                    prev?.stock.ticker === stock.ticker
+                                                                                                        ? null
+                                                                                                        : { stock, sector, x: rect.left + rect.width / 2, y: rect.top }
+                                                                                                );
+                                                                                            }}
                                                                                         >
                                                                                             <span
                                                                                                 className={`font-bold text-white drop-shadow-md leading-tight ${
@@ -590,11 +599,11 @@ export default function PMLivePage() {
                             className="mt-12"
                         >
                             <div className="pm-card border-pm-border/50 overflow-hidden">
-                                <div className="px-6 py-4 border-b border-pm-border/50 flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Radio className="w-5 h-5 text-pm-green" />
-                                        <h2 className="text-lg font-semibold text-pm-text">Live Feed</h2>
-                                        <span className="text-xs text-pm-muted font-mono">
+                                <div className="px-4 sm:px-6 py-4 border-b border-pm-border/50 flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <Radio className="w-5 h-5 text-pm-green flex-shrink-0" />
+                                        <h2 className="text-base sm:text-lg font-semibold text-pm-text">Live Feed</h2>
+                                        <span className="text-xs text-pm-muted font-mono hidden sm:inline">
                                             Market updates & analyst reports
                                         </span>
                                     </div>
@@ -627,7 +636,7 @@ export default function PMLivePage() {
                                         return (
                                             <div
                                                 key={`${entry.timestamp}-${i}`}
-                                                className={`px-6 py-3 flex gap-4 ${isLong ? "cursor-pointer hover:bg-pm-border/5 transition-colors" : ""}`}
+                                                className={`px-3 sm:px-6 py-3 flex gap-2 sm:gap-4 ${isLong ? "cursor-pointer hover:bg-pm-border/5 transition-colors" : ""}`}
                                                 onClick={() => {
                                                     if (!isLong) return;
                                                     setExpandedFeedItems((prev) => {
@@ -638,9 +647,9 @@ export default function PMLivePage() {
                                                     });
                                                 }}
                                             >
-                                                <div className="flex-shrink-0 w-20 text-right">
-                                                    <div className="text-xs text-pm-muted font-mono">{timeStr}</div>
-                                                    <div className="text-[10px] text-pm-subtle font-mono">{dateStr}</div>
+                                                <div className="flex-shrink-0 w-16 sm:w-20 text-right">
+                                                    <div className="text-[10px] sm:text-xs text-pm-muted font-mono">{timeStr}</div>
+                                                    <div className="text-[9px] sm:text-[10px] text-pm-subtle font-mono">{dateStr}</div>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2 mb-1">
@@ -733,7 +742,7 @@ export default function PMLivePage() {
                                                         if (alertStatus === "error") setAlertStatus("idle");
                                                     }}
                                                     onKeyDown={(e) => e.key === "Enter" && handleAlertSignup()}
-                                                    className="px-4 py-2.5 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text font-mono placeholder:text-pm-subtle focus:outline-none focus:border-pm-green/50 w-48"
+                                                    className="px-4 py-2.5 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text font-mono placeholder:text-pm-subtle focus:outline-none focus:border-pm-green/50 w-full sm:w-48"
                                                 />
                                                 <button
                                                     onClick={handleAlertSignup}
@@ -760,18 +769,25 @@ export default function PMLivePage() {
                         </div>
                     </motion.div>
 
-                    {/* Hover Tooltip */}
+                    {/* Hover/Tap Tooltip */}
                     {hoveredStock && mapData && (() => {
                         const { stock, sector, x, y } = hoveredStock;
                         const industryPeers = (mapData.sectors[sector] || [])
                             .filter((s) => s.industry === stock.industry)
                             .sort((a, b) => b.weight - a.weight);
 
-                        const tooltipW = 340;
-                        const left = Math.min(Math.max(x - tooltipW / 2, 8), (typeof window !== "undefined" ? window.innerWidth : 1200) - tooltipW - 8);
+                        const windowWidth = typeof window !== "undefined" ? window.innerWidth : 1200;
+                        const tooltipW = Math.min(340, windowWidth - 16);
+                        const left = Math.min(Math.max(x - tooltipW / 2, 8), windowWidth - tooltipW - 8);
                         const top = y - 8;
 
                         return (
+                            <>
+                            {/* Tap-to-dismiss overlay (mobile) */}
+                            <div
+                                className="fixed inset-0 z-40 md:hidden"
+                                onClick={() => setHoveredStock(null)}
+                            />
                             <div
                                 className="fixed z-50 pointer-events-none"
                                 style={{
@@ -828,6 +844,7 @@ export default function PMLivePage() {
                                     </div>
                                 </div>
                             </div>
+                            </>
                         );
                     })()}
 

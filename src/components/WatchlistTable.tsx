@@ -460,7 +460,7 @@ export default function WatchlistTable({
             </div>
 
             {/* Quarterly Breakdown Row */}
-            <div className="grid grid-cols-4 gap-2 text-center text-xs text-pm-muted font-mono border-t border-b border-pm-border py-4 bg-pm-charcoal/30">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs text-pm-muted font-mono border-t border-b border-pm-border py-4 bg-pm-charcoal/30">
                 {quarterlyPerformance.map((q) => (
                     <div key={q.quarter} className={q.isCurrent ? "text-pm-green font-bold" : ""}>
                         <div className="mb-1">{q.quarter}</div>
@@ -476,8 +476,8 @@ export default function WatchlistTable({
             </div>
 
             {/* Data Freshness Indicator */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-xs text-pm-muted">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-3 sm:gap-4 text-xs text-pm-muted flex-wrap">
                     {/* Market Status */}
                     <div className="flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full ${marketOpen ? 'bg-pm-green animate-pulse' : 'bg-gray-500'}`} />
@@ -500,7 +500,7 @@ export default function WatchlistTable({
                     </div>
                     {/* Last Update */}
                     {lastPriceFetch && (
-                        <span className="text-gray-500">
+                        <span className="text-gray-500 hidden sm:inline">
                             Updated: {formatLastUpdated()}
                         </span>
                     )}
@@ -516,15 +516,114 @@ export default function WatchlistTable({
                 </button>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50 -mx-2 px-2 md:mx-0 md:px-0">
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-3">
+                {liveWatchlist.map((position) => (
+                    <div
+                        key={position.ticker}
+                        className="rounded-xl border border-pm-border bg-pm-charcoal/50 p-4"
+                    >
+                        {/* Row 1: Ticker + YTD Return */}
+                        <div className="flex items-start justify-between mb-3">
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() => setActivePopupTicker(activePopupTicker === position.ticker ? null : position.ticker)}
+                                    className="text-left"
+                                >
+                                    <span className="font-bold text-white text-base">
+                                        {position.ticker}
+                                    </span>
+                                    <span className="text-xs text-pm-muted block mt-0.5">
+                                        {position.name}
+                                    </span>
+                                </button>
+                                {activePopupTicker === position.ticker && (
+                                    <div
+                                        ref={popupRef}
+                                        className="absolute top-full left-0 mt-1 z-50 bg-pm-black border border-pm-border rounded-lg shadow-lg shadow-black/50 px-4 py-3 whitespace-nowrap"
+                                    >
+                                        <div className="text-[10px] text-pm-muted uppercase tracking-wider mb-1">Market Cap</div>
+                                        <div className="text-sm font-mono font-semibold text-white">
+                                            {isLoadingPrices ? (
+                                                <SkeletonCell width="w-16" />
+                                            ) : (
+                                                formatMarketCap(position.marketCap)
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={`text-right font-mono font-bold ${position.returnPercent >= 0 ? "text-pm-green" : "text-pm-red"}`}>
+                                {isLoadingPrices ? (
+                                    <SkeletonCell width="w-16" />
+                                ) : (
+                                    <span className="flex items-center gap-1">
+                                        {position.returnPercent >= 0 ? (
+                                            <TrendingUp className="w-3 h-3" />
+                                        ) : (
+                                            <TrendingDown className="w-3 h-3" />
+                                        )}
+                                        {position.returnPercent > 0 ? "+" : ""}
+                                        {formatPercent(position.returnPercent)}%
+                                    </span>
+                                )}
+                                <span className="text-[10px] text-pm-muted font-normal block">YTD</span>
+                            </div>
+                        </div>
+
+                        {/* Row 2: Sector + Weight */}
+                        <div className="flex items-center justify-between mb-3">
+                            <SectorBadge sector={position.assetClass} size="sm" interactive={false} />
+                            <span className="text-xs font-mono text-pm-muted">{formatPercent(position.weight)}% weight</span>
+                        </div>
+
+                        {/* Row 3: Price stats */}
+                        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-pm-border/50">
+                            <div>
+                                <div className="text-[10px] text-pm-muted uppercase mb-0.5">Open</div>
+                                <div className="text-xs font-mono text-pm-muted">
+                                    ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[10px] text-pm-muted uppercase mb-0.5">Current</div>
+                                {isLoadingPrices ? (
+                                    <SkeletonCell width="w-14" />
+                                ) : (
+                                    <div className={`text-xs font-mono font-medium ${position.isLive ? 'text-white' : 'text-gray-400'}`}>
+                                        ${position.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="text-right">
+                                <div className="text-[10px] text-pm-muted uppercase mb-0.5">Day</div>
+                                {isLoadingPrices ? (
+                                    <SkeletonCell width="w-10" />
+                                ) : position.isStale ? (
+                                    <span className="text-xs text-pm-muted">--</span>
+                                ) : (
+                                    <span className={`text-xs font-mono ${position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"}`}>
+                                        {position.dayChange >= 0 ? "+" : ""}
+                                        {formatPercent(position.dayChange)}%
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50">
                 <table className="w-full text-left border-collapse min-w-[800px]">
                     <thead>
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
-                            <th className="p-3 md:p-4 sticky left-0 bg-pm-black/90 z-10">Ticker</th>
-                            <th className="p-3 md:p-4">Asset Class</th>
-                            <th className="p-3 md:p-4 text-right">Weight</th>
-                            <th className="p-3 md:p-4 text-right">{YTD_OPEN_YEAR} Open</th>
-                            <th className="p-3 md:p-4 text-right">
+                            <th className="p-4 sticky left-0 bg-pm-black/90 z-10">Ticker</th>
+                            <th className="p-4">Asset Class</th>
+                            <th className="p-4 text-right">Weight</th>
+                            <th className="p-4 text-right">{YTD_OPEN_YEAR} Open</th>
+                            <th className="p-4 text-right">
                                 Current
                                 {isLoadingPrices && (
                                     <span className="ml-2 text-yellow-500 animate-pulse">
@@ -537,8 +636,8 @@ export default function WatchlistTable({
                                     </span>
                                 )}
                             </th>
-                            <th className="p-3 md:p-4 text-right">Day %</th>
-                            <th className="p-3 md:p-4 text-right">YTD Return</th>
+                            <th className="p-4 text-right">Day %</th>
+                            <th className="p-4 text-right">YTD Return</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-pm-border">
@@ -547,7 +646,7 @@ export default function WatchlistTable({
                                 key={position.ticker}
                                 className="hover:bg-pm-charcoal/80 transition-colors group"
                             >
-                                <td className="p-3 md:p-4 sticky left-0 bg-pm-dark/95 z-10">
+                                <td className="p-4 sticky left-0 bg-pm-dark/95 z-10">
                                     <div className="relative">
                                         <button
                                             type="button"
@@ -557,7 +656,7 @@ export default function WatchlistTable({
                                             <span className="font-bold text-white group-hover:text-pm-green transition-colors">
                                                 {position.ticker}
                                             </span>
-                                            <span className="text-xs text-pm-muted hidden md:inline-block">
+                                            <span className="text-xs text-pm-muted">
                                                 {position.name}
                                             </span>
                                         </button>
@@ -578,20 +677,20 @@ export default function WatchlistTable({
                                         )}
                                     </div>
                                 </td>
-                                <td className="p-3 md:p-4">
+                                <td className="p-4">
                                     <SectorBadge
                                         sector={position.assetClass}
                                         size="sm"
                                         interactive={false}
                                     />
                                 </td>
-                                <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
+                                <td className="p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
                                 </td>
-                                <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
+                                <td className="p-4 text-right font-mono text-pm-muted">
                                     ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
-                                <td className="p-3 md:p-4 text-right font-mono font-medium">
+                                <td className="p-4 text-right font-mono font-medium">
                                     {isLoadingPrices ? (
                                         <div className="flex items-center justify-end gap-2">
                                             <LoadingSpinner size="w-3 h-3" />
@@ -611,7 +710,7 @@ export default function WatchlistTable({
                                         </span>
                                     )}
                                 </td>
-                                <td className={`p-3 md:p-4 text-right font-mono text-sm ${position.isStale ? "text-pm-muted" : position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
+                                <td className={`p-4 text-right font-mono text-sm ${position.isStale ? "text-pm-muted" : position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
                                     }`}>
                                     {isLoadingPrices ? (
                                         <div className="flex items-center justify-end gap-2">
@@ -628,7 +727,7 @@ export default function WatchlistTable({
                                     )}
                                 </td>
                                 <td
-                                    className={`p-3 md:p-4 text-right font-mono font-bold ${position.returnPercent >= 0
+                                    className={`p-4 text-right font-mono font-bold ${position.returnPercent >= 0
                                         ? "text-pm-green"
                                         : "text-pm-red"
                                         }`}

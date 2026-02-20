@@ -229,8 +229,8 @@ export default function PMbotPage() {
     const isAtMessageLimit = messages.length >= MAX_MESSAGES;
 
     return (
-        <div className="min-h-screen pt-24 pb-20 md:pb-12 px-4 sm:px-6">
-            <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-8rem)] max-md:h-[calc(100vh-11rem)]">
+        <div className="min-h-screen pt-20 sm:pt-24 pb-24 md:pb-12 px-4 sm:px-6">
+            <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-11rem)] sm:h-[calc(100vh-9rem)] md:h-[calc(100vh-8rem)]">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -267,12 +267,12 @@ export default function PMbotPage() {
                                 <p className="text-pm-muted text-center mb-6 max-w-md">
                                     Ask me about PM Research&apos;s PM watchlists, sector analysis, or research methodology.
                                 </p>
-                                <div className="flex flex-wrap justify-center gap-2 max-w-lg">
+                                <div className="flex flex-wrap justify-center gap-2 max-w-lg px-2">
                                     {SUGGESTED_QUESTIONS.map((question, index) => (
                                         <button
                                             key={index}
                                             onClick={() => handleSuggestedQuestion(question)}
-                                            className="px-3 py-2 text-sm bg-pm-charcoal border border-pm-border rounded-lg text-pm-muted hover:text-pm-text hover:border-pm-green/50 transition-colors"
+                                            className="px-3 py-2 text-xs sm:text-sm bg-pm-charcoal border border-pm-border rounded-lg text-pm-muted hover:text-pm-text hover:border-pm-green/50 transition-colors"
                                         >
                                             {question}
                                         </button>
@@ -296,7 +296,7 @@ export default function PMbotPage() {
                                                 </div>
                                             )}
                                             <div
-                                                className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                                                className={`max-w-[90%] sm:max-w-[80%] px-4 py-3 rounded-2xl ${
                                                     message.role === "user"
                                                         ? "bg-pm-green text-pm-black rounded-br-md font-medium"
                                                         : "bg-pm-charcoal border border-pm-border text-pm-text rounded-bl-md"

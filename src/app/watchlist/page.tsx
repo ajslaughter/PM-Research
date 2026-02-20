@@ -139,7 +139,49 @@ function MyWatchlistCard({
                                     <span className="text-sm">Loading prices...</span>
                                 </div>
                             ) : (
-                                <div className="overflow-x-auto">
+                                <>
+                                {/* Mobile card view for user watchlist */}
+                                <div className="sm:hidden space-y-2">
+                                    {watchlist.positions.map(pos => {
+                                        const stock = stockDb[pos.ticker];
+                                        const priceData = prices[pos.ticker];
+                                        const currentPrice = priceData?.price ?? 0;
+                                        const ytd = stock?.yearlyClose && currentPrice > 0
+                                            ? calculateYTD(currentPrice, stock.yearlyClose)
+                                            : 0;
+                                        return (
+                                            <div key={pos.ticker} className="flex items-center justify-between py-2 border-b border-pm-border/30 last:border-b-0">
+                                                <div className="min-w-0">
+                                                    <span className="font-bold text-white text-sm">{pos.ticker}</span>
+                                                    <span className="text-xs text-pm-muted block truncate">{stock?.name || pos.ticker}</span>
+                                                </div>
+                                                <div className="flex items-center gap-3 flex-shrink-0">
+                                                    <span className="text-xs font-mono text-white">
+                                                        {currentPrice > 0
+                                                            ? `$${currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                                            : '--'
+                                                        }
+                                                    </span>
+                                                    <span className={`text-xs font-mono font-bold ${ytd >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
+                                                        {currentPrice > 0 ? (
+                                                            <>
+                                                                {ytd >= 0 ? (
+                                                                    <TrendingUp className="w-3 h-3 inline mr-0.5" />
+                                                                ) : (
+                                                                    <TrendingDown className="w-3 h-3 inline mr-0.5" />
+                                                                )}
+                                                                {ytd > 0 ? '+' : ''}{ytd.toFixed(2)}%
+                                                            </>
+                                                        ) : '--'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Desktop table view for user watchlist */}
+                                <div className="hidden sm:block overflow-x-auto">
                                     <table className="w-full text-left text-sm">
                                         <thead>
                                             <tr className="text-xs text-pm-muted uppercase border-b border-pm-border">
@@ -202,6 +244,7 @@ function MyWatchlistCard({
                                         </tbody>
                                     </table>
                                 </div>
+                                </>
                             )}
 
                             <div className="flex items-center justify-between mt-4 pt-4 border-t border-pm-border">
@@ -310,12 +353,22 @@ export default function WatchlistPage() {
                             </motion.div>
                         )}
 
+                        {/* Mobile: Custom Watchlist Panel (shown inline before selector cards) */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.05 }}
+                            className="lg:hidden mb-10"
+                        >
+                            <CustomWatchlistPanel />
+                        </motion.div>
+
                         {/* Watchlist Selector Cards */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10"
+                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-10"
                         >
                             {watchlists.map((watchlist, index) => (
                                 <motion.button
@@ -324,17 +377,17 @@ export default function WatchlistPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.05 * index }}
                                     onClick={() => setActiveWatchlistId(watchlist.id)}
-                                    className={`text-left p-4 rounded-lg border transition-all ${
+                                    className={`text-left p-3 sm:p-4 rounded-lg border transition-all ${
                                         watchlist.id === activeWatchlistId
                                             ? 'bg-pm-green/10 border-pm-green text-pm-text'
                                             : 'bg-pm-charcoal/50 border-pm-border hover:border-pm-green/50 text-pm-muted hover:text-pm-text'
                                     }`}
                                 >
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Briefcase className={`w-4 h-4 ${watchlist.id === activeWatchlistId ? 'text-pm-green' : ''}`} />
-                                        <span className="font-semibold text-sm truncate">{watchlist.name}</span>
+                                    <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                                        <Briefcase className={`w-4 h-4 flex-shrink-0 ${watchlist.id === activeWatchlistId ? 'text-pm-green' : ''}`} />
+                                        <span className="font-semibold text-xs sm:text-sm truncate">{watchlist.name}</span>
                                     </div>
-                                    <p className="text-xs text-pm-muted line-clamp-2">{watchlist.description}</p>
+                                    <p className="text-xs text-pm-muted line-clamp-2 hidden sm:block">{watchlist.description}</p>
                                 </motion.button>
                             ))}
                         </motion.div>
@@ -346,7 +399,7 @@ export default function WatchlistPage() {
                             animate={{ opacity: 1 }}
                             className="mb-6"
                         >
-                            <h2 className="text-2xl font-bold text-pm-green">{selectedWatchlist.name}</h2>
+                            <h2 className="text-xl sm:text-2xl font-bold text-pm-green">{selectedWatchlist.name}</h2>
                             <p className="text-pm-muted text-sm">{selectedWatchlist.description}</p>
                         </motion.div>
 
@@ -366,7 +419,7 @@ export default function WatchlistPage() {
                         </motion.div>
                     </div>
 
-                    {/* Right: Custom Watchlist Panel */}
+                    {/* Right: Custom Watchlist Panel (desktop only) */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
