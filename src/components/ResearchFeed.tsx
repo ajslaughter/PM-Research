@@ -80,7 +80,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 // Research Card Component
 function ResearchCard({ note, onReadClick }: ResearchCardProps) {
     return (
-        <div className="pm-card group hover:border-pm-green/30 transition-all duration-300 flex flex-col h-full">
+        <div onClick={onReadClick} className="pm-card group hover:border-pm-green/30 transition-all duration-300 flex flex-col h-full cursor-pointer">
             {/* Header */}
             <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex items-center gap-2 flex-wrap">
