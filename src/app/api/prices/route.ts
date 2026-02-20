@@ -228,8 +228,14 @@ async function fetchBitcoin(): Promise<PriceResult | null> {
 }
 
 /**
- * Fetch market caps from Yahoo Finance batch quote endpoint
- * Uses a separate 5-minute cache since market cap changes slowly
+ * Fetch market caps using multiple data sources with fallbacks.
+ * Uses a separate 5-minute cache since market cap changes slowly.
+ *
+ * Strategy:
+ * 1. Yahoo Finance batch quote (v7 via query2, then query1)
+ * 2. Yahoo Finance per-ticker quoteSummary (v10) for any missing
+ * 3. Polygon.io Ticker Details for any still missing (if API key available)
+ * 4. CoinGecko for crypto tickers (BTC-USD)
  */
 async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number | null>> {
   // Check market cap cache
@@ -251,29 +257,138 @@ async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number
 
   if (tickers.length === 0) return results;
 
-  try {
-    const symbols = tickers.join(',');
-    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+  // Separate stock tickers from crypto
+  const stockTickers = tickers.filter(t => !t.includes('-USD'));
+  const cryptoTickers = tickers.filter(t => t.includes('-USD'));
 
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      },
-      cache: 'no-store',
-    });
+  const YAHOO_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 
-    if (response.ok) {
-      const data = await response.json();
-      const quotes = data?.quoteResponse?.result || [];
+  // --- Stock market caps ---
+  if (stockTickers.length > 0) {
+    const symbols = stockTickers.join(',');
+    let batchSuccess = false;
 
-      for (const quote of quotes) {
-        if (quote.symbol) {
-          results[quote.symbol] = quote.marketCap ?? null;
+    // Strategy 1: Yahoo Finance batch quote endpoint (try query2 then query1)
+    const batchUrls = [
+      `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`,
+      `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`,
+    ];
+
+    for (const url of batchUrls) {
+      if (batchSuccess) break;
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'User-Agent': YAHOO_UA,
+            'Accept': 'application/json',
+          },
+          cache: 'no-store',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const quotes = data?.quoteResponse?.result || [];
+
+          for (const quote of quotes) {
+            if (quote.symbol && typeof quote.marketCap === 'number' && quote.marketCap > 0) {
+              results[quote.symbol] = quote.marketCap;
+            }
+          }
+
+          // Consider it a success if we got at least one result
+          if (Object.keys(results).length > 0) {
+            batchSuccess = true;
+          }
         }
+      } catch (error) {
+        console.error(`Market cap batch fetch error:`, error);
       }
     }
-  } catch (error) {
-    console.error('Market cap fetch error:', error);
+
+    // Strategy 2: Yahoo Finance per-ticker quoteSummary (v10) for missing tickers
+    const missingAfterBatch = stockTickers.filter(t => !(t in results) || results[t] === null);
+
+    if (missingAfterBatch.length > 0) {
+      await Promise.all(
+        missingAfterBatch.map(async (ticker) => {
+          try {
+            const response = await fetch(
+              `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=price`,
+              {
+                headers: {
+                  'User-Agent': YAHOO_UA,
+                  'Accept': 'application/json',
+                },
+                cache: 'no-store',
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              const marketCap = data?.quoteSummary?.result?.[0]?.price?.marketCap?.raw;
+              if (typeof marketCap === 'number' && marketCap > 0) {
+                results[ticker] = marketCap;
+              }
+            }
+          } catch (error) {
+            console.error(`Market cap quoteSummary error for ${ticker}:`, error);
+          }
+        })
+      );
+    }
+
+    // Strategy 3: Polygon.io Ticker Details fallback for any still missing
+    const polygonApiKey = (process.env.POLYGON_API_KEY || '').trim();
+    const missingAfterYahoo = stockTickers.filter(t => !(t in results) || results[t] === null);
+
+    if (missingAfterYahoo.length > 0 && polygonApiKey) {
+      await Promise.all(
+        missingAfterYahoo.map(async (ticker) => {
+          try {
+            const response = await fetch(
+              `https://api.polygon.io/v3/reference/tickers/${ticker}?apiKey=${polygonApiKey}`,
+              { cache: 'no-store' }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              const marketCap = data?.results?.market_cap;
+              if (typeof marketCap === 'number' && marketCap > 0) {
+                results[ticker] = marketCap;
+              }
+            }
+          } catch (error) {
+            console.error(`Polygon market cap error for ${ticker}:`, error);
+          }
+        })
+      );
+    }
+  }
+
+  // --- Crypto market caps via CoinGecko ---
+  if (cryptoTickers.includes('BTC-USD')) {
+    try {
+      const coinGeckoApiKey = (process.env.COINGECKO_API_KEY || '').trim().replace(/[\r\n]/g, '');
+      const headers: HeadersInit = { 'Accept': 'application/json' };
+      if (coinGeckoApiKey) {
+        headers['x-cg-demo-api-key'] = coinGeckoApiKey;
+      }
+
+      const res = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true',
+        { cache: 'no-store', headers }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        const btcMarketCap = data?.bitcoin?.usd_market_cap;
+        if (typeof btcMarketCap === 'number' && btcMarketCap > 0) {
+          results['BTC-USD'] = btcMarketCap;
+        }
+      }
+    } catch (error) {
+      console.error('CoinGecko market cap fetch error:', error);
+    }
   }
 
   // Fill missing tickers with null
