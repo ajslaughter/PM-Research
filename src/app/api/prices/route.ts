@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fallbackMarketCaps } from '@/data/marketCaps';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -25,8 +26,10 @@ interface MarketCapCacheEntry {
 // For production reliability, migrate to an external store (e.g., Vercel KV / Upstash Redis).
 const CACHE_TTL_MS = 30 * 1000;
 const MARKET_CAP_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const YAHOO_CRUMB_TTL_MS = 60 * 60 * 1000; // 1 hour
 let priceCache: CacheEntry | null = null;
 let marketCapCache: MarketCapCacheEntry | null = null;
+let yahooCrumbCache: { crumb: string; cookie: string; timestamp: number } | null = null;
 
 /**
  * Check if US stock market is currently open
@@ -228,21 +231,92 @@ async function fetchBitcoin(): Promise<PriceResult | null> {
 }
 
 /**
+ * Obtain Yahoo Finance crumb + cookie for authenticated API access.
+ * Yahoo Finance v7/v10 endpoints require crumb authentication since 2023.
+ * The crumb is cached for 1 hour to minimize requests.
+ */
+async function getYahooCrumb(): Promise<{ crumb: string; cookie: string } | null> {
+  // Check cache
+  if (yahooCrumbCache && (Date.now() - yahooCrumbCache.timestamp) < YAHOO_CRUMB_TTL_MS) {
+    return { crumb: yahooCrumbCache.crumb, cookie: yahooCrumbCache.cookie };
+  }
+
+  const YAHOO_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+
+  try {
+    // Step 1: Hit a lightweight Yahoo endpoint to get session cookies
+    const initRes = await fetch('https://fc.yahoo.com/', {
+      headers: { 'User-Agent': YAHOO_UA },
+      redirect: 'manual',
+    });
+
+    // Extract set-cookie headers
+    const rawCookies: string[] = [];
+    initRes.headers.forEach((value, key) => {
+      if (key.toLowerCase() === 'set-cookie') {
+        rawCookies.push(value.split(';')[0]);
+      }
+    });
+
+    if (rawCookies.length === 0) {
+      // Try alternative: fetch finance.yahoo.com consent page
+      const altRes = await fetch('https://finance.yahoo.com/', {
+        headers: { 'User-Agent': YAHOO_UA },
+        redirect: 'manual',
+      });
+      altRes.headers.forEach((value, key) => {
+        if (key.toLowerCase() === 'set-cookie') {
+          rawCookies.push(value.split(';')[0]);
+        }
+      });
+    }
+
+    const cookieStr = rawCookies.join('; ');
+    if (!cookieStr) {
+      console.warn('Yahoo Finance: No cookies received');
+      return null;
+    }
+
+    // Step 2: Fetch crumb using session cookies
+    const crumbRes = await fetch('https://query2.finance.yahoo.com/v1/test/getcrumb', {
+      headers: {
+        'User-Agent': YAHOO_UA,
+        'Cookie': cookieStr,
+      },
+    });
+
+    if (crumbRes.ok) {
+      const crumb = await crumbRes.text();
+      // Validate crumb - should be a short alphanumeric string, not HTML
+      if (crumb && crumb.length > 0 && crumb.length < 50 && !crumb.includes('<!')) {
+        yahooCrumbCache = { crumb, cookie: cookieStr, timestamp: Date.now() };
+        return { crumb, cookie: cookieStr };
+      }
+    }
+  } catch (e) {
+    console.error('Yahoo crumb fetch error:', e);
+  }
+
+  return null;
+}
+
+/**
  * Fetch market caps using multiple data sources with fallbacks.
  * Uses a separate 5-minute cache since market cap changes slowly.
  *
  * Strategy:
- * 1. Yahoo Finance batch quote (v7 via query2, then query1)
- * 2. Yahoo Finance per-ticker quoteSummary (v10) for any missing
- * 3. Polygon.io Ticker Details for any still missing (if API key available)
+ * 1. Yahoo Finance batch quote (v7) WITH crumb authentication
+ * 2. Yahoo Finance batch quote (v7) without crumb (legacy, may still work)
+ * 3. Polygon.io Ticker Details (if API key available)
  * 4. CoinGecko for crypto tickers (BTC-USD)
+ * 5. Hardcoded fallback data for any remaining gaps
  */
 async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number | null>> {
   // Check market cap cache
   if (marketCapCache) {
     const now = Date.now();
     if (now - marketCapCache.timestamp < MARKET_CAP_CACHE_TTL_MS) {
-      const allCached = tickers.every(t => t in marketCapCache!.data);
+      const allCached = tickers.every(t => t in marketCapCache!.data && marketCapCache!.data[t] !== null);
       if (allCached) {
         const cached: Record<string, number | null> = {};
         for (const t of tickers) {
@@ -266,21 +340,17 @@ async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number
   // --- Stock market caps ---
   if (stockTickers.length > 0) {
     const symbols = stockTickers.join(',');
-    let batchSuccess = false;
 
-    // Strategy 1: Yahoo Finance batch quote endpoint (try query2 then query1)
-    const batchUrls = [
-      `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`,
-      `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`,
-    ];
-
-    for (const url of batchUrls) {
-      if (batchSuccess) break;
+    // Strategy 1: Yahoo Finance v7 batch quote WITH crumb authentication
+    const crumbData = await getYahooCrumb();
+    if (crumbData) {
       try {
+        const url = `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&crumb=${encodeURIComponent(crumbData.crumb)}`;
         const response = await fetch(url, {
           headers: {
             'User-Agent': YAHOO_UA,
             'Accept': 'application/json',
+            'Cookie': crumbData.cookie,
           },
           cache: 'no-store',
         });
@@ -294,50 +364,59 @@ async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number
               results[quote.symbol] = quote.marketCap;
             }
           }
-
-          // Consider it a success if we got at least one result
-          if (Object.keys(results).length > 0) {
-            batchSuccess = true;
+        } else {
+          // Invalidate crumb cache on auth failure
+          if (response.status === 401 || response.status === 403) {
+            yahooCrumbCache = null;
           }
+          console.warn(`Yahoo v7 crumb auth failed: ${response.status}`);
         }
       } catch (error) {
-        console.error(`Market cap batch fetch error:`, error);
+        console.error('Yahoo v7 crumb fetch error:', error);
       }
     }
 
-    // Strategy 2: Yahoo Finance per-ticker quoteSummary (v10) for missing tickers
-    const missingAfterBatch = stockTickers.filter(t => !(t in results) || results[t] === null);
+    // Strategy 2: Yahoo Finance v7 without crumb (legacy fallback)
+    const missingAfterCrumb = stockTickers.filter(t => !(t in results) || results[t] === null);
+    if (missingAfterCrumb.length > 0) {
+      const missSymbols = missingAfterCrumb.join(',');
+      const legacyUrls = [
+        `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${missSymbols}`,
+        `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${missSymbols}`,
+      ];
 
-    if (missingAfterBatch.length > 0) {
-      await Promise.all(
-        missingAfterBatch.map(async (ticker) => {
-          try {
-            const response = await fetch(
-              `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=price`,
-              {
-                headers: {
-                  'User-Agent': YAHOO_UA,
-                  'Accept': 'application/json',
-                },
-                cache: 'no-store',
-              }
-            );
+      for (const url of legacyUrls) {
+        try {
+          const response = await fetch(url, {
+            headers: {
+              'User-Agent': YAHOO_UA,
+              'Accept': 'application/json',
+            },
+            cache: 'no-store',
+          });
 
-            if (response.ok) {
-              const data = await response.json();
-              const marketCap = data?.quoteSummary?.result?.[0]?.price?.marketCap?.raw;
-              if (typeof marketCap === 'number' && marketCap > 0) {
-                results[ticker] = marketCap;
+          if (response.ok) {
+            const data = await response.json();
+            const quotes = data?.quoteResponse?.result || [];
+
+            for (const quote of quotes) {
+              if (quote.symbol && typeof quote.marketCap === 'number' && quote.marketCap > 0) {
+                results[quote.symbol] = quote.marketCap;
               }
             }
-          } catch (error) {
-            console.error(`Market cap quoteSummary error for ${ticker}:`, error);
+
+            // If we got results, stop trying legacy URLs
+            if (missingAfterCrumb.some(t => t in results && results[t] !== null)) {
+              break;
+            }
           }
-        })
-      );
+        } catch (error) {
+          console.error('Market cap legacy batch fetch error:', error);
+        }
+      }
     }
 
-    // Strategy 3: Polygon.io Ticker Details fallback for any still missing
+    // Strategy 3: Polygon.io Ticker Details for any still missing
     const polygonApiKey = (process.env.POLYGON_API_KEY || '').trim();
     const missingAfterYahoo = stockTickers.filter(t => !(t in results) || results[t] === null);
 
@@ -391,10 +470,15 @@ async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number
     }
   }
 
-  // Fill missing tickers with null
+  // Strategy 5: Fill remaining gaps with hardcoded fallback data
   for (const ticker of tickers) {
-    if (!(ticker in results)) {
-      results[ticker] = null;
+    if (!(ticker in results) || results[ticker] === null) {
+      const fallback = fallbackMarketCaps[ticker.toUpperCase()];
+      if (fallback) {
+        results[ticker] = fallback;
+      } else {
+        results[ticker] = null;
+      }
     }
   }
 
