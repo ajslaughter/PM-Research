@@ -6,6 +6,7 @@ interface PriceData {
     price: number | null;
     change: number;
     changePercent: number;
+    marketCap: number | null;
     isLive: boolean;
 }
 

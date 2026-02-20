@@ -22,6 +22,7 @@ interface PriceData {
     price: number | null;
     change: number;
     changePercent: number;
+    marketCap: number | null;
     isLive: boolean;
 }
 
@@ -66,6 +67,14 @@ const SkeletonKPI = () => (
 const formatPercent = (value: number): string => {
     const rounded = Math.round(value * 100) / 100;
     return rounded.toFixed(2);
+};
+
+const formatMarketCap = (value: number | null): string => {
+    if (!value || value <= 0) return '--';
+    if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
+    if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;
+    if (value >= 1e6) return `$${(value / 1e6).toFixed(0)}M`;
+    return `$${value.toLocaleString()}`;
 };
 
 export default function WatchlistTable({
@@ -273,6 +282,7 @@ export default function WatchlistTable({
             currentPrice,
             returnPercent: ytdReturn,
             dayChange,
+            marketCap: liveData?.marketCap ?? null,
             pmScore: stock?.pmScore || 0,
             isStale,
             isLive: liveData?.isLive ?? false,
@@ -492,12 +502,13 @@ export default function WatchlistTable({
             </div>
 
             <div className="overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50 -mx-2 px-2 md:mx-0 md:px-0">
-                <table className="w-full text-left border-collapse min-w-[700px]">
+                <table className="w-full text-left border-collapse min-w-[800px]">
                     <thead>
                         <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
                             <th className="p-3 md:p-4 sticky left-0 bg-pm-black/90 z-10">Ticker</th>
                             <th className="p-3 md:p-4">Asset Class</th>
                             <th className="p-3 md:p-4 text-right">Weight</th>
+                            <th className="p-3 md:p-4 text-right">Mkt Cap</th>
                             <th className="p-3 md:p-4 text-right">{YTD_OPEN_YEAR} Open</th>
                             <th className="p-3 md:p-4 text-right">
                                 Current
@@ -541,6 +552,15 @@ export default function WatchlistTable({
                                 </td>
                                 <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
                                     {formatPercent(position.weight)}%
+                                </td>
+                                <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
+                                    {isLoadingPrices ? (
+                                        <div className="flex items-center justify-end">
+                                            <SkeletonCell width="w-16" />
+                                        </div>
+                                    ) : (
+                                        formatMarketCap(position.marketCap)
+                                    )}
                                 </td>
                                 <td className="p-3 md:p-4 text-right font-mono text-pm-muted">
                                     ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
