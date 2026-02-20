@@ -4,7 +4,6 @@ import "./globals.css";
 import { SubscriptionProvider } from "@/context/SubscriptionContext";
 import { AdminProvider } from "@/context/AdminContext";
 import { AuthProvider } from "@/context/AuthContext";
-import { UserWatchlistProvider } from "@/context/UserWatchlistContext";
 import Navbar from "@/components/Navbar";
 import AdminPanel from "@/components/AdminPanel";
 
@@ -26,7 +25,6 @@ export default function RootLayout({
                 <AuthProvider>
                 <SubscriptionProvider>
                     <AdminProvider>
-                        <UserWatchlistProvider>
                         <div className="min-h-screen flex flex-col">
                             <Navbar />
                             <main className="flex-1 pt-16">{children}</main>
@@ -69,7 +67,6 @@ export default function RootLayout({
 
                         {/* Admin Panel - renders when admin mode is active */}
                         <AdminPanel />
-                        </UserWatchlistProvider>
                     </AdminProvider>
                 </SubscriptionProvider>
                 </AuthProvider>
