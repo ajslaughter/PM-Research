@@ -77,8 +77,8 @@ export function TickerTape() {
                 }
             `;
             if (scrollRef.current) {
-                // ~150px/s speed
-                const duration = w / 150;
+                // ~135px/s speed
+                const duration = w / 135;
                 scrollRef.current.style.animation = `tickerScroll ${duration}s linear infinite`;
             }
         }, 200);
