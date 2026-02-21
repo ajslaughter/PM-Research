@@ -1,30 +1,72 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";
 
-// Define the shape of our subscription context
+type Tier = "guest" | "observer" | "operator";
+
 interface SubscriptionContextType {
     isSubscribed: boolean;
     toggleSubscription: () => void;
-    subscriptionTier: "guest" | "observer" | "operator";
-    setSubscriptionTier: (tier: "guest" | "observer" | "operator") => void;
+    subscriptionTier: Tier;
+    setSubscriptionTier: (tier: Tier) => void;
 }
 
-// Create the context with default values
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(
     undefined
 );
 
-// Provider component that wraps the app
-// Currently free - all users have full access
+// Map profile tier strings to app tier type
+function toAppTier(dbTier: string | null): Tier {
+    if (dbTier === "observer" || dbTier === "operator") return dbTier;
+    // "free" tier maps to "observer" — full read access, gated premium features later
+    return "observer";
+}
+
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
+    const { user } = useAuth();
+    const [tier, setTier] = useState<Tier>("guest");
+
+    useEffect(() => {
+        if (!user) {
+            setTier("guest");
+            return;
+        }
+
+        let cancelled = false;
+
+        async function fetchProfile() {
+            const { data, error } = await supabase
+                .from("profiles")
+                .select("tier")
+                .eq("id", user!.id)
+                .single();
+
+            if (cancelled) return;
+
+            if (error || !data) {
+                // Profile doesn't exist yet (trigger may not have run, or table not created)
+                // Default free users to observer-level access
+                setTier("observer");
+                return;
+            }
+
+            setTier(toAppTier(data.tier));
+        }
+
+        fetchProfile();
+
+        return () => { cancelled = true; };
+    }, [user]);
+
     return (
         <SubscriptionContext.Provider
             value={{
-                isSubscribed: true,
+                isSubscribed: tier !== "guest",
                 toggleSubscription: () => {},
-                subscriptionTier: "operator",
-                setSubscriptionTier: () => {},
+                subscriptionTier: tier,
+                setSubscriptionTier: setTier,
             }}
         >
             {children}
@@ -32,7 +74,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     );
 }
 
-// Custom hook for accessing subscription state
 export function useSubscription() {
     const context = useContext(SubscriptionContext);
     if (context === undefined) {
