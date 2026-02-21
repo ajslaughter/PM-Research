@@ -30,7 +30,7 @@ const securityHeaders = [
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "img-src 'self' data: https:",
-            "connect-src 'self' https://*.supabase.co https://api.anthropic.com",
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com",
             "font-src 'self' https://fonts.gstatic.com",
             "frame-ancestors 'none'",
         ].join('; '),
