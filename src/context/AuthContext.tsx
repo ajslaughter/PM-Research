@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 interface User {
     id: string;
@@ -38,7 +38,7 @@ function isNetworkError(message: string): boolean {
 /** Map raw auth errors to user-friendly messages */
 function friendlyAuthError(message: string): string {
     if (isNetworkError(message)) {
-        return 'Unable to reach the authentication server. Please check your connection and try again.';
+        return 'Unable to reach the authentication server. This may be a temporary issue — please try again in a moment.';
     }
     if (message.includes('User already registered')) {
         return 'An account with this email already exists. Try signing in instead.';
@@ -51,6 +51,8 @@ function friendlyAuthError(message: string): string {
     }
     return message;
 }
+
+const NOT_CONFIGURED_ERROR = 'Authentication service is temporarily unavailable. Please try again later.';
 
 async function syncSessionCookies(accessToken: string, refreshToken: string) {
     await fetch('/api/auth/session', {
@@ -103,12 +105,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const signIn = useCallback(async (email: string, password: string) => {
-        for (let attempt = 0; attempt < 2; attempt++) {
+        if (!isSupabaseConfigured) {
+            return { error: NOT_CONFIGURED_ERROR };
+        }
+        const maxAttempts = 3;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) {
-                    if (attempt === 0 && isNetworkError(error.message)) {
-                        await new Promise(r => setTimeout(r, 1500));
+                    if (attempt < maxAttempts - 1 && isNetworkError(error.message)) {
+                        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                         continue;
                     }
                     return { error: friendlyAuthError(error.message) };
@@ -124,8 +130,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return {};
             } catch (err) {
                 const message = err instanceof Error ? err.message : 'An unexpected error occurred';
-                if (attempt === 0 && isNetworkError(message)) {
-                    await new Promise(r => setTimeout(r, 1500));
+                if (attempt < maxAttempts - 1 && isNetworkError(message)) {
+                    await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                     continue;
                 }
                 return { error: friendlyAuthError(message) };
@@ -135,12 +141,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const signUp = useCallback(async (email: string, password: string): Promise<SignUpResult> => {
-        for (let attempt = 0; attempt < 2; attempt++) {
+        if (!isSupabaseConfigured) {
+            return { error: NOT_CONFIGURED_ERROR };
+        }
+        const maxAttempts = 3;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
             try {
                 const { data, error } = await supabase.auth.signUp({ email, password });
                 if (error) {
-                    if (attempt === 0 && isNetworkError(error.message)) {
-                        await new Promise(r => setTimeout(r, 1500));
+                    if (attempt < maxAttempts - 1 && isNetworkError(error.message)) {
+                        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                         continue;
                     }
                     return { error: friendlyAuthError(error.message) };
@@ -159,8 +169,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return { needsVerification: true };
             } catch (err) {
                 const message = err instanceof Error ? err.message : 'An unexpected error occurred';
-                if (attempt === 0 && isNetworkError(message)) {
-                    await new Promise(r => setTimeout(r, 1500));
+                if (attempt < maxAttempts - 1 && isNetworkError(message)) {
+                    await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                     continue;
                 }
                 return { error: friendlyAuthError(message) };
@@ -170,7 +180,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const verifyOtp = useCallback(async (email: string, token: string) => {
-        for (let attempt = 0; attempt < 2; attempt++) {
+        if (!isSupabaseConfigured) {
+            return { error: NOT_CONFIGURED_ERROR };
+        }
+        const maxAttempts = 3;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
             try {
                 const { data, error } = await supabase.auth.verifyOtp({
                     email,
@@ -178,8 +192,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     type: 'signup',
                 });
                 if (error) {
-                    if (attempt === 0 && isNetworkError(error.message)) {
-                        await new Promise(r => setTimeout(r, 1500));
+                    if (attempt < maxAttempts - 1 && isNetworkError(error.message)) {
+                        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                         continue;
                     }
                     return { error: friendlyAuthError(error.message) };
@@ -195,8 +209,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return {};
             } catch (err) {
                 const message = err instanceof Error ? err.message : 'An unexpected error occurred';
-                if (attempt === 0 && isNetworkError(message)) {
-                    await new Promise(r => setTimeout(r, 1500));
+                if (attempt < maxAttempts - 1 && isNetworkError(message)) {
+                    await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                     continue;
                 }
                 return { error: friendlyAuthError(message) };
@@ -206,15 +220,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const resendVerification = useCallback(async (email: string) => {
-        for (let attempt = 0; attempt < 2; attempt++) {
+        if (!isSupabaseConfigured) {
+            return { error: NOT_CONFIGURED_ERROR };
+        }
+        const maxAttempts = 3;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
             try {
                 const { error } = await supabase.auth.resend({
                     type: 'signup',
                     email,
                 });
                 if (error) {
-                    if (attempt === 0 && isNetworkError(error.message)) {
-                        await new Promise(r => setTimeout(r, 1500));
+                    if (attempt < maxAttempts - 1 && isNetworkError(error.message)) {
+                        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                         continue;
                     }
                     return { error: friendlyAuthError(error.message) };
@@ -222,8 +240,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return {};
             } catch (err) {
                 const message = err instanceof Error ? err.message : 'An unexpected error occurred';
-                if (attempt === 0 && isNetworkError(message)) {
-                    await new Promise(r => setTimeout(r, 1500));
+                if (attempt < maxAttempts - 1 && isNetworkError(message)) {
+                    await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
                     continue;
                 }
                 return { error: friendlyAuthError(message) };

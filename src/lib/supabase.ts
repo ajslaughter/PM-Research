@@ -28,6 +28,9 @@ const isConfigured =
     supabaseAnonKey.length > 0 &&
     supabaseAnonKey.startsWith('ey');
 
+// Export so other modules can check before calling Supabase
+export { isConfigured as isSupabaseConfigured };
+
 // Only log configuration warnings in development
 if (!isConfigured && typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     console.warn('Supabase environment variables not configured or invalid. Database operations will be disabled.');
