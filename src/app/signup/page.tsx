@@ -13,6 +13,7 @@ import {
     KeyRound,
     ArrowLeft,
     RefreshCw,
+    AtSign,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
@@ -20,6 +21,7 @@ import Link from "next/link";
 type Step = "create" | "verify" | "success";
 
 function SignUpForm() {
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -38,6 +40,22 @@ function SignUpForm() {
         e.preventDefault();
         setError(null);
 
+        const trimmedUsername = username.trim();
+        if (trimmedUsername.length < 3) {
+            setError("Username must be at least 3 characters");
+            return;
+        }
+
+        if (trimmedUsername.length > 24) {
+            setError("Username must be 24 characters or less");
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.test(trimmedUsername)) {
+            setError("Username can only contain letters, numbers, and underscores");
+            return;
+        }
+
         if (password.length < 6) {
             setError("Password must be at least 6 characters");
             return;
@@ -51,7 +69,7 @@ function SignUpForm() {
         setIsLoading(true);
 
         try {
-            const result = await signUp(email, password);
+            const result = await signUp(email, password, trimmedUsername);
             if (result.error) {
                 setError(result.error);
             } else if (result.needsVerification) {
@@ -312,6 +330,28 @@ function SignUpForm() {
 
                     {/* Sign Up Form */}
                     <form onSubmit={handleCreateAccount} className="space-y-5">
+                        <div>
+                            <label className="block text-sm font-medium text-pm-text mb-2">
+                                Username
+                            </label>
+                            <div className="relative">
+                                <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pm-muted" />
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
+                                    placeholder="your_username"
+                                    required
+                                    minLength={3}
+                                    maxLength={24}
+                                    disabled={isLoading}
+                                    autoComplete="username"
+                                    className="w-full pl-11 pr-4 py-3 bg-pm-black border border-pm-border rounded-lg text-pm-text placeholder:text-pm-muted focus:outline-none focus:border-pm-green transition-colors"
+                                />
+                            </div>
+                            <p className="mt-1 text-xs text-pm-muted">Letters, numbers, and underscores only</p>
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-pm-text mb-2">
                                 Email

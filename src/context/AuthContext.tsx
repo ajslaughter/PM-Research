@@ -18,7 +18,7 @@ interface AuthContextType {
     isLoading: boolean;
     accessToken: string | null;
     signIn: (email: string, password: string) => Promise<{ error?: string }>;
-    signUp: (email: string, password: string) => Promise<SignUpResult>;
+    signUp: (email: string, password: string, username?: string) => Promise<SignUpResult>;
     verifyOtp: (email: string, token: string) => Promise<{ error?: string }>;
     resendVerification: (email: string) => Promise<{ error?: string }>;
     signOut: () => Promise<void>;
@@ -32,13 +32,15 @@ function isNetworkError(message: string): boolean {
     return lower === 'failed to fetch' ||
         lower.includes('networkerror') ||
         lower.includes('network request failed') ||
-        lower.includes('load failed');
+        lower.includes('load failed') ||
+        lower.includes('fetch failed') ||
+        lower.includes('econnrefused');
 }
 
 /** Map raw auth errors to user-friendly messages */
 function friendlyAuthError(message: string): string {
     if (isNetworkError(message)) {
-        return 'Unable to reach the authentication server. This may be a temporary issue — please try again in a moment.';
+        return 'Unable to reach the authentication server. Please check your internet connection and try again.';
     }
     if (message.includes('User already registered')) {
         return 'An account with this email already exists. Try signing in instead.';
@@ -48,6 +50,9 @@ function friendlyAuthError(message: string): string {
     }
     if (message.includes('Invalid login credentials')) {
         return 'Invalid email or password.';
+    }
+    if (message.includes('23505') || message.includes('duplicate key') || message.includes('already been registered')) {
+        return 'That username is already taken. Please choose a different one.';
     }
     return message;
 }
@@ -60,6 +65,25 @@ async function syncSessionCookies(accessToken: string, refreshToken: string) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken, refreshToken }),
     });
+}
+
+/** Save username to the profiles table after auth is established */
+async function saveUsernameToProfile(userId: string, username: string): Promise<string | null> {
+    // Wait briefly for the trigger to create the profile row
+    await new Promise(r => setTimeout(r, 500));
+    const { error } = await supabase
+        .from('profiles')
+        .update({ username })
+        .eq('id', userId);
+    if (error) {
+        if (error.code === '23505' || error.message?.includes('duplicate')) {
+            return 'That username is already taken. Please choose a different one.';
+        }
+        // Profile row might not exist yet — try insert as fallback
+        console.warn('Profile update failed, trigger may not have run:', error.message);
+        return null;
+    }
+    return null;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -140,14 +164,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: friendlyAuthError('Failed to fetch') };
     }, []);
 
-    const signUp = useCallback(async (email: string, password: string): Promise<SignUpResult> => {
+    const signUp = useCallback(async (email: string, password: string, username?: string): Promise<SignUpResult> => {
         if (!isSupabaseConfigured) {
             return { error: NOT_CONFIGURED_ERROR };
         }
         const maxAttempts = 3;
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
             try {
-                const { data, error } = await supabase.auth.signUp({ email, password });
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: username ? { data: { username } } : undefined,
+                });
                 if (error) {
                     if (attempt < maxAttempts - 1 && isNetworkError(error.message)) {
                         await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
@@ -163,6 +191,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     });
                     setAccessToken(data.session.access_token);
                     await syncSessionCookies(data.session.access_token, data.session.refresh_token);
+                    // Save username to profile
+                    if (username) {
+                        const usernameErr = await saveUsernameToProfile(data.session.user.id, username);
+                        if (usernameErr) return { error: usernameErr };
+                    }
                     return {};
                 }
                 // No session means email confirmation is required
@@ -205,6 +238,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     });
                     setAccessToken(data.session.access_token);
                     await syncSessionCookies(data.session.access_token, data.session.refresh_token);
+                    // Save username from user metadata to profile
+                    const username = data.session.user.user_metadata?.username;
+                    if (username) {
+                        await saveUsernameToProfile(data.session.user.id, username);
+                    }
                 }
                 return {};
             } catch (err) {
