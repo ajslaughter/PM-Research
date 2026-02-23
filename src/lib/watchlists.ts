@@ -219,29 +219,71 @@ export const researchNotes: ResearchNote[] = [
         summary: "Beyond the GPU: Why liquid cooling, custom silicon, and edge inference define the 2026 alpha generation landscape.",
         fullContent: `
 ## The CAPEX Supercycle
+
 The market consensus underestimates the duration of the current infrastructure buildout. Hyperscaler CAPEX is projected to hit $240B in 2026 (up 18% YoY), but the mix is shifting. The "Easy Money" phase of buying generic H100 clusters is over; the "Efficiency Phase" has begun.
 
+This creates a structural repricing opportunity: the companies that enable the next phase of AI infrastructure—thermal management, custom silicon, and edge compute—are not yet valued as the critical-path utilities they have become.
+
 ### 1. The Power Bottleneck & Liquid Cooling
+
 Data center power density has tripled in 3 years. Air cooling hits a physical wall at 40kW/rack. The GB200 NVL72 rack requires ~120kW. This is a binary event for liquid cooling providers.
-*   Bull Thesis: Vertiv (VRT) and SMCI are not just "hardware" plays; they are critical path utilities for the AI economy.
-*   The Alpha: Look for component suppliers (connectors, CDUs) rather than just integrators.
+
+The scale of the problem is unprecedented: global data center power consumption is projected to reach 945 TWh annually by 2030 (IEA), equivalent to Japan's entire national electricity usage. Every new AI training cluster and inference deployment compounds the thermal challenge.
+
+*   Direct Liquid Cooling (DLC): Required for any rack exceeding 50kW. The technology has moved from optional to mandatory for AI workloads.
+*   Coolant Distribution Units (CDUs): The component-level suppliers (connectors, manifolds, CDUs) represent higher-margin opportunities than system integrators.
+*   Rear-Door Heat Exchangers: A transitional technology enabling existing data centers to support moderate AI workloads without full liquid cooling retrofits.
 
 ### 2. Custom Silicon vs. Merchant Silicon
-While NVIDIA remains King, the hyperscalers (Amazon Inferentia, Google Axion, Microsoft Maia) are aggressively vertically integrating.
-*   Implication: Pure-play foundry revenue (TSMC) is a safer long-term bet than single-chip designers if competition compresses margins.
-*   Watch: Broadcom (AVGO) as the "Arms Dealer" for custom ASICs.
+
+While NVIDIA remains the dominant force in AI compute, the hyperscalers (Amazon Inferentia/Trainium, Google Axion/TPU, Microsoft Maia) are aggressively vertically integrating. This vertical integration is not a threat to NVIDIA's training dominance—it is a structural expansion of total silicon demand.
+
+*   Foundry Implication: TSMC fabricates chips for NVIDIA, AMD, and every major hyperscaler custom ASIC program. Pure-play foundry revenue is a safer long-term bet than single-chip designers if competition compresses merchant silicon margins.
+*   The ASIC Opportunity: Broadcom (AVGO) has emerged as the "Arms Dealer" for custom ASICs, designing interconnects and silicon for Google TPU, and signing a $350-500B estimated deal with OpenAI for custom inference accelerators.
+*   The CoWoS Bottleneck: Advanced packaging capacity at TSMC is the binding constraint. 2026 CoWoS capacity of 2.8M wafer-starts cannot meet GB200 demand alone (3.2M). Equipment lead times are 18 months.
 
 ### 3. Edge Inference: The Next Frontier
-Training models requires massive centralized clusters. *Running* them (inference) requires proximity to the user. We expect a massive re-rating of edge-compute providers and localized datacenters.
+
+Training models requires massive centralized clusters. *Running* them (inference) requires proximity to the user. Inference now accounts for two-thirds of all AI compute (up from one-third in 2023, per Deloitte), and this ratio will continue to shift.
+
+*   Edge Deployment: Localized data centers and on-premise inference servers are emerging as a new infrastructure category.
+*   Latency Requirements: Real-time AI applications (autonomous vehicles, industrial robotics, personal agents) require sub-10ms inference latency, incompatible with centralized cloud architectures.
+*   Market Sizing: The edge AI inference market is projected to reach $40B by 2028, growing at 25%+ CAGR.
+
+## Key Companies
+
+### Tier 1: Critical Path Infrastructure
+
+*   NVIDIA (NVDA): Dominant in training silicon with 80%+ market share. Blackwell platform supply-constrained through 2026. Vera Rubin on schedule for H2 2026. Every major AI lab is an NVIDIA customer. The $20B Groq licensing deal signals proactive positioning in inference-specific architectures.
+*   TSMC (TSM): Sole manufacturer of leading-edge AI chips for NVIDIA, AMD, Apple, Broadcom, and every hyperscaler custom program. Guided 30% revenue growth for 2026. The foundry captures value on every wafer regardless of which chip architecture wins.
+
+### Tier 2: Thermal Management & Power
+
+*   Vertiv (VRT): Market leader in data center thermal management and power systems. Direct exposure to the liquid cooling buildout. Revenue growth accelerating as AI rack densities mandate DLC adoption.
+*   Super Micro Computer (SMCI): AI server assembly and liquid cooling integration. Revenue has tripled YoY. High beta play on the AI infrastructure buildout with direct GPU rack exposure.
+
+### Tier 3: Custom Silicon & Networking
+
+*   Broadcom (AVGO): The indispensable middleman for custom ASIC design. AI semiconductor revenue doubling to $8.2B/quarter. OpenAI partnership estimated at $350-500B total deal value. Trading 32% below Morningstar fair value.
+*   Applied Materials (AMAT): Process equipment for advanced nodes. Every new ASIC design requires AMAT tools. Heterogeneous integration and advanced packaging are primary growth drivers.
+
+## Risk Factors
+
+*   Demand Sustainability: If AI revenue growth at hyperscalers decelerates, CAPEX commitments could be scaled back, impacting the entire infrastructure supply chain.
+*   Valuation Premium: AI infrastructure names trade at elevated multiples. NVDA at $4.59T market cap leaves limited margin for execution missteps.
+*   Supply Chain Concentration: TSMC single-source risk for all leading-edge AI silicon. Geopolitical disruption in Taiwan would impact the entire sector.
+*   Technology Transition: Shift from training to inference may favor custom ASICs over general-purpose GPUs, creating winners and losers within the current infrastructure stack.
+*   Liquid Cooling Adoption: Slower-than-expected enterprise adoption of DLC could extend the air cooling lifecycle, delaying revenue realization for thermal management companies.
 
 ## Thesis Conclusion
-The structural shift from "Generic AI Beta" (indices) to "Infrastructure Alpha" (Thermal Management & Custom Silicon) is underway. The focus moves to companies with specific technical moats in cooling and custom silicon.
+
+The structural shift from "Generic AI Beta" (indices) to "Infrastructure Alpha" (Thermal Management & Custom Silicon) is underway. The focus moves to companies with specific technical moats in cooling, foundry manufacturing, and custom silicon design. The highest-conviction trade is owning the chokepoints that every AI workload must flow through: TSMC fabricates the silicon, Broadcom designs the custom chips, AMAT provides the tools, and Vertiv/SMCI solve the thermal problem. PM Score: 96, reflecting the highest structural conviction in AI infrastructure as a multi-year CAPEX supercycle with demand visibility through 2028.
     `,
         date: "2026-01-15",
         pmScore: 96,
         category: "Deep Dive",
         readTime: "12 min",
-        relatedTickers: ["NVDA", "SMCI", "VRT", "AVGO"],
+        relatedTickers: ["NVDA", "TSM", "VRT", "SMCI", "AVGO", "AMAT"],
         author: "PM Research"
     },
     {
@@ -398,16 +440,15 @@ This timeline compression has significant implications for the sector's developm
 *   Timeline Uncertainty: "3-5 years" estimates have historically proven optimistic in quantum computing
 *   Competition: Well-funded private competitors (PsiQuantum, Rigetti) may leapfrog public companies
 
-## Coverage Update
+## Research Outlook
 
-We are initiating formal coverage on quantum pure-plays using PM Score methodology. IonQ scores highest among quantum names based on:
+We are initiating formal coverage on quantum pure-plays using PM Score methodology. IonQ scores highest among quantum names based on clearest near-term commercial pathway, superior qubit quality metrics (AQ 35), expanding enterprise customer base, and reasonable valuation relative to TAM.
 
-*   Clearest near-term commercial pathway
-*   Superior qubit quality metrics (AQ 35)
-*   Expanding enterprise customer base
-*   Reasonable valuation relative to TAM
+The quantum computing thesis has transitioned from "technology bet" to "infrastructure timing." The below-threshold error correction achievements by Google Willow and the algorithmic performance gains from IonQ collectively de-risk the sector's foundational technology premise. Multiple hardware modalities are now demonstrating paths to fault-tolerant operation, broadening the investable universe.
 
-The quantum computing thesis has transitioned from "technology bet" to "infrastructure timing." The sector warrants close attention as the commercial timeline compresses.`,
+For watchlist positioning: IONQ offers the purest near-term exposure to quantum commercialization. GOOGL provides free-option quantum exposure attached to a core business with independent value. The enterprise pilot expansion across financial services, pharmaceuticals, and logistics validates that commercial demand will be present when the hardware is ready.
+
+PM Score: 88, reflecting the structural transition from speculative technology thesis to infrastructure deployment timeline with near-term commercial catalysts in 2026-2027.`,
         date: "2026-01-10",
         pmScore: 88,
         category: "Sector Analysis",
@@ -512,11 +553,17 @@ The investment opportunity extends beyond new transmission lines:
 
 Grid infrastructure names under PM Research coverage:
 
-*   Quanta Services (PWR): PM Score 84 — largest electrical grid contractor with broad transmission exposure
-*   Vertiv (VRT): PM Score 86 — crossover exposure to data center and grid infrastructure
-*   EATON (ETN): PM Score 81 — diversified electrical equipment with grid modernization exposure
+*   Quanta Services (PWR): PM Score 84 — largest electrical grid contractor with broad transmission exposure. $2.5T DOE grid investment estimate through 2035 directly flows through PWR's construction and engineering services.
+*   Vertiv (VRT): PM Score 86 — crossover exposure to data center and grid infrastructure. Uniquely positioned at the intersection of AI power demand and grid modernization.
+*   EATON (ETN): PM Score 81 — diversified electrical equipment with grid modernization exposure. Electrical components division benefits from both transmission buildout and distribution automation.
 
-The grid infrastructure thesis offers a rare combination: visible multi-decade demand, bipartisan policy support, and technological moats. The sector warrants close monitoring given these structural tailwinds.`,
+## Thesis Conclusion
+
+The grid infrastructure thesis offers a rare combination: visible multi-decade demand, bipartisan policy support, and technological moats. The $2.5T grid investment requirement through 2035, accelerated by IRA incentives and AI-driven power demand, creates a structural tailwind with duration exceeding most infrastructure investment cycles. HVDC technology adoption, grid-enhancing technologies, and battery storage integration represent compounding demand drivers that extend the investment runway beyond initial transmission construction.
+
+For watchlist positioning: PWR provides the broadest exposure to the grid buildout as the largest electrical contractor. VRT offers dual exposure to both data center and grid infrastructure themes. ETN provides diversified electrical equipment exposure with lower beta. The sector is positioned for sustained outperformance as the generation-to-infrastructure phase shift accelerates.
+
+PM Score: 82, reflecting high structural conviction in the multi-decade grid modernization thesis with visibility through 2035, moderated by permitting timeline risk and interest rate sensitivity.`,
         date: "2026-01-05",
         pmScore: 82,
         category: "Sector Analysis",
@@ -632,15 +679,31 @@ Cowork utilizes the Model Context Protocol (MCP) as the standard for connecting 
 
 The Cowork architecture demonstrates Anthropic's strategic vision: own the agentic interface layer while remaining hardware-agnostic for inference. This positions the company to capture value regardless of which chips ultimately dominate the AI compute landscape.
 
-### Sector Implications
+### Key Companies
 
-*   AAPL: Mac Mini sales uplift provides incremental revenue in a mature hardware category. The "AI server" positioning extends the product lifecycle.
-*   NVDA: Infrastructure partnership ensures Anthropic remains a top-5 GPU customer. Grace Blackwell production constraints become even more acute.
-*   Enterprise Software: Traditional automation tools (RPA, workflow platforms) face disruption from AI agents that can navigate interfaces directly.
+*   AAPL (Apple): Mac Mini sales uplift provides incremental revenue in a mature hardware category. The "AI server" positioning extends the product lifecycle and creates a new use case that competitors cannot easily replicate given Apple's Virtualization Framework advantage.
+*   NVDA (NVIDIA): Infrastructure partnership ensures Anthropic remains a top-5 GPU customer. Grace Blackwell production constraints become even more acute as Cowork drives inference demand at the edge and in the cloud simultaneously.
+*   PATH (UiPath): Traditional RPA and workflow automation platforms face structural disruption from AI agents that can navigate interfaces directly, understand context, and execute multi-step tasks without brittle scripting.
+
+### Indirect Anthropic Exposure
+
+Anthropic remains private. Public vehicles with exposure include Amazon (AMZN) and Alphabet (GOOGL) as strategic investors with billions deployed, plus KraneShares AGIX ETF (~4.2% Anthropic weight).
+
+## Risk Factors
+
+*   Enterprise Adoption Uncertainty: Cowork's local VM architecture may face resistance from enterprise IT departments that prefer centralized, auditable cloud deployments.
+*   Security Surface: Running autonomous agents with file system access, even in a sandboxed VM, introduces novel attack vectors that are not yet fully characterized.
+*   Competitive Response: Microsoft Copilot, Google Gemini, and OpenAI's personal agent initiatives (led by Peter Steinberger) represent well-funded competitive threats with existing enterprise distribution.
+*   Privacy Concerns: Local AI agent access to sensitive files, emails, and documents raises data governance questions that may slow regulated industry adoption.
+*   Hardware Dependency: The Mac Mini use case limits the addressable market to Apple ecosystem users; Windows and Linux agent deployment remains early-stage.
 
 ## Thesis Conclusion
 
-Claude Cowork represents the first mass-market implementation of autonomous AI agents for non-developers. The Mac Mini repurposing trend supports the thesis that AI infrastructure will decentralize into homes and small offices. This convergence of local AI agents and dedicated hardware creates a new computing paradigm worth monitoring.`,
+Claude Cowork represents the first mass-market implementation of autonomous AI agents for non-developers. The Mac Mini repurposing trend supports the thesis that AI infrastructure will decentralize into homes and small offices. MCP adoption (100M+ monthly downloads) creates ecosystem lock-in dynamics similar to early App Store economics, positioning Anthropic as the platform owner for agentic tool integration.
+
+For watchlist positioning: AAPL benefits from incremental hardware sales in a mature category. NVDA captures the compute layer regardless of whether inference runs locally or in the cloud. The broader thesis is that the personal agent category is a new computing paradigm—the companies that own the interface layer (Anthropic, OpenAI) and the compute layer (NVDA, cloud providers) capture the majority of value.
+
+PM Score: 94, reflecting high conviction in the structural shift from cloud-chat to local autonomous execution, with Anthropic's MCP ecosystem advantage as the primary moat.`,
         date: "2026-01-25",
         pmScore: 94,
         category: "Deep Dive",
@@ -779,19 +842,77 @@ ASTS has assembled a defensible position through carrier partnerships, technical
         id: "r10",
         title: "CoWoS Crunch: The Packaging Bottleneck Nobody's Pricing",
         summary: "TSMC allocation memo leaked. Advanced packaging capacity math doesn't work through 2027.",
-        fullContent: `TSMC internal allocation memo leaked: 35% of CoWoS to NVIDIA.
-One customer. Through 2027.
-Total CoWoS capacity for 2026: 2.8M wafer-starts.
-GB200 demand alone: 3.2M.
-The math doesn't work.
-Equipment lead times are 18 months.
-The GPU shortage ended.
-The packaging shortage just started.`,
+        fullContent: `## The Catalyst
+
+A leaked TSMC internal allocation memo reveals that 35% of all Chip-on-Wafer-on-Substrate (CoWoS) advanced packaging capacity is allocated to a single customer: NVIDIA. Through 2027. This allocation, combined with the capacity-demand mismatch for 2026, signals that the semiconductor bottleneck has migrated from chip fabrication to chip packaging—and the market has not repriced this shift.
+
+The GPU shortage ended. The packaging shortage just started.
+
+## The Capacity Math
+
+### The Supply-Demand Gap
+
+The numbers are unambiguous:
+
+*   Total CoWoS capacity for 2026: 2.8M wafer-starts
+*   GB200 demand alone: 3.2M wafer-starts
+*   Deficit: 400K+ wafer-starts, or ~14% of total capacity
+*   Equipment lead times for new CoWoS lines: 18 months
+
+This means even if TSMC accelerated capacity expansion today, new packaging lines would not come online until mid-2027. The bottleneck is structural, not cyclical.
+
+### Why CoWoS Matters
+
+CoWoS is TSMC's advanced 2.5D/3D packaging technology that integrates multiple chiplets (GPU dies, HBM memory stacks, I/O dies) onto a single silicon interposer. Every high-performance AI chip—NVIDIA's GB200, AMD's MI300X/MI450, Broadcom's custom ASICs—requires CoWoS or equivalent advanced packaging. Without packaging, fabricated dies cannot become functional chips.
+
+The technology enables:
+
+*   HBM Integration: Stacking High Bandwidth Memory directly adjacent to compute dies, delivering 8-12x the memory bandwidth of traditional DRAM configurations
+*   Multi-Die Architectures: Combining specialized compute, memory, and I/O chiplets into a single package, enabling chip designs that exceed single-die reticle limits
+*   Thermal Management: Silicon interposers provide superior heat dissipation pathways compared to organic substrates
+
+### The Allocation Implications
+
+TSMC's 35% allocation to NVIDIA means the remaining 65% must serve AMD, Broadcom, Google, Amazon, Microsoft, Meta, and every other hyperscaler custom ASIC program. At 2.8M total wafer-starts, that leaves ~1.82M for the rest of the market—against rapidly growing demand from multiple simultaneous AI chip programs.
+
+This creates a zero-sum allocation dynamic: every additional CoWoS wafer allocated to one customer is a wafer denied to another. Hyperscalers with smaller allocations face delays in their custom silicon roadmaps, potentially pushing them back toward NVIDIA GPUs (which themselves are packaging-constrained).
+
+## Key Companies
+
+### Tier 1: The Packaging Chokepoint
+
+*   TSMC (TSM): Owns the bottleneck. CoWoS capacity expansion is TSMC's highest-priority capital project. Advanced packaging revenue is growing faster than wafer fabrication revenue and carries higher margins as complexity increases. Every AI chip customer is a CoWoS customer.
+
+### Tier 2: Equipment Suppliers
+
+*   Applied Materials (AMAT): Provides the deposition, etch, and inspection tools required for CoWoS production. Equipment lead times of 18 months mean AMAT's current order book reflects demand through mid-2027. Heterogeneous integration and advanced packaging are the company's fastest-growing segments.
+*   ASML (ASML): While primarily associated with lithography, ASML's metrology and inspection tools are critical for advanced packaging yield management. The packaging bottleneck increases demand for yield-enhancing equipment.
+
+### Tier 3: Direct Demand Drivers
+
+*   NVIDIA (NVDA): Secured the largest CoWoS allocation, ensuring GB200 production priority. However, the 35% allocation may still be insufficient for NVIDIA's full demand, creating a ceiling on near-term shipment growth.
+*   AMD: CoWoS allocation constraints directly impact MI300X/MI450 production volumes. AMD's ability to compete with NVIDIA for hyperscaler AI contracts is packaging-limited, not design-limited.
+
+## Risk Factors
+
+*   Capacity Expansion: TSMC is investing aggressively in CoWoS expansion (targeting 40%+ capacity increase by 2027). If expansion exceeds expectations, the bottleneck thesis weakens.
+*   Alternative Packaging: Samsung's I-Cube and Intel's EMIB/Foveros represent alternative advanced packaging technologies. If hyperscalers diversify packaging sources, TSMC's chokepoint position erodes.
+*   Demand Moderation: If hyperscaler AI CAPEX decelerates, the packaging deficit narrows. Any slowdown in GPU/ASIC orders directly reduces CoWoS demand pressure.
+*   Yield Improvements: Higher CoWoS yields effectively increase capacity without new equipment. TSMC's packaging yield learning curve could close the gap faster than equipment lead times suggest.
+*   Leak Authenticity: The leaked allocation memo has not been officially confirmed by TSMC. If the numbers are inaccurate, the capacity-demand analysis requires revision.
+
+## Thesis Conclusion
+
+The migration of the semiconductor bottleneck from fabrication to packaging is a structural shift that the market has not fully priced. Advanced packaging capacity is the binding constraint on AI chip production through at least mid-2027, with 18-month equipment lead times creating a durable supply-demand imbalance. TSMC owns the chokepoint, AMAT provides the tools to expand it, and every AI chip customer is competing for the same constrained resource.
+
+For watchlist positioning: TSM captures the packaging premium directly. AMAT benefits from the equipment cycle required to expand capacity. NVDA's secured allocation provides production visibility but also caps near-term upside. AMD faces the most acute packaging constraint relative to its competitive ambitions.
+
+PM Score: 91, reflecting high conviction in the advanced packaging bottleneck as a structural constraint on AI infrastructure deployment, with value concentrated at the foundry and equipment layers.`,
         date: "2026-01-28",
         pmScore: 91,
         category: "Deep Dive",
-        readTime: "2 min",
-        relatedTickers: ["TSM", "NVDA", "AMD", "AMAT"],
+        readTime: "10 min",
+        relatedTickers: ["TSM", "NVDA", "AMD", "AMAT", "ASML"],
         author: "PM Research"
     },
     {
