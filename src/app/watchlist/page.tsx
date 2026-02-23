@@ -52,7 +52,7 @@ export default function WatchlistPage() {
                             <div className="absolute inset-0 blur-md bg-pm-green/30" />
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                            PM Watchlist
+                            <span className="text-pm-green">PM</span> Watchlist
                         </h1>
                     </div>
                 </motion.div>
