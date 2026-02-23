@@ -57,7 +57,7 @@ function friendlyAuthError(message: string): string {
     return message;
 }
 
-const NOT_CONFIGURED_ERROR = 'Authentication service is temporarily unavailable. Please try again later.';
+const NOT_CONFIGURED_ERROR = 'Authentication is not configured. Check the yellow warning above for details on how to fix this.';
 
 async function syncSessionCookies(accessToken: string, refreshToken: string) {
     await fetch('/api/auth/session', {

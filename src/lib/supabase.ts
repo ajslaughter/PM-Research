@@ -21,11 +21,13 @@ function isValidUrl(url: string): boolean {
 }
 
 // Validate that environment variables are properly configured
-// - URL must be valid
-// - Anon key must be a non-empty string that looks like a JWT (starts with "ey")
+// - URL must be valid and not a placeholder
+// - Anon key must be a real JWT (starts with "ey", sufficient length)
 const isConfigured =
     isValidUrl(supabaseUrl) &&
-    supabaseAnonKey.length > 0 &&
+    !supabaseUrl.includes('your-project') &&
+    !supabaseUrl.includes('placeholder') &&
+    supabaseAnonKey.length > 30 &&
     supabaseAnonKey.startsWith('ey');
 
 // Export so other modules can check before calling Supabase

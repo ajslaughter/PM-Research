@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, Suspense } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -14,11 +14,18 @@ import {
     ArrowLeft,
     RefreshCw,
     AtSign,
+    ServerCrash,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 
 type Step = "create" | "verify" | "success";
+
+interface AuthHealth {
+    ok: boolean;
+    code: string;
+    message?: string;
+}
 
 function SignUpForm() {
     const [username, setUsername] = useState("");
@@ -29,12 +36,21 @@ function SignUpForm() {
     const [step, setStep] = useState<Step>("create");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [authHealth, setAuthHealth] = useState<AuthHealth | null>(null);
     const [resendCooldown, setResendCooldown] = useState(0);
     const otpInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTo = searchParams.get("redirectTo") || "/watchlist";
     const { signUp, verifyOtp, resendVerification } = useAuth();
+
+    // Check Supabase connectivity on mount
+    useEffect(() => {
+        fetch('/api/auth/check')
+            .then(res => res.json())
+            .then((data: AuthHealth) => setAuthHealth(data))
+            .catch(() => setAuthHealth({ ok: false, code: 'FETCH_FAILED', message: 'Could not check authentication service status.' }));
+    }, []);
 
     const handleCreateAccount = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -315,6 +331,23 @@ function SignUpForm() {
                             <p className="text-pm-muted text-sm">Sign up to create your own watchlist</p>
                         </div>
                     </div>
+
+                    {/* Supabase Configuration Warning */}
+                    {authHealth && !authHealth.ok && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg"
+                        >
+                            <div className="flex items-start gap-3 text-yellow-400">
+                                <ServerCrash className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium">Authentication Not Connected</p>
+                                    <p className="text-xs text-yellow-400/80">{authHealth.message}</p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
 
                     {/* Error Message */}
                     {error && (

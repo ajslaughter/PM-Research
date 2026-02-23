@@ -1,21 +1,36 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Mail, Loader2, AlertCircle, LogIn } from "lucide-react";
+import { Lock, Mail, Loader2, AlertCircle, LogIn, ServerCrash } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
+
+interface AuthHealth {
+    ok: boolean;
+    code: string;
+    message?: string;
+}
 
 function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [authHealth, setAuthHealth] = useState<AuthHealth | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTo = searchParams.get("redirectTo") || "/watchlist";
     const { user, isLoading: authLoading, signIn } = useAuth();
+
+    // Check Supabase connectivity on mount
+    useEffect(() => {
+        fetch('/api/auth/check')
+            .then(res => res.json())
+            .then((data: AuthHealth) => setAuthHealth(data))
+            .catch(() => setAuthHealth({ ok: false, code: 'FETCH_FAILED', message: 'Could not check authentication service status.' }));
+    }, []);
 
     // If already authenticated, redirect
     if (!authLoading && user) {
@@ -74,6 +89,23 @@ function LoginForm() {
                             <p className="text-pm-muted text-sm">Sign in to access your watchlist</p>
                         </div>
                     </div>
+
+                    {/* Supabase Configuration Warning */}
+                    {authHealth && !authHealth.ok && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg"
+                        >
+                            <div className="flex items-start gap-3 text-yellow-400">
+                                <ServerCrash className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium">Authentication Not Connected</p>
+                                    <p className="text-xs text-yellow-400/80">{authHealth.message}</p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
 
                     {/* Error Message */}
                     {error && (
