@@ -27,7 +27,7 @@ export const AI_Infrastructure_Watchlist = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBI
 export const Energy_Renaissance_Watchlist = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR'];
 
 // Quantum Computing Watchlist Tickers
-export const Quantum_Watchlist = ['IONQ', 'GOOGL', 'RGTI', 'QBTS', 'QUBT'];
+export const Quantum_Watchlist = ['IONQ', 'RGTI', 'QBTS', 'QUBT'];
 
 // Defense & Intelligence Watchlist Tickers
 export const Defense_Intelligence_Watchlist = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
@@ -115,11 +115,10 @@ export const defaultWatchlists: Watchlist[] = [
         description: "Quantum Hardware, Software & Error Correction",
         category: "Quantum",
         positions: [
-            { ticker: "IONQ", weight: 20, thesis: "Pure-play trapped-ion leader; AQ 35 highest commercially available; expanding enterprise base" },
-            { ticker: "GOOGL", weight: 20, thesis: "Willow chip below-threshold error rates; quantum as free option on core business" },
-            { ticker: "RGTI", weight: 20, thesis: "Superconducting qubit architecture; hybrid classical-quantum cloud platform" },
-            { ticker: "QBTS", weight: 20, thesis: "Commercial quantum annealing systems; enterprise optimization workloads in production" },
-            { ticker: "QUBT", weight: 20, thesis: "Photonic quantum computing; thin-film lithium niobate technology for quantum networking" },
+            { ticker: "IONQ", weight: 25, thesis: "Pure-play trapped-ion leader; AQ 35 highest commercially available; expanding enterprise base" },
+            { ticker: "RGTI", weight: 25, thesis: "Superconducting qubit architecture; hybrid classical-quantum cloud platform" },
+            { ticker: "QBTS", weight: 25, thesis: "Commercial quantum annealing systems; enterprise optimization workloads in production" },
+            { ticker: "QUBT", weight: 25, thesis: "Photonic quantum computing; thin-film lithium niobate technology for quantum networking" },
         ],
     },
     {
