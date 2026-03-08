@@ -18,6 +18,7 @@ const RANGE_MAP: Record<string, { range: string; interval: string }> = {
     "1mo": { range: "1mo", interval: "1d" },
     "ytd": { range: "ytd", interval: "1d" },
     "1y": { range: "1y", interval: "1d" },
+    "5y": { range: "5y", interval: "1wk" },
 };
 
 export async function GET(req: NextRequest) {
@@ -88,6 +89,12 @@ export async function GET(req: NextRequest) {
                                 hour: "numeric",
                                 minute: "2-digit",
                                 hour12: true,
+                                timeZone: "America/New_York",
+                            });
+                        } else if (range === "5y") {
+                            timeLabel = date.toLocaleDateString("en-US", {
+                                month: "short",
+                                year: "numeric",
                                 timeZone: "America/New_York",
                             });
                         } else {
