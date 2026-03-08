@@ -10,7 +10,6 @@ import {
     ArrowRight,
     X,
     Search,
-    LineChart,
     Tag,
     Layers,
 } from "lucide-react";
@@ -64,16 +63,15 @@ interface ResearchCardProps {
 
 interface ResearchFeedProps {
     category?: string;
+    daysFilter?: string;
 }
 
 // Category styling maps
 const categoryStyles: Record<string, string> = {
-    "Sector Analysis": "bg-pm-purple/10 text-pm-purple border-pm-purple/30",
     "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
 };
 
 const categoryIcons: Record<string, React.ReactNode> = {
-    "Sector Analysis": <LineChart className="w-3 h-3" />,
     "Deep Dive": <Search className="w-3 h-3" />,
 };
 
@@ -273,7 +271,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
     );
 }
 
-export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
+export default function ResearchFeed({ category = "All", daysFilter = "all" }: ResearchFeedProps) {
     const { researchNotes } = useAdmin();
     const [selectedNote, setSelectedNote] = useState<ResearchNote | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -292,7 +290,19 @@ export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
 
     // Filter and Sort notes
     const filteredNotes = researchNotes
-        .filter(note => category === "All" || note.category === category)
+        .filter(note => {
+            // Category filter (legacy support)
+            if (category !== "All" && note.category !== category) return false;
+            // Time-based filter
+            if (daysFilter !== "all") {
+                const days = parseInt(daysFilter);
+                const noteDate = new Date(note.date);
+                const cutoff = new Date();
+                cutoff.setDate(cutoff.getDate() - days);
+                if (noteDate < cutoff) return false;
+            }
+            return true;
+        })
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // Show skeleton while loading
@@ -315,7 +325,7 @@ export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
                     <div>
                         <h3 className="text-lg font-bold text-white mb-2">No Research Found</h3>
                         <p className="text-sm text-pm-muted">
-                            No research notes found for category: <span className="text-pm-green">{category}</span>
+                            No research notes found for the selected time period.
                         </p>
                     </div>
                 </div>

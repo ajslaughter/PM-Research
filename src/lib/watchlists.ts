@@ -204,7 +204,7 @@ export interface ResearchNote {
     fullContent: string;
     date: string;
     pmScore: number;
-    category: "Sector Analysis" | "Deep Dive";
+    category: "Deep Dive";
     readTime: string;
     relatedTickers?: string[];
     author?: string;
@@ -450,7 +450,7 @@ For watchlist positioning: IONQ offers the purest near-term exposure to quantum 
 PM Score: 88, reflecting the structural transition from speculative technology thesis to infrastructure deployment timeline with near-term commercial catalysts in 2026-2027.`,
         date: "2026-01-10",
         pmScore: 88,
-        category: "Sector Analysis",
+        category: "Deep Dive",
         readTime: "12 min",
         relatedTickers: ["IONQ", "GOOGL"],
         author: "PM Research",
@@ -565,7 +565,7 @@ For watchlist positioning: PWR provides the broadest exposure to the grid buildo
 PM Score: 82, reflecting high structural conviction in the multi-decade grid modernization thesis with visibility through 2035, moderated by permitting timeline risk and interest rate sensitivity.`,
         date: "2026-01-05",
         pmScore: 82,
-        category: "Sector Analysis",
+        category: "Deep Dive",
         readTime: "11 min",
         relatedTickers: ["PWR", "VRT", "ETN"],
         author: "PM Research",
@@ -634,7 +634,7 @@ The SMR sector spans a range of company profiles: pre-revenue development-stage 
     `,
         date: "2026-01-26",
         pmScore: 91,
-        category: "Sector Analysis",
+        category: "Deep Dive",
         readTime: "14 min",
         relatedTickers: ["OKLO", "SMR", "CEG"],
         author: "PM Research",
@@ -1253,7 +1253,7 @@ The watchlist is designed for a 10-year horizon: PLTR provides the growth engine
 PM Score: 91. High-conviction structural thesis with defense modernization as a multi-decade tailwind.`,
         date: "2026-02-14",
         pmScore: 91,
-        category: "Sector Analysis",
+        category: "Deep Dive",
         readTime: "15 min",
         relatedTickers: ["PLTR", "CRWD", "PANW", "KTOS", "BAH", "LDOS"],
         author: "PM Research",

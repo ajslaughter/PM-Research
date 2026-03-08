@@ -3,10 +3,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import ResearchFeed from "@/components/ResearchFeed";
-import { BookOpen, Filter, Info } from "lucide-react";
+import { BookOpen, Info } from "lucide-react";
+
+const TIME_FILTERS = [
+    { label: "All", value: "all" },
+    { label: "Last 30 Days", value: "30" },
+    { label: "Last 90 Days", value: "90" },
+];
 
 export default function ResearchPage() {
-    const [activeCategory, setActiveCategory] = useState("All");
+    const [activeFilter, setActiveFilter] = useState("all");
 
     return (
         <div className="relative min-h-screen pb-20 md:pb-0">
@@ -33,38 +39,28 @@ export default function ResearchPage() {
                                 <p className="text-pm-muted">PM Research Analysis Hub</p>
                             </div>
                         </div>
-
-                        {/* Filters */}
-                        <div className="flex items-center gap-4">
-                            <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-pm-border text-pm-muted hover:text-pm-text hover:border-pm-subtle transition-colors">
-                                <Filter className="w-4 h-4" />
-                                <span className="text-sm">Filter</span>
-                            </button>
-                        </div>
                     </div>
                 </motion.div>
 
-                {/* Category Pills */}
+                {/* Time Filter Pills */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                     className="flex flex-wrap gap-2 mb-8"
                 >
-                    {["All", "Sector Analysis", "Deep Dive"].map(
-                        (category) => (
-                            <button
-                                key={category}
-                                onClick={() => setActiveCategory(category)}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeCategory === category
-                                        ? "bg-pm-green text-pm-black"
-                                        : "bg-pm-charcoal border border-pm-border text-pm-muted hover:text-pm-text hover:border-pm-green/30"
-                                    }`}
-                            >
-                                {category}
-                            </button>
-                        )
-                    )}
+                    {TIME_FILTERS.map((filter) => (
+                        <button
+                            key={filter.value}
+                            onClick={() => setActiveFilter(filter.value)}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeFilter === filter.value
+                                    ? "bg-pm-green text-pm-black"
+                                    : "bg-pm-charcoal border border-pm-border text-pm-muted hover:text-pm-text hover:border-pm-green/30"
+                                }`}
+                        >
+                            {filter.label}
+                        </button>
+                    ))}
                 </motion.div>
 
                 {/* Research Feed */}
@@ -73,7 +69,7 @@ export default function ResearchPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <ResearchFeed category={activeCategory} />
+                    <ResearchFeed daysFilter={activeFilter} />
                 </motion.div>
 
                 {/* Disclaimer */}

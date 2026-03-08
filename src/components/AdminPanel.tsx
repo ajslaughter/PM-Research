@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 
 // Types for forms
-type ResearchCategory = "Sector Analysis" | "Deep Dive";
+type ResearchCategory = "Deep Dive";
 
 const WATCHLIST_NAMES = [
     "9 MAGS",
@@ -78,7 +78,7 @@ export default function AdminPanel() {
         title: "",
         summary: "",
         fullContent: "",
-        category: "Sector Analysis",
+        category: "Deep Dive",
         pmScore: 85,
         readTime: "5 min",
         author: "",
@@ -113,7 +113,7 @@ export default function AdminPanel() {
             title: "",
             summary: "",
             fullContent: "",
-            category: "Sector Analysis",
+            category: "Deep Dive",
             pmScore: 85,
             readTime: "5 min",
             author: "",
@@ -137,9 +137,7 @@ export default function AdminPanel() {
             relatedTickers: researchForm.relatedTickers
                 ? researchForm.relatedTickers.split(",").map((t) => t.trim())
                 : undefined,
-            linkedWatchlist: researchForm.category === "Sector Analysis" && researchForm.linkedWatchlist
-                ? researchForm.linkedWatchlist
-                : undefined,
+            linkedWatchlist: researchForm.linkedWatchlist || undefined,
             date: new Date().toISOString().split("T")[0],
         };
 
@@ -580,14 +578,9 @@ export default function AdminPanel() {
                                             />
 
                                             <div className="grid grid-cols-2 gap-3">
-                                                <select
-                                                    value={researchForm.category}
-                                                    onChange={(e) => setResearchForm({ ...researchForm, category: e.target.value as ResearchCategory, linkedWatchlist: e.target.value === "Deep Dive" ? "" : researchForm.linkedWatchlist })}
-                                                    className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
-                                                >
-                                                    <option value="Sector Analysis">Sector Analysis</option>
-                                                    <option value="Deep Dive">Deep Dive</option>
-                                                </select>
+                                                <div className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm text-pm-muted">
+                                                    Deep Dive
+                                                </div>
 
                                                 <input
                                                     type="number"
@@ -599,19 +592,6 @@ export default function AdminPanel() {
                                                     className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
                                                 />
                                             </div>
-
-                                            {researchForm.category === "Sector Analysis" && (
-                                                <select
-                                                    value={researchForm.linkedWatchlist}
-                                                    onChange={(e) => setResearchForm({ ...researchForm, linkedWatchlist: e.target.value })}
-                                                    className="w-full px-3 py-2 bg-pm-black border border-pm-border rounded-lg text-sm focus:border-pm-green focus:outline-none"
-                                                >
-                                                    <option value="">Select Linked Watchlist...</option>
-                                                    {WATCHLIST_NAMES.map(name => (
-                                                        <option key={name} value={name}>{name}</option>
-                                                    ))}
-                                                </select>
-                                            )}
 
                                             <div className="grid grid-cols-2 gap-3">
                                                 <input
