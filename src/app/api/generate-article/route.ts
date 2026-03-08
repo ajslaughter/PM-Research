@@ -24,7 +24,7 @@ When generating research, you MUST return valid JSON with this exact structure:
   "pmScore": 75-98 (higher = more conviction),
   "category": "Deep Dive",
   "relatedTickers": ["TICK1", "TICK2"],
-  "author": "PM Research Alpha Desk"
+  "author": "PM Research"
 }
 
 CATEGORY RULES:
