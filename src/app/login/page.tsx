@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Lock, Mail, Loader2, AlertCircle, LogIn } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import Link from "next/link";
 
 function LoginForm() {
     const [email, setEmail] = useState("");
@@ -146,13 +145,7 @@ function LoginForm() {
 
                     {/* Footer Note */}
                     <p className="mt-6 text-center text-sm text-pm-muted">
-                        Don&apos;t have an account?{" "}
-                        <Link
-                            href={`/signup?redirectTo=${encodeURIComponent(redirectTo)}`}
-                            className="text-pm-green hover:underline"
-                        >
-                            Create Account
-                        </Link>
+                        Sign in with your existing account to access your watchlist.
                     </p>
                 </div>
             </motion.div>
