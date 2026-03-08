@@ -44,6 +44,7 @@ const TIMEFRAMES = [
     { key: "1mo", label: "1M" },
     { key: "ytd", label: "YTD" },
     { key: "1y", label: "1Y" },
+    { key: "5y", label: "5Y" },
 ] as const;
 
 type TimeframeKey = (typeof TIMEFRAMES)[number]["key"];
