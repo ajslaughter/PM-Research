@@ -14,7 +14,7 @@ export default function PrivacyPage() {
                 <h2 className="text-pm-text font-medium pt-2">What We Collect</h2>
                 <p>
                     Account information (email, auth tokens) provided at
-                    sign-up. Basic usage analytics (pages visited, feature
+                    sign-in. Basic usage analytics (pages visited, feature
                     usage). No payment data is stored directly&mdash;payment
                     processing is handled by third-party providers.
                 </p>

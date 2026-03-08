@@ -4,14 +4,11 @@ import { motion } from "framer-motion";
 import {
     Check,
     Sparkles,
-    UserPlus,
     ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 
 export default function PricingPage() {
-    const { user } = useAuth();
     const features = [
         "Full Research Hub Access",
         "Weekly Market Analysis",
@@ -74,24 +71,13 @@ export default function PricingPage() {
                                 </li>
                             ))}
                         </ul>
-                        {user ? (
-                            <Link
-                                href="/watchlist"
-                                className="btn-primary w-full flex items-center justify-center gap-2"
-                            >
-                                Go to Watchlist
-                                <ArrowRight className="w-5 h-5" />
-                            </Link>
-                        ) : (
-                            <Link
-                                href="/signup?redirectTo=/watchlist"
-                                className="btn-primary w-full flex items-center justify-center gap-2"
-                            >
-                                <UserPlus className="w-5 h-5" />
-                                Sign Up Free
-                                <ArrowRight className="w-5 h-5" />
-                            </Link>
-                        )}
+                        <Link
+                            href="/watchlist"
+                            className="btn-primary w-full flex items-center justify-center gap-2"
+                        >
+                            Go to Watchlist
+                            <ArrowRight className="w-5 h-5" />
+                        </Link>
                     </div>
                 </motion.div>
 

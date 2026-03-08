@@ -73,7 +73,7 @@ export default function Navbar() {
                             })}
                         </div>
 
-                        {/* Sign In / Sign Up (top right) */}
+                        {/* Sign In / Sign Out (top right) */}
                         <div className="hidden md:flex items-center gap-2">
                             {user ? (
                                 <button
@@ -86,20 +86,12 @@ export default function Navbar() {
                                     <LogOut className="w-4 h-4" />
                                 </button>
                             ) : (
-                                <>
-                                    <Link
-                                        href="/login?redirectTo=/watchlist"
-                                        className="px-3 py-2 rounded-lg text-sm text-pm-muted hover:text-pm-text transition-colors"
-                                    >
-                                        Sign In
-                                    </Link>
-                                    <Link
-                                        href="/signup?redirectTo=/watchlist"
-                                        className="px-4 py-2 rounded-lg text-sm font-medium bg-pm-green text-pm-black hover:bg-pm-green/90 transition-colors"
-                                    >
-                                        Sign Up
-                                    </Link>
-                                </>
+                                <Link
+                                    href="/login?redirectTo=/watchlist"
+                                    className="px-4 py-2 rounded-lg text-sm font-medium bg-pm-green text-pm-black hover:bg-pm-green/90 transition-colors"
+                                >
+                                    Sign In
+                                </Link>
                             )}
                         </div>
                     </div>
@@ -137,11 +129,11 @@ export default function Navbar() {
                         </button>
                     ) : (
                         <Link
-                            href="/signup?redirectTo=/watchlist"
+                            href="/login?redirectTo=/watchlist"
                             className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-pm-green transition-colors"
                         >
                             <User className="w-5 h-5" />
-                            <span className="text-[10px] font-medium">Sign Up</span>
+                            <span className="text-[10px] font-medium">Sign In</span>
                         </Link>
                     )}
                 </div>

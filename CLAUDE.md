@@ -78,7 +78,7 @@ Fonts: Plus Jakarta Sans (body), JetBrains Mono (data/code). Custom animations: 
 Two Supabase tables (schemas in `sql/`):
 - `research_notes` — Public read, authenticated write. Articles with title, content, category, ticker, pmScore.
 - `user_portfolios` — RLS per-user. JSONB `positions` array. Used by `/my-watchlists`.
-- `profiles` — User profile data linked to auth. Created on signup.
+- `profiles` — User profile data linked to auth.
 
 ## Environment Variables
 
