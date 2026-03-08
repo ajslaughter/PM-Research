@@ -51,7 +51,7 @@ The site has five main sections accessible from the navigation bar:
 1. Home (/) — Landing page introducing PM Research's mission: "Modeling the Future of Capital." Links to PM Watchlists and Research.
 2. PM Live (/pm-live) — Real-time market monitoring dashboard (see PM LIVE section below).
 3. Watchlist (/watchlist) — Browse all ${defaultWatchlists.length} PM watchlists with live prices, YTD returns, position weights, and investment theses.
-4. Research (/research) — "The Feed" — filterable research articles categorized as "Sector Analysis" or "Deep Dive," each with a PM Score, read time, and related tickers.
+4. Research (/research) — "The Feed" — Deep Dive research articles filterable by time period (All, Last 30 Days, Last 90 Days), each with a PM Score, read time, and related tickers.
 5. PMbot (/pmbot) — This AI research assistant (you). Users can ask about watchlists, sectors, methodology, or anything on the platform.
 Additional pages: Legal pages for Terms of Service and Privacy Policy.
 
@@ -89,7 +89,7 @@ Live prices are sourced from Yahoo Finance (stocks) and CoinGecko (crypto). Pric
 PLATFORM FEATURES SUMMARY:
 • Currently free to use — all research and watchlists accessible.
 • ${defaultWatchlists.length} PM Watchlists with live prices, YTD tracking, and position theses.
-• Research Hub ("The Feed") with PM-scored articles in Sector Analysis and Deep Dive categories.
+• Research Hub ("The Feed") with PM-scored Deep Dive articles filterable by time period.
 • PM Live real-time dashboard with charts, heatmaps, ticker tape, AI agents (Options Flow, Macro, IPO, Research), live feed, and market alerts.
 • PM Bot (you) — AI research assistant for platform questions and investment thesis discussions.
 • Admin-powered article generation using AI for automated research reports.
