@@ -1779,7 +1779,7 @@ PM Score: 92, reflecting high conviction in the structural thesis that AI-native
         category: "Deep Dive",
         readTime: "15 min",
         relatedTickers: ["CRWD", "PANW", "OKTA", "NET", "FROG", "ZS", "GOOGL", "MSFT", "TSM"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
     {
         id: "r15",
@@ -1957,6 +1957,6 @@ The Cortical Labs CL1 at $35,000 is where GPUs were in the early 2000s: expensiv
         category: "Deep Dive",
         readTime: "18 min",
         relatedTickers: ["INTC", "IBM", "TMO", "DHR", "NVDA", "TSM", "MDT", "INSP"],
-        author: "PM Research Alpha Desk"
+        author: "PM Research"
     },
 ];

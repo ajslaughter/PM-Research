@@ -197,7 +197,7 @@ function FullContentModal({ note, onClose }: FullContentModalProps) {
                                     </div>
                                     <div>
                                         <div className="text-sm font-semibold text-white">{note.author}</div>
-                                        <div className="text-xs text-pm-muted">PM Research Strategy Team</div>
+                                        <div className="text-xs text-pm-muted">Strategy Team</div>
                                     </div>
                                 </div>
                             )}
