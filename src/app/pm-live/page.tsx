@@ -35,7 +35,7 @@ const CHART_SYMBOLS = [
     { symbol: "DIA", label: "Dow Jones", color: "#3b82f6" },
     { symbol: "IWM", label: "Russell 2000", color: "#f97316" },
     { symbol: "GLD", label: "Gold", color: "#eab308" },
-    { symbol: "IBIT", label: "Bitcoin (IBIT)", color: "#ef4444" },
+    { symbol: "BTC-USD", label: "Bitcoin", color: "#ef4444" },
 ];
 
 const TIMEFRAMES = [
