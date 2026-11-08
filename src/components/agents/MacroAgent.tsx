@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Loader2, BarChart3, ChevronLeft, ChevronRight, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react";
 import {
     ResponsiveContainer,
     LineChart,
@@ -114,7 +114,7 @@ export function MacroAgent() {
     if (loading) {
         return (
             <div className="flex items-center justify-center py-16 gap-3">
-                <Loader2 className="w-5 h-5 animate-spin text-pm-green" />
+                <Loader2 className="w-5 h-5 animate-spin text-pm-gold" />
                 <span className="text-sm text-pm-muted font-mono">Loading macro dashboard...</span>
             </div>
         );
@@ -204,9 +204,9 @@ export function MacroAgent() {
                                 <Line
                                     type="monotone"
                                     dataKey="value"
-                                    stroke="#9d4edd"
+                                    stroke="#E9B949"
                                     strokeWidth={2.5}
-                                    dot={{ fill: "#9d4edd", r: 4 }}
+                                    dot={{ fill: "#E9B949", r: 4 }}
                                 />
                             </LineChart>
                         </ResponsiveContainer>
@@ -261,8 +261,8 @@ export function MacroAgent() {
             <div className="bg-pm-black/30 border border-pm-border/30 rounded-lg overflow-hidden">
                 <div className="px-4 py-3 border-b border-pm-border/20 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <BarChart3 className="w-4 h-4 text-pm-green" />
-                        <span className="text-sm font-semibold text-pm-text">Economic Calendar</span>
+                        <span className="text-sm font-semibold text-pm-text">Economic calendar</span>
+                        <span className="hidden sm:inline text-xs text-pm-subtle">Release dates from the Fed, BLS and BEA</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <button
@@ -310,13 +310,13 @@ export function MacroAgent() {
                                     key={cell.dateStr}
                                     onClick={() => setSelectedDate(isSelected ? null : cell.dateStr)}
                                     className={`relative rounded-md p-1.5 text-center transition-all min-h-[40px] ${
-                                        isSelected ? "bg-pm-green/20 border border-pm-green/40" :
+                                        isSelected ? "bg-pm-gold/15 border border-pm-gold/40" :
                                         isToday ? "bg-pm-border/20 border border-pm-border/50" :
                                         events.length ? "hover:bg-pm-border/10 border border-transparent" :
                                         "border border-transparent"
                                     }`}
                                 >
-                                    <span className={`text-xs font-mono ${isToday ? "text-pm-green font-bold" : "text-pm-muted"}`}>
+                                    <span className={`text-xs font-mono ${isToday ? "text-pm-gold font-bold" : "text-pm-muted"}`}>
                                         {cell.day}
                                     </span>
                                     {events.length > 0 && (
@@ -384,7 +384,7 @@ export function MacroAgent() {
                                                     evt.impact === "high" ? "text-pm-red" :
                                                     evt.impact === "medium" ? "text-yellow-400" : "text-pm-subtle"
                                                 }`}>
-                                                    {isPast && evt.actual == null ? "pending" : evt.impact}
+                                                    {isPast && evt.actual == null ? "released" : evt.impact}
                                                 </span>
                                             )}
                                         </div>

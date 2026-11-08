@@ -17,14 +17,11 @@ export function AgentTabs() {
     const [activeTab, setActiveTab] = useState<TabKey>("flow");
 
     return (
-        <div className="pm-card border-pm-border/50 overflow-hidden">
+        <div className="rounded-lg border border-pm-border bg-pm-charcoal overflow-hidden">
             <div className="px-6 py-4 border-b border-pm-border/50">
-                <div className="flex items-center gap-2 mb-4">
-                    <div className="w-2 h-2 rounded-full bg-pm-green animate-pulse" />
-                    <h2 className="text-lg font-semibold text-pm-text">Market Tools</h2>
-                    <span className="text-xs text-pm-muted ml-2">
-                        Real-time data
-                    </span>
+                <div className="mb-4">
+                    <h2 className="section-title">Market tools</h2>
+                    <p className="text-xs text-pm-subtle mt-0.5">Options flow by ticker, plus macro indicators and the economic calendar</p>
                 </div>
 
                 <div className="flex gap-2 overflow-x-auto">
@@ -34,9 +31,9 @@ export function AgentTabs() {
                             <button
                                 key={tab.key}
                                 onClick={() => setActiveTab(tab.key)}
-                                className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap flex items-center gap-2 ${
+                                className={`px-4 py-2.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap flex items-center gap-2 ${
                                     activeTab === tab.key
-                                        ? "bg-pm-green text-pm-black font-semibold"
+                                        ? "bg-pm-gold text-pm-black font-semibold"
                                         : "text-pm-muted hover:text-pm-text hover:bg-pm-border/20"
                                 }`}
                             >

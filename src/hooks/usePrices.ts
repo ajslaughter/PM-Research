@@ -25,6 +25,8 @@ interface UsePricesOptions {
     timeout?: number;
     /** Whether to enable polling. Default: true */
     enablePolling?: boolean;
+    /** Ask the API for market caps too (slower). Default: true */
+    includeMarketCaps?: boolean;
 }
 
 interface UsePricesReturn {
@@ -47,6 +49,7 @@ export function usePrices(
         pollIntervalClosed = 300000,
         timeout = 10000,
         enablePolling = true,
+        includeMarketCaps = true,
     } = options;
 
     const [prices, setPrices] = useState<Record<string, PriceData>>({});
@@ -86,7 +89,8 @@ export function usePrices(
         setError(null);
 
         try {
-            const url = `/api/prices?tickers=${tickerString}&ts=${Date.now()}`;
+            const caps = includeMarketCaps ? '' : '&marketCaps=false';
+            const url = `/api/prices?tickers=${tickerString}${caps}&ts=${Date.now()}`;
 
             // Create timeout promise
             const timeoutPromise = new Promise<never>((_, reject) => {
@@ -144,7 +148,7 @@ export function usePrices(
                 setIsRefreshing(false);
             }
         }
-    }, [tickerString, timeout]);
+    }, [tickerString, timeout, includeMarketCaps]);
 
     // Manual refresh function
     const refresh = useCallback(async () => {

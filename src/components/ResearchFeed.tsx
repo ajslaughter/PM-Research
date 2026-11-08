@@ -1,363 +1,223 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import { ResearchNote } from "@/lib/watchlists";
 import { getPmScoreCategory } from "@/services/stockService";
-import {
-    Sparkles,
-    ArrowRight,
-    X,
-    Search,
-    Tag,
-    Layers,
-} from "lucide-react";
-import React from "react";
-
-// Skeleton loading component for research cards
-function ResearchCardSkeleton() {
-    return (
-        <div className="pm-card flex flex-col h-full animate-pulse">
-            {/* Header skeleton */}
-            <div className="flex items-start justify-between gap-4 mb-4">
-                <div className="h-5 w-24 bg-pm-charcoal rounded" />
-                <div className="h-4 w-16 bg-pm-charcoal rounded" />
-            </div>
-
-            {/* Title skeleton */}
-            <div className="space-y-2 mb-4">
-                <div className="h-5 w-full bg-pm-charcoal rounded" />
-                <div className="h-5 w-3/4 bg-pm-charcoal rounded" />
-            </div>
-
-            {/* Summary skeleton */}
-            <div className="space-y-2 mb-4 flex-grow">
-                <div className="h-3 w-full bg-pm-charcoal rounded" />
-                <div className="h-3 w-full bg-pm-charcoal rounded" />
-                <div className="h-3 w-2/3 bg-pm-charcoal rounded" />
-            </div>
-
-            {/* Footer skeleton */}
-            <div className="flex items-center justify-between pt-4 border-t border-pm-border">
-                <div className="flex items-center gap-2">
-                    <div className="h-6 w-12 bg-pm-charcoal rounded" />
-                    <div className="h-4 w-20 bg-pm-charcoal rounded" />
-                </div>
-                <div className="h-4 w-16 bg-pm-charcoal rounded" />
-            </div>
-        </div>
-    );
-}
-
-// Props interfaces
-interface FullContentModalProps {
-    note: ResearchNote | null;
-    onClose: () => void;
-}
-
-interface ResearchCardProps {
-    note: ResearchNote;
-    onReadClick: () => void;
-}
+import { formatNoteDate } from "@/lib/format";
+import { X } from "lucide-react";
 
 interface ResearchFeedProps {
     category?: string;
-    daysFilter?: string;
 }
 
-// Category styling maps
-const categoryStyles: Record<string, string> = {
-    "Deep Dive": "bg-blue-500/10 text-blue-400 border-blue-500/30",
-};
+function NoteReader({ note, onClose }: { note: ResearchNote; onClose: () => void }) {
+    const closeRef = useRef<HTMLButtonElement>(null);
 
-const categoryIcons: Record<string, React.ReactNode> = {
-    "Deep Dive": <Search className="w-3 h-3" />,
-};
+    // Escape closes, focus starts on the close button, page behind doesn't scroll
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+        window.addEventListener("keydown", onKey);
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        closeRef.current?.focus();
+        return () => {
+            window.removeEventListener("keydown", onKey);
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [onClose]);
 
-// Research Card Component
-function ResearchCard({ note, onReadClick }: ResearchCardProps) {
     return (
-        <div onClick={onReadClick} className="pm-card group hover:border-pm-green/30 transition-all duration-300 flex flex-col h-full cursor-pointer">
-            {/* Header */}
-            <div className="flex items-start justify-between gap-4 mb-4">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryStyles[note.category]}`}
+        <div
+            className="fixed inset-0 z-[60] bg-black/75 backdrop-blur-sm overflow-y-auto px-3 sm:px-6 py-6 sm:py-10"
+            onClick={onClose}
+        >
+            <article
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="note-title"
+                onClick={(e) => e.stopPropagation()}
+                className="relative max-w-4xl mx-auto bg-pm-charcoal border border-pm-border rounded-lg overflow-hidden"
+            >
+                <header className="px-5 sm:px-10 pt-8 pb-6 border-b border-pm-border">
+                    <p className="text-sm text-pm-muted pr-10">
+                        {formatNoteDate(note.date)}
+                        {note.linkedWatchlist ? `, ${note.linkedWatchlist}` : ""}
+                        {note.readTime ? `, ${note.readTime} read` : ""}
+                    </p>
+                    <h2 id="note-title" className="mt-2 type-display font-bold text-3xl sm:text-[40px] leading-[1] text-pm-text text-balance">
+                        {note.title}
+                    </h2>
+                    <button
+                        ref={closeRef}
+                        onClick={onClose}
+                        aria-label="Close note"
+                        className="absolute top-4 right-4 p-2 rounded-md text-pm-muted hover:text-pm-text hover:bg-pm-dark transition-colors"
                     >
-                        {categoryIcons[note.category]}
-                        {note.category}
-                    </span>
-                    {note.linkedWatchlist && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium text-pm-muted border border-pm-border bg-pm-charcoal/50">
-                            <Layers className="w-2.5 h-2.5" />
-                            {note.linkedWatchlist}
-                        </span>
-                    )}
-                </div>
-            </div>
+                        <X className="w-5 h-5" />
+                    </button>
+                </header>
 
-            {/* Title */}
-            <h3 className="text-lg font-bold mb-2 group-hover:text-pm-green transition-colors line-clamp-2">
-                {note.title}
-            </h3>
-
-            {/* Summary */}
-            <p className="text-sm text-pm-muted mb-4 flex-grow line-clamp-3">
-                {note.summary}
-            </p>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between pt-4 border-t border-pm-border">
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 px-2 py-1 rounded bg-pm-green/10 text-pm-green border border-pm-green/30 text-xs font-semibold tabular-nums">
-                        <Sparkles className="w-3 h-3" />
-                        {note.pmScore}
+                <div className="grid md:grid-cols-[1fr_240px]">
+                    <div className="px-5 sm:px-10 py-8 text-[17px] leading-[1.7] text-pm-text/85 max-w-[68ch]">
+                        {note.author && (
+                            <p className="mb-6 text-sm text-pm-muted">By {note.author}</p>
+                        )}
+                        {note.fullContent.split("\n").map((line, i) => {
+                            if (line.startsWith("## ")) {
+                                return (
+                                    <h3 key={i} className="type-condensed font-semibold text-2xl text-pm-text mt-10 mb-3">
+                                        {line.replace("## ", "")}
+                                    </h3>
+                                );
+                            }
+                            if (line.startsWith("### ")) {
+                                return (
+                                    <h4 key={i} className="font-semibold text-lg text-pm-text mt-7 mb-2">
+                                        {line.replace("### ", "")}
+                                    </h4>
+                                );
+                            }
+                            if (line.startsWith("* ")) {
+                                return (
+                                    <li key={i} className="ml-5 list-disc marker:text-pm-subtle pl-1 mb-2">
+                                        {line.replace("* ", "")}
+                                    </li>
+                                );
+                            }
+                            if (line.trim() === "") return <div key={i} className="h-3" />;
+                            return (
+                                <p key={i} className="mb-3">
+                                    {line}
+                                </p>
+                            );
+                        })}
                     </div>
-                    <span className="text-xs text-pm-muted">{note.date}</span>
-                </div>
 
-                <button
-                    onClick={onReadClick}
-                    className="flex items-center gap-1 text-sm text-pm-green hover:text-pm-text transition-colors group/btn"
-                >
-                    <span>Read</span>
-                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
-            </div>
+                    <aside className="px-5 sm:px-10 md:px-6 py-8 border-t md:border-t-0 md:border-l border-pm-border space-y-8">
+                        <div>
+                            <h3 className="text-sm text-pm-muted">PM Score</h3>
+                            <p className="mt-1 type-display font-bold text-5xl text-pm-gold">{note.pmScore}</p>
+                            <p className="text-sm text-pm-muted">{getPmScoreCategory(note.pmScore)}, out of 100</p>
+                            <div className="mt-3 h-1 rounded-full bg-pm-border overflow-hidden" aria-hidden>
+                                <div className="h-full bg-pm-gold" style={{ width: `${note.pmScore}%` }} />
+                            </div>
+                        </div>
+
+                        {note.relatedTickers && note.relatedTickers.length > 0 && (
+                            <div>
+                                <h3 className="text-sm text-pm-muted">Related tickers</h3>
+                                <ul className="mt-2 flex flex-wrap gap-1.5">
+                                    {note.relatedTickers.map((ticker) => (
+                                        <li
+                                            key={ticker}
+                                            className="type-condensed font-semibold text-sm px-2 py-1 rounded border border-pm-border text-pm-text"
+                                        >
+                                            {ticker}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        <p className="text-xs text-pm-subtle leading-relaxed">
+                            For education and information only, not financial advice. PM Scores reflect research depth
+                            and thesis development, not return predictions.
+                        </p>
+                    </aside>
+                </div>
+            </article>
         </div>
     );
 }
 
-function FullContentModal({ note, onClose }: FullContentModalProps) {
-    if (!note) return null;
-
-    return (
-        <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={onClose}
-                className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 overflow-y-auto px-4 py-8"
-            >
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    onClick={(e) => e.stopPropagation()}
-                    className="max-w-4xl mx-auto bg-pm-dark border border-pm-border rounded-xl shadow-2xl overflow-hidden"
-                >
-                    {/* Modal Header / Banner */}
-                    <div className="relative min-h-[100px] sm:h-32 bg-gradient-to-r from-pm-black to-pm-charcoal border-b border-pm-border p-4 sm:p-8 flex items-end justify-between">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden sm:block">
-                            {/* Abstract Background Graphic */}
-                            <svg width="300" height="300" viewBox="0 0 100 100">
-                                <path d="M0 0 L100 100 M100 0 L0 100" stroke="currentColor" strokeWidth="0.5" />
-                            </svg>
-                        </div>
-
-                        <div className="pr-8">
-                            <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
-                                <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryStyles[note.category]}`}>
-                                    {categoryIcons[note.category]}
-                                    {note.category}
-                                </span>
-                                {note.linkedWatchlist && (
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium text-pm-muted border border-pm-border bg-pm-charcoal/50">
-                                        <Layers className="w-2.5 h-2.5" />
-                                        {note.linkedWatchlist}
-                                    </span>
-                                )}
-                                <span className="text-pm-muted text-xs">{note.date}</span>
-                            </div>
-                            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
-                                {note.title}
-                            </h1>
-                        </div>
-
-                        <button
-                            onClick={onClose}
-                            className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-full hover:bg-white/10 transition-colors text-pm-muted hover:text-white"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-
-                    <div className="grid md:grid-cols-[1fr_280px] min-h-[400px] sm:min-h-[500px]">
-                        {/* Main Content Area */}
-                        <div className="p-4 sm:p-8 md:p-10 md:border-r border-pm-border bg-pm-black/50">
-                            {/* Author Line */}
-                            {note.author && (
-                                <div className="flex items-center gap-3 mb-8 pb-6 border-b border-pm-border/50">
-                                    <div className="w-10 h-10 rounded-full bg-pm-green/20 flex items-center justify-center text-pm-green font-bold text-lg">
-                                        {note.author.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <div className="text-sm font-semibold text-white">{note.author}</div>
-                                        <div className="text-xs text-pm-muted">Strategy Team</div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Text Content - custom styled for "Deep Dive" look */}
-                            <div className="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-pm-text/80 prose-p:leading-relaxed prose-li:text-pm-text/80 prose-strong:text-pm-green">
-                                {/* We parse specific markdown headers to style them nicely without a library */}
-                                {note.fullContent.split('\n').map((line, i) => {
-                                    if (line.startsWith('## ')) {
-                                        return <h2 key={i} className="text-xl mt-8 mb-4 border-l-2 border-pm-green pl-4">{line.replace('## ', '')}</h2>;
-                                    }
-                                    if (line.startsWith('### ')) {
-                                        return <h3 key={i} className="text-lg mt-6 mb-2 text-pm-purple font-semibold">{line.replace('### ', '')}</h3>;
-                                    }
-                                    if (line.startsWith('* ')) {
-                                        return <li key={i} className="ml-4 list-disc marker:text-pm-green pl-2 mb-2">{line.replace('* ', '')}</li>;
-                                    }
-                                    // Default paragraph
-                                    if (line.trim() === '') return <div key={i} className="h-4" />;
-                                    return <p key={i} className="mb-2">{line}</p>;
-                                })}
-                            </div>
-                        </div>
-
-                        {/* Sidebar / Metadata */}
-                        <div className="p-6 bg-pm-black">
-                            <div className="mb-8">
-                                <h4 className="text-xs font-semibold uppercase text-pm-muted mb-4 tracking-wider">PM Sentiment Score</h4>
-                                <div className="flex items-center gap-3">
-                                    <div className={`text-4xl font-bold ${note.pmScore >= 90 ? 'text-pm-green' : 'text-pm-text'}`}>
-                                        {note.pmScore}
-                                    </div>
-                                    <div className="text-xs text-pm-muted leading-tight">
-                                        Out of 100<br />
-                                        <span className="text-white">{getPmScoreCategory(note.pmScore)}</span>
-                                    </div>
-                                </div>
-                                <div className="w-full bg-pm-border h-1.5 rounded-full mt-3 overflow-hidden">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-pm-purple to-pm-green"
-                                        style={{ width: `${note.pmScore}%` }}
-                                    />
-                                </div>
-                            </div>
-
-                            {note.relatedTickers && (
-                                <div className="mb-8">
-                                    <h4 className="text-xs font-semibold uppercase text-pm-muted mb-4 tracking-wider flex items-center gap-2">
-                                        <Tag className="w-3 h-3" />
-                                        Related Assets
-                                    </h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {note.relatedTickers.map(ticker => (
-                                            <span key={ticker} className="px-3 py-1 bg-pm-charcoal hover:bg-white/10 border border-pm-border rounded-md text-xs font-semibold text-pm-green cursor-pointer transition-colors">
-                                                ${ticker}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="p-4 rounded-lg bg-pm-green/5 border border-pm-green/20">
-                                <h4 className="text-sm font-bold text-pm-green mb-2">Research Note</h4>
-                                <p className="text-xs text-pm-muted leading-relaxed">
-                                    This content is for educational and informational purposes only. It does not constitute financial advice. Always conduct your own research.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-            </motion.div>
-        </AnimatePresence>
-    );
-}
-
-export default function ResearchFeed({ category = "All", daysFilter = "all" }: ResearchFeedProps) {
+export default function ResearchFeed({ category = "All" }: ResearchFeedProps) {
     const { researchNotes } = useAdmin();
     const [selectedNote, setSelectedNote] = useState<ResearchNote | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
-    // Simulate hydration/loading state
+    // Deep link from the home page: /research?note=<id>
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 100);
-        return () => clearTimeout(timer);
-    }, []);
+        const requested = new URLSearchParams(window.location.search).get("note");
+        if (requested) {
+            const match = researchNotes.find((n) => n.id === requested);
+            if (match) setSelectedNote(match);
+        }
+    }, [researchNotes]);
 
-    const handleReadClick = (note: ResearchNote) => {
+    const open = (note: ResearchNote) => {
         setSelectedNote(note);
+        window.history.replaceState(null, "", `/research?note=${note.id}`);
     };
 
-    // Filter and Sort notes
-    const filteredNotes = researchNotes
-        .filter(note => {
-            // Category filter (legacy support)
-            if (category !== "All" && note.category !== category) return false;
-            // Time-based filter
-            if (daysFilter !== "all") {
-                const days = parseInt(daysFilter);
-                const noteDate = new Date(note.date);
-                const cutoff = new Date();
-                cutoff.setDate(cutoff.getDate() - days);
-                if (noteDate < cutoff) return false;
-            }
-            return true;
-        })
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const close = useCallback(() => {
+        setSelectedNote(null);
+        window.history.replaceState(null, "", "/research");
+    }, []);
 
-    // Show skeleton while loading
-    if (isLoading) {
-        return (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, index) => (
-                    <ResearchCardSkeleton key={index} />
-                ))}
-            </div>
-        );
+    const notes = researchNotes
+        .filter((note) => category === "All" || note.category === category)
+        .sort((a, b) => b.date.localeCompare(a.date));
+
+    if (notes.length === 0) {
+        return <p className="py-12 text-pm-muted">No research published yet.</p>;
     }
 
-    // Show empty state if no research notes
-    if (filteredNotes.length === 0) {
-        return (
-            <div className="pm-card p-12 text-center">
-                <div className="flex flex-col items-center gap-4">
-                    <Search className="w-12 h-12 text-pm-muted opacity-50" />
-                    <div>
-                        <h3 className="text-lg font-bold text-white mb-2">No Research Found</h3>
-                        <p className="text-sm text-pm-muted">
-                            No research notes found for the selected time period.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
+    // Group by month, newest first
+    const groups: Array<{ month: string; notes: ResearchNote[] }> = [];
+    for (const note of notes) {
+        const [y, m] = note.date.split("-").map(Number);
+        const month = new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+            timeZone: "UTC",
+        });
+        const last = groups[groups.length - 1];
+        if (last && last.month === month) last.notes.push(note);
+        else groups.push({ month, notes: [note] });
     }
 
     return (
         <>
-            {/* Research Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredNotes.map((note, index) => (
-                    <motion.div
-                        key={note.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                    >
-                        <ResearchCard
-                            note={note}
-                            onReadClick={() => handleReadClick(note)}
-                        />
-                    </motion.div>
+            <div className="space-y-12">
+                {groups.map((group) => (
+                    <section key={group.month} aria-label={group.month}>
+                        <h2 className="section-title border-b border-pm-border pb-3">{group.month}</h2>
+                        <ul className="divide-y divide-pm-border">
+                            {group.notes.map((note) => (
+                                <li key={note.id}>
+                                    <button
+                                        onClick={() => open(note)}
+                                        className="w-full text-left grid grid-cols-[1fr_auto] sm:grid-cols-[6.5rem_1fr_auto] items-start gap-x-6 py-5 group"
+                                    >
+                                        <span className="hidden sm:block text-sm text-pm-subtle pt-1">
+                                            {formatNoteDate(note.date, false)}
+                                        </span>
+                                        <span className="min-w-0">
+                                            <span className="block text-lg font-semibold leading-snug text-pm-text group-hover:text-pm-gold transition-colors">
+                                                {note.title}
+                                            </span>
+                                            <span className="mt-1 text-sm text-pm-muted leading-relaxed line-clamp-2 max-w-3xl">
+                                                {note.summary}
+                                            </span>
+                                            <span className="mt-1.5 block text-xs text-pm-subtle">
+                                                <span className="sm:hidden">{formatNoteDate(note.date, false)}, </span>
+                                                {[note.linkedWatchlist, note.readTime && `${note.readTime} read`]
+                                                    .filter(Boolean)
+                                                    .join(", ")}
+                                            </span>
+                                        </span>
+                                        <span className="pm-score mt-1" title="PM Score (0–100)">
+                                            PM {note.pmScore}
+                                        </span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
                 ))}
             </div>
 
-            {selectedNote && (
-                <FullContentModal
-                    note={selectedNote}
-                    onClose={() => setSelectedNote(null)}
-                />
-            )}
+            {selectedNote && <NoteReader note={selectedNote} onClose={close} />}
         </>
     );
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAuth, checkRateLimit, getClientIP, sanitizeTopic } from '@/lib/security';
+import { verifyAdminAuth, checkRateLimit, getClientIP, sanitizeTopic } from '@/lib/security';
 
 // Sanitize API key: trim whitespace and remove newlines that could cause Headers errors
 const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY ?? '').trim().replace(/[\r\n]/g, '');
@@ -48,11 +48,11 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Security: Verify authentication
-    const auth = await verifyAuth(request);
+    // Security: article generation is an admin tool
+    const auth = await verifyAdminAuth(request);
     if (!auth) {
         return NextResponse.json(
-            { error: 'Authentication required. Please log in to access this resource.' },
+            { error: 'Admin sign-in required to generate articles.' },
             { status: 401 }
         );
     }
@@ -110,7 +110,7 @@ Return ONLY valid JSON, no other text.`;
                 'anthropic-version': '2023-06-01',
             },
             body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
+                model: 'claude-sonnet-5-5',
                 max_tokens: 4096,
                 system: SYSTEM_PROMPT,
                 messages: [

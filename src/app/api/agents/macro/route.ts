@@ -1,42 +1,55 @@
 import { NextResponse } from "next/server";
+import { fetchQuotes } from "@/lib/yahoo";
+
+export const dynamic = "force-dynamic";
 
 // Direct Yahoo Finance data — no AI needed
-const YF_CHART = "https://query1.finance.yahoo.com/v8/finance/chart";
 
-const ECON_CALENDAR = [
-  { date: "2026-01-02", title: "ISM Manufacturing PMI", impact: "high", previous: 48.4, forecast: 48.8, actual: 49.2 },
-  { date: "2026-01-07", title: "ISM Services PMI", impact: "medium", previous: 52.1, forecast: 52.4, actual: 53.0 },
-  { date: "2026-01-10", title: "Nonfarm Payrolls", impact: "high", previous: 227, forecast: 160, actual: 256, unit: "K" },
-  { date: "2026-01-15", title: "CPI Report", impact: "high", previous: 2.7, forecast: 2.9, actual: 2.9, unit: "%" },
-  { date: "2026-01-16", title: "Retail Sales", impact: "medium", previous: 0.7, forecast: 0.6, actual: 0.4, unit: "%" },
-  { date: "2026-01-17", title: "PPI Report", impact: "medium", previous: 3.0, forecast: 3.4, actual: 3.3, unit: "%" },
-  { date: "2026-01-28", title: "FOMC Rate Decision", impact: "high", previous: 4.5, forecast: 4.5, actual: 4.5, unit: "%" },
-  { date: "2026-01-29", title: "GDP Q4 Advance", impact: "high", previous: 3.1, forecast: 2.6, actual: 2.3, unit: "%" },
-  { date: "2026-01-31", title: "PCE Price Index", impact: "high", previous: 2.4, forecast: 2.6, actual: 2.6, unit: "%" },
-  { date: "2026-02-03", title: "ISM Manufacturing PMI", impact: "high", previous: 49.2, forecast: 49.5, actual: 50.9 },
-  { date: "2026-02-05", title: "ISM Services PMI", impact: "medium", previous: 53.0, forecast: 52.8, actual: 52.8 },
-  { date: "2026-02-07", title: "Nonfarm Payrolls", impact: "high", previous: 256, forecast: 170, actual: 143, unit: "K" },
-  { date: "2026-02-12", title: "CPI Report", impact: "high", previous: 2.9, forecast: 2.9, actual: 3.0, unit: "%" },
-  { date: "2026-02-13", title: "PPI Report", impact: "medium", previous: 3.3, forecast: 3.2, actual: null, unit: "%" },
-  { date: "2026-02-14", title: "Retail Sales", impact: "medium", previous: 0.4, forecast: -0.1, actual: null, unit: "%" },
-  { date: "2026-02-19", title: "Housing Starts", impact: "low", previous: 1.499, forecast: 1.4, actual: null, unit: "M" },
-  { date: "2026-02-20", title: "Initial Jobless Claims", impact: "medium", previous: 213, forecast: 215, actual: null, unit: "K" },
-  { date: "2026-02-21", title: "Existing Home Sales", impact: "low", previous: 4.24, forecast: 4.15, actual: null, unit: "M" },
-  { date: "2026-02-25", title: "Consumer Confidence", impact: "medium", previous: 104.1, forecast: 103.0, actual: null },
-  { date: "2026-02-27", title: "GDP Q4 Second Estimate", impact: "high", previous: 2.3, forecast: 2.3, actual: null, unit: "%" },
-  { date: "2026-02-28", title: "PCE Price Index", impact: "high", previous: 2.6, forecast: 2.5, actual: null, unit: "%" },
-  { date: "2026-03-02", title: "ISM Manufacturing PMI", impact: "high", previous: 50.9, forecast: null, actual: null },
-  { date: "2026-03-04", title: "ISM Services PMI", impact: "medium", previous: 52.8, forecast: null, actual: null },
-  { date: "2026-03-06", title: "Nonfarm Payrolls", impact: "high", previous: 143, forecast: null, actual: null, unit: "K" },
-  { date: "2026-03-11", title: "CPI Report", impact: "high", previous: 3.0, forecast: null, actual: null, unit: "%" },
-  { date: "2026-03-13", title: "PPI Report", impact: "medium", previous: null, forecast: null, actual: null, unit: "%" },
-  { date: "2026-03-17", title: "Retail Sales", impact: "medium", previous: null, forecast: null, actual: null, unit: "%" },
-  { date: "2026-03-18", title: "FOMC Rate Decision", impact: "high", previous: 4.5, forecast: null, actual: null, unit: "%" },
-  { date: "2026-03-26", title: "GDP Q4 Final", impact: "high", previous: null, forecast: null, actual: null, unit: "%" },
-  { date: "2026-03-28", title: "PCE Price Index", impact: "high", previous: null, forecast: null, actual: null, unit: "%" },
-  { date: "2026-04-01", title: "ISM Manufacturing PMI", impact: "high", previous: null, forecast: null, actual: null },
-  { date: "2026-04-03", title: "Nonfarm Payrolls", impact: "high", previous: null, forecast: null, actual: null, unit: "K" },
-  { date: "2026-04-10", title: "CPI Report", impact: "high", previous: null, forecast: null, actual: null, unit: "%" },
+/**
+ * Scheduled U.S. releases (8:30 AM ET unless noted; FOMC decisions at 2:00 PM ET).
+ * Dates only. Forecasts and actuals aren't tracked here, so they stay null.
+ * Sources, checked 2026-11-08:
+ *   FOMC  https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+ *   BLS   https://www.bls.gov/schedule/news_release/ (CPI, PPI, Employment Situation)
+ *   BEA   https://www.bea.gov/news/schedule (GDP, Personal Income and Outlays / PCE)
+ * Extend this list as agencies publish 2027 schedules.
+ */
+type CalendarEntry = {
+  date: string;
+  title: string;
+  impact: "high" | "medium" | "low";
+  previous: null;
+  forecast: null;
+  actual: null;
+  unit?: string;
+};
+
+const release = (date: string, title: string, impact: CalendarEntry["impact"]): CalendarEntry => ({
+  date,
+  title,
+  impact,
+  previous: null,
+  forecast: null,
+  actual: null,
+});
+
+const ECON_CALENDAR: CalendarEntry[] = [
+  release("2026-10-28", "FOMC rate decision", "high"),
+  release("2026-11-06", "Employment Situation (October)", "high"),
+  release("2026-11-10", "CPI (October)", "high"),
+  release("2026-11-13", "PPI (October)", "medium"),
+  release("2026-11-25", "GDP Q3, second estimate", "high"),
+  release("2026-11-25", "Personal Income and Outlays / PCE (October)", "high"),
+  release("2026-12-04", "Employment Situation (November)", "high"),
+  release("2026-12-09", "FOMC rate decision and projections", "high"),
+  release("2026-12-10", "CPI (November)", "high"),
+  release("2026-12-15", "PPI (November)", "medium"),
+  release("2026-12-23", "GDP Q3, third estimate", "medium"),
+  release("2026-12-23", "Personal Income and Outlays / PCE (November)", "high"),
+  release("2027-01-08", "Employment Situation (December)", "high"),
+  release("2027-01-13", "CPI (December)", "high"),
+  release("2027-01-14", "PPI (December)", "medium"),
+  release("2027-01-27", "FOMC rate decision", "high"),
 ];
 
 const MACRO_SYMBOLS = {
@@ -74,30 +87,11 @@ export async function GET() {
     try {
         const symbols = Object.keys(MACRO_SYMBOLS);
 
-        // Fetch each symbol via v8 chart API (v7 quote requires auth)
-        const results = await Promise.all(
-            symbols.map(async (symbol) => {
-                try {
-                    const url = `${YF_CHART}/${encodeURIComponent(symbol)}?range=1d&interval=1d`;
-                    const res = await fetch(url, {
-                        headers: { "User-Agent": "Mozilla/5.0" },
-                        next: { revalidate: 60 },
-                    });
-                    if (!res.ok) return null;
-                    const raw = await res.json();
-                    const r = raw.chart?.result?.[0];
-                    if (!r) return null;
-                    const meta = r.meta;
-                    const price = meta.regularMarketPrice || 0;
-                    const prevClose = meta.chartPreviousClose || meta.previousClose || price;
-                    const change = price - prevClose;
-                    const changePercent = prevClose > 0 ? (change / prevClose) * 100 : 0;
-                    return { symbol, price, change, changePercent };
-                } catch {
-                    return null;
-                }
-            })
-        );
+        const quotes = await fetchQuotes(symbols);
+        const results = symbols.map((symbol) => {
+            const q = quotes[symbol];
+            return q ? { symbol, price: q.price, change: q.change, changePercent: q.changePercent } : null;
+        });
 
         // Build structured data by category
         const data: Record<string, Array<{

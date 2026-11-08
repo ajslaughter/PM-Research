@@ -1,59 +1,56 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * PM Research design tokens
+ *
+ * Color is meaning, not decoration:
+ *   - pm-up / pm-down (aliased as pm-green / pm-red) only ever mean price direction
+ *   - pm-gold is PM's own voice: PM Scores, primary actions, the active page
+ *   - everything else is graphite and paper
+ */
 const config: Config = {
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/lib/**/*.{js,ts,jsx,tsx}",
+        "./src/hooks/**/*.{js,ts,jsx,tsx}",
+        "./src/services/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
         extend: {
             colors: {
-                // PM Research Brand Colors
-                "pm-black": "#0a0a0a",
-                "pm-charcoal": "#141414",
-                "pm-dark": "#1a1a1a",
-                "pm-border": "#1f1f1f",
-                "pm-green": "#00ff9d",
-                "pm-green-muted": "#00cc7d",
-                "pm-purple": "#9d4edd",
-                "pm-purple-muted": "#7b2cbf",
-                "pm-red": "#ff4757",
-                "pm-text": "#ffffff",
-                "pm-muted": "#6b7280",
-                "pm-subtle": "#3f3f46",
+                // Surfaces
+                "pm-black": "#0E1216", // page
+                "pm-charcoal": "#151A20", // panels
+                "pm-dark": "#1C222A", // raised rows, inputs
+                "pm-border": "#262D36", // hairlines
+                // Text
+                "pm-text": "#ECEFF3",
+                "pm-muted": "#9AA4AF",
+                "pm-subtle": "#6C7581",
+                // PM accent
+                "pm-gold": "#E9B949",
+                "pm-gold-muted": "#B8902F",
+                // Market direction
+                "pm-up": "#3BCF8E",
+                "pm-down": "#F0616D",
+                "pm-green": "#3BCF8E",
+                "pm-green-muted": "#2FA672",
+                "pm-red": "#F0616D",
+                // Legacy accent: PM Score and analyst notes now share the gold accent
+                "pm-purple": "#E9B949",
+                "pm-purple-muted": "#B8902F",
             },
             fontFamily: {
-                mono: ["JetBrains Mono", "Fira Code", "monospace"],
-                sans: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"],
+                sans: ["var(--font-archivo)", "system-ui", "sans-serif"],
+                mono: ["var(--font-archivo)", "system-ui", "sans-serif"],
             },
-            backgroundImage: {
-                "grid-pattern":
-                    "linear-gradient(to right, #1f1f1f 1px, transparent 1px), linear-gradient(to bottom, #1f1f1f 1px, transparent 1px)",
-                "glow-green": "radial-gradient(ellipse at center, rgba(0, 255, 157, 0.15) 0%, transparent 70%)",
-                "glow-purple": "radial-gradient(ellipse at center, rgba(157, 78, 221, 0.15) 0%, transparent 70%)",
-            },
-            backgroundSize: {
-                "grid": "40px 40px",
+            borderRadius: {
+                DEFAULT: "6px",
             },
             animation: {
                 "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-                "glow": "glow 2s ease-in-out infinite alternate",
-                "scan": "scan 4s ease-in-out infinite",
-            },
-            keyframes: {
-                glow: {
-                    "0%": { boxShadow: "0 0 5px rgba(0, 255, 157, 0.5)" },
-                    "100%": { boxShadow: "0 0 20px rgba(0, 255, 157, 0.8)" },
-                },
-                scan: {
-                    "0%, 100%": { opacity: "0.3" },
-                    "50%": { opacity: "1" },
-                },
-            },
-            boxShadow: {
-                "neon-green": "0 0 20px rgba(0, 255, 157, 0.3)",
-                "neon-purple": "0 0 20px rgba(157, 78, 221, 0.3)",
             },
         },
     },

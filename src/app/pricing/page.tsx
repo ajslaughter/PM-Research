@@ -1,146 +1,83 @@
-"use client";
-
-import { motion } from "framer-motion";
-import {
-    Check,
-    Sparkles,
-    ArrowRight,
-} from "lucide-react";
 import Link from "next/link";
+import { Check } from "lucide-react";
+
+const included = [
+    "All research notes and future deep dives",
+    "Every watchlist with live prices",
+    "Daily, quarterly and year-to-date returns",
+    "PM Scores and the methodology behind them",
+    "PM Live: market heat map, index chart and market tools",
+];
+
+const questions = [
+    {
+        q: "What is the PM Score?",
+        a: "A 0 to 100 rating of how well developed and supported an investment thesis is. Higher means stronger conviction in the research. It is not a price target or a return prediction.",
+    },
+    {
+        q: "How are watchlist returns calculated?",
+        a: "Each watchlist is held at its stated weights from the Dec 31 close. Year-to-date return is live price against that close, and quarterly returns compound to the year-to-date figure. Stock splits are adjusted for.",
+    },
+    {
+        q: "Is this personalized investment advice?",
+        a: "No. PM Research publishes general research and watchlists. We don't know your financial situation, so nothing here is a recommendation to buy or sell a security.",
+    },
+    {
+        q: "Will PM Research stay free?",
+        a: "It's free today. If paid features are added later, they'll be announced here first.",
+    },
+];
 
 export default function PricingPage() {
-    const features = [
-        "Full Research Hub Access",
-        "Weekly Market Analysis",
-        "PM Score Methodology",
-        "Full PM Watchlist Access",
-        "PM Research Bot Access",
-        "Automated Research Reports",
-        "Advanced Analytics Dashboard",
-    ];
-
     return (
-        <div className="relative min-h-screen pb-20 md:pb-0">
-            {/* Grid Background */}
-            <div className="absolute inset-0 grid-bg opacity-30" />
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-12 sm:py-14">
+            <header className="mb-12">
+                <h1 className="page-title">Free to use</h1>
+                <p className="page-lede">All research, watchlists and live market data are open. No subscription needed.</p>
+            </header>
 
-            {/* Glow Effects */}
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pm-green/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pm-purple/5 rounded-full blur-3xl" />
-
-            <div className="relative max-w-6xl mx-auto px-6 py-16">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
-                >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full mb-6">
-                        <Sparkles className="w-4 h-4 text-pm-green" />
-                        <span className="text-sm font-medium tracking-wide text-pm-muted">
-                            Pricing
-                        </span>
-                    </div>
-
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        Currently <span className="text-pm-green">Free</span>
-                    </h1>
-                    <p className="text-xl text-pm-muted max-w-2xl mx-auto">
-                        Access all research, model watchlists, and analytics.
-                        No subscription currently required.
+            <div className="grid lg:grid-cols-[5fr_7fr] gap-10 lg:gap-14 items-start">
+                <section className="rounded-lg border border-pm-border bg-pm-charcoal p-6 sm:p-8" aria-labelledby="included">
+                    <p className="type-display font-bold text-6xl text-pm-text">
+                        $0
+                        <span className="ml-2 type-text text-lg font-normal text-pm-muted align-middle">per month</span>
                     </p>
-                </motion.div>
-
-                {/* Features Card */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="max-w-lg mx-auto mb-16"
-                >
-                    <div className="pm-card border-pm-green/30 p-8">
-                        <div className="text-center mb-6">
-                            <span className="text-4xl font-bold text-pm-green">$0</span>
-                            <span className="text-pm-muted ml-2">currently</span>
-                        </div>
-                        <ul className="space-y-3 mb-8">
-                            {features.map((feature) => (
-                                <li key={feature} className="flex items-center gap-3">
-                                    <Check className="w-4 h-4 text-pm-green flex-shrink-0" />
-                                    <span className="text-sm text-pm-text">{feature}</span>
-                                </li>
-                            ))}
-                        </ul>
-                        <Link
-                            href="/watchlist"
-                            className="btn-primary w-full flex items-center justify-center gap-2"
-                        >
-                            Go to Watchlist
-                            <ArrowRight className="w-5 h-5" />
-                        </Link>
-                    </div>
-                </motion.div>
-
-                {/* FAQ Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="mt-24"
-                >
-                    <h2 className="text-2xl font-bold text-center mb-12">
-                        Frequently Asked Questions
+                    <h2 id="included" className="mt-6 text-sm text-pm-muted">
+                        Included
                     </h2>
+                    <ul className="mt-3 space-y-3">
+                        {included.map((item) => (
+                            <li key={item} className="flex gap-3 text-pm-text">
+                                <Check className="w-5 h-5 mt-0.5 shrink-0 text-pm-gold" aria-hidden />
+                                <span>{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                    <Link href="/watchlist" className="btn-primary w-full mt-8">
+                        Open watchlists
+                    </Link>
+                </section>
 
-                    <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                        {[
-                            {
-                                q: "What is the PM Score?",
-                                a: "The PM Score is our proprietary ranking system that combines momentum, fundamental, and predictive signals into a single 0-100 score. Higher scores indicate stronger conviction based on our models.",
-                            },
-                            {
-                                q: "What is the PM Research Bot?",
-                                a: "The PM Research Bot is an AI-powered system that generates research reports and analysis on demand. All outputs are algorithmically generated—no human analysts involved.",
-                            },
-                            {
-                                q: "Is this personalized investment advice?",
-                                a: "No. PM Research provides general research content and PM watchlists. We don't know your financial situation, so nothing here constitutes personalized advice or recommendations to buy or sell specific securities.",
-                            },
-                            {
-                                q: "How does the PM watchlist work?",
-                                a: "The PM watchlist tracks positions we have deeply researched. Performance metrics are hypothetical and reflect how these positions would have performed. Inclusion indicates active research coverage, not a recommendation to purchase.",
-                            },
-                            {
-                                q: "What are Automated Research Reports?",
-                                a: "Deep-dive analyses generated by our PM Research Bot covering sectors, individual tickers, and market themes.",
-                            },
-                            {
-                                q: "Will PM Research always be free?",
-                                a: "PM Research is currently free to use. Pricing may change in the future as we add new features and capabilities.",
-                            },
-                        ].map((faq, index) => (
-                            <div key={index} className="pm-card">
-                                <h3 className="font-semibold mb-2">{faq.q}</h3>
-                                <p className="text-sm text-pm-muted leading-relaxed">{faq.a}</p>
+                <section aria-labelledby="faq">
+                    <h2 id="faq" className="section-title border-b border-pm-border pb-3">
+                        Questions
+                    </h2>
+                    <dl className="divide-y divide-pm-border">
+                        {questions.map(({ q, a }) => (
+                            <div key={q} className="py-5">
+                                <dt className="font-semibold text-pm-text">{q}</dt>
+                                <dd className="mt-2 text-pm-muted leading-relaxed max-w-[65ch]">{a}</dd>
                             </div>
                         ))}
-                    </div>
-                </motion.div>
-
-                {/* Disclaimer */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="mt-16 text-center"
-                >
-                    <p className="text-xs text-pm-muted leading-relaxed max-w-2xl mx-auto">
-                        Watchlist performance shown is hypothetical and for research tracking purposes only. Past performance does not guarantee future results.
-                        PM Research provides research content and curated watchlists reflecting our analytical coverage — not personalized investment advice or buy/sell recommendations.
-                        Inclusion on a watchlist indicates active research coverage, not a recommendation to purchase. PM Scores reflect research depth and thesis conviction, not return predictions. Always conduct your own due diligence before making investment decisions.
-                    </p>
-                </motion.div>
+                    </dl>
+                </section>
             </div>
+
+            <p className="mt-16 pt-6 border-t border-pm-border text-xs text-pm-subtle leading-relaxed max-w-3xl">
+                Watchlist performance is hypothetical and for research tracking only. Past performance does not guarantee
+                future results. Inclusion on a watchlist indicates active research coverage, not a recommendation to
+                purchase. Do your own due diligence before making investment decisions.
+            </p>
         </div>
     );
 }

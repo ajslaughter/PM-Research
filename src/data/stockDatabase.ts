@@ -108,6 +108,14 @@ export const stockDatabase: Record<string, StockData> = {
   "BEAM": createStock("BEAM", "Beam Therapeutics", "Genomics", "Healthcare", 80, "2026-02-15"),
   "EDIT": createStock("EDIT", "Editas Medicine", "Genomics", "Healthcare", 74, "2026-02-15"),
   "TWST": createStock("TWST", "Twist Bioscience", "Genomics", "Healthcare", 84, "2026-02-15"),
+
+  // Semiconductors Watchlist (NVDA and AVGO are listed above)
+  // PM Scores below are provisional starting values; set them after review.
+  "TSM": createStock("TSM", "Taiwan Semiconductor (ADR)", "Foundry", "Technology", 90, "2026-11-08"),
+  "AMD": createStock("AMD", "Advanced Micro Devices", "AI Hardware", "Technology", 85, "2026-11-08"),
+  "ASML": createStock("ASML", "ASML Holding (ADR)", "Semiconductor Equipment", "Technology", 88, "2026-11-08"),
+  "MU": createStock("MU", "Micron Technology", "Memory", "Technology", 84, "2026-11-08"),
+  "MRVL": createStock("MRVL", "Marvell Technology", "Custom Silicon", "Technology", 82, "2026-11-08"),
 };
 
 // Asset class color mapping for UI

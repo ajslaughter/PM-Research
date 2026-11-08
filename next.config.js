@@ -43,6 +43,12 @@ const securityHeaders = [
 
 const nextConfig = {
     reactStrictMode: true,
+    async redirects() {
+        return [
+            // PM Bot was retired; send old links to the research hub
+            { source: '/pmbot', destination: '/research', permanent: false },
+        ];
+    },
     async headers() {
         return [
             {

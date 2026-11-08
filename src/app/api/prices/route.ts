@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fallbackMarketCaps } from '@/data/marketCaps';
+import { isMarketOpen } from '@/lib/marketHours';
+import { getYahooCrumb, resetYahooCrumb } from '@/lib/yahoo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -26,31 +27,8 @@ interface MarketCapCacheEntry {
 // For production reliability, migrate to an external store (e.g., Vercel KV / Upstash Redis).
 const CACHE_TTL_MS = 30 * 1000;
 const MARKET_CAP_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-const YAHOO_CRUMB_TTL_MS = 60 * 60 * 1000; // 1 hour
 let priceCache: CacheEntry | null = null;
 let marketCapCache: MarketCapCacheEntry | null = null;
-let yahooCrumbCache: { crumb: string; cookie: string; timestamp: number } | null = null;
-
-/**
- * Check if US stock market is currently open
- * Market hours: 9:30 AM - 4:00 PM ET, Monday-Friday
- */
-function isMarketOpen(): boolean {
-  const now = new Date();
-  const et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  const day = et.getDay();
-  const hour = et.getHours();
-  const minute = et.getMinutes();
-  const timeInMinutes = hour * 60 + minute;
-
-  const marketOpen = 9 * 60 + 30; // 9:30 AM
-  const marketClose = 16 * 60;     // 4:00 PM
-
-  // Weekend check
-  if (day === 0 || day === 6) return false;
-
-  return timeInMinutes >= marketOpen && timeInMinutes < marketClose;
-}
 
 /**
  * Fetch stock prices from Alpaca Markets (IEX feed)
@@ -127,6 +105,12 @@ async function fetchAlpacaStocks(tickers: string[]): Promise<Record<string, Pric
     return fetchYahooFallback(tickers);
   }
 
+  // Fill any tickers Alpaca's IEX feed doesn't cover (OTC ADRs, thin names) from Yahoo
+  const missing = tickers.filter((t) => !results[t]);
+  if (missing.length > 0) {
+    Object.assign(results, await fetchYahooFallback(missing));
+  }
+
   return results;
 }
 
@@ -139,7 +123,9 @@ async function fetchYahooFallback(tickers: string[]): Promise<Record<string, Pri
   await Promise.all(
     tickers.map(async (ticker) => {
       try {
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=2d`;
+        // range=1d: chartPreviousClose is the prior session's official close.
+        // (range=2d made it the close from two sessions back, doubling up the day move.)
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=1d`;
         const response = await fetch(url, {
           headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -149,16 +135,15 @@ async function fetchYahooFallback(tickers: string[]): Promise<Record<string, Pri
 
         if (response.ok) {
           const data = await response.json();
-          const quote = data?.chart?.result?.[0]?.meta;
-          const closes = data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
+          const meta = data?.chart?.result?.[0]?.meta;
 
-          if (quote) {
-            const currentPrice = quote.regularMarketPrice || closes?.[closes.length - 1] || 0;
-            const previousClose = quote.previousClose || quote.chartPreviousClose || closes?.[closes.length - 2] || currentPrice;
+          if (meta) {
+            const currentPrice = meta.regularMarketPrice || 0;
+            const previousClose = meta.chartPreviousClose || meta.previousClose || 0;
 
-            if (currentPrice && currentPrice > 0) {
-              const change = currentPrice - previousClose;
-              const changePercent = previousClose ? (change / previousClose) * 100 : 0;
+            if (currentPrice > 0) {
+              const change = previousClose > 0 ? currentPrice - previousClose : 0;
+              const changePercent = previousClose > 0 ? (change / previousClose) * 100 : 0;
               results[ticker] = { price: currentPrice, change, changePercent };
               return;
             }
@@ -231,76 +216,6 @@ async function fetchBitcoin(): Promise<PriceResult | null> {
 }
 
 /**
- * Obtain Yahoo Finance crumb + cookie for authenticated API access.
- * Yahoo Finance v7/v10 endpoints require crumb authentication since 2023.
- * The crumb is cached for 1 hour to minimize requests.
- */
-async function getYahooCrumb(): Promise<{ crumb: string; cookie: string } | null> {
-  // Check cache
-  if (yahooCrumbCache && (Date.now() - yahooCrumbCache.timestamp) < YAHOO_CRUMB_TTL_MS) {
-    return { crumb: yahooCrumbCache.crumb, cookie: yahooCrumbCache.cookie };
-  }
-
-  const YAHOO_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
-
-  try {
-    // Step 1: Hit a lightweight Yahoo endpoint to get session cookies
-    const initRes = await fetch('https://fc.yahoo.com/', {
-      headers: { 'User-Agent': YAHOO_UA },
-      redirect: 'manual',
-    });
-
-    // Extract set-cookie headers
-    const rawCookies: string[] = [];
-    initRes.headers.forEach((value, key) => {
-      if (key.toLowerCase() === 'set-cookie') {
-        rawCookies.push(value.split(';')[0]);
-      }
-    });
-
-    if (rawCookies.length === 0) {
-      // Try alternative: fetch finance.yahoo.com consent page
-      const altRes = await fetch('https://finance.yahoo.com/', {
-        headers: { 'User-Agent': YAHOO_UA },
-        redirect: 'manual',
-      });
-      altRes.headers.forEach((value, key) => {
-        if (key.toLowerCase() === 'set-cookie') {
-          rawCookies.push(value.split(';')[0]);
-        }
-      });
-    }
-
-    const cookieStr = rawCookies.join('; ');
-    if (!cookieStr) {
-      console.warn('Yahoo Finance: No cookies received');
-      return null;
-    }
-
-    // Step 2: Fetch crumb using session cookies
-    const crumbRes = await fetch('https://query2.finance.yahoo.com/v1/test/getcrumb', {
-      headers: {
-        'User-Agent': YAHOO_UA,
-        'Cookie': cookieStr,
-      },
-    });
-
-    if (crumbRes.ok) {
-      const crumb = await crumbRes.text();
-      // Validate crumb - should be a short alphanumeric string, not HTML
-      if (crumb && crumb.length > 0 && crumb.length < 50 && !crumb.includes('<!')) {
-        yahooCrumbCache = { crumb, cookie: cookieStr, timestamp: Date.now() };
-        return { crumb, cookie: cookieStr };
-      }
-    }
-  } catch (e) {
-    console.error('Yahoo crumb fetch error:', e);
-  }
-
-  return null;
-}
-
-/**
  * Fetch market caps using multiple data sources with fallbacks.
  * Uses a separate 5-minute cache since market cap changes slowly.
  *
@@ -309,7 +224,7 @@ async function getYahooCrumb(): Promise<{ crumb: string; cookie: string } | null
  * 2. Yahoo Finance batch quote (v7) without crumb (legacy, may still work)
  * 3. Polygon.io Ticker Details (if API key available)
  * 4. CoinGecko for crypto tickers (BTC-USD)
- * 5. Hardcoded fallback data for any remaining gaps
+ * Missing values are returned as null rather than stale estimates.
  */
 async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number | null>> {
   // Check market cap cache
@@ -367,7 +282,7 @@ async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number
         } else {
           // Invalidate crumb cache on auth failure
           if (response.status === 401 || response.status === 403) {
-            yahooCrumbCache = null;
+            resetYahooCrumb();
           }
           console.warn(`Yahoo v7 crumb auth failed: ${response.status}`);
         }
@@ -470,15 +385,11 @@ async function fetchMarketCaps(tickers: string[]): Promise<Record<string, number
     }
   }
 
-  // Strategy 5: Fill remaining gaps with hardcoded fallback data
+  // Anything still missing stays null and renders as "--". (The old hardcoded
+  // February 2026 estimates were far enough off to be misleading.)
   for (const ticker of tickers) {
-    if (!(ticker in results) || results[ticker] === null) {
-      const fallback = fallbackMarketCaps[ticker.toUpperCase()];
-      if (fallback) {
-        results[ticker] = fallback;
-      } else {
-        results[ticker] = null;
-      }
+    if (!(ticker in results)) {
+      results[ticker] = null;
     }
   }
 
@@ -524,11 +435,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'No tickers provided' }, { status: 400 });
   }
 
-  const tickers = tickersParam.split(',').map((t: string) => t.trim().toUpperCase());
+  const tickers = tickersParam.split(',').map((t: string) => t.trim().toUpperCase()).filter(Boolean);
   const marketOpen = isMarketOpen();
+  const includeMarketCaps = searchParams.get('marketCaps') !== 'false';
 
   // Fetch market caps in parallel (uses its own 5-min cache)
-  const marketCapsPromise = fetchMarketCaps(tickers);
+  const marketCapsPromise: Promise<Record<string, number | null>> = includeMarketCaps
+    ? fetchMarketCaps(tickers)
+    : Promise.resolve({});
 
   // Check price cache first
   if (isCacheValid(tickers)) {

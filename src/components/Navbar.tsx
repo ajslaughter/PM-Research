@@ -2,99 +2,87 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
-import {
-    Activity,
-    Radio,
-    BookOpen,
-    Briefcase,
-    Bot,
-    Zap,
-} from "lucide-react";
+import { Activity, BookOpen, LayoutList, Radio } from "lucide-react";
+
+const navLinks = [
+    { href: "/", label: "Home", icon: Activity },
+    { href: "/pm-live", label: "PM Live", icon: Radio },
+    { href: "/watchlist", label: "Watchlists", icon: LayoutList },
+    { href: "/research", label: "Research", icon: BookOpen },
+];
+
+function isActivePath(pathname: string, href: string) {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default function Navbar() {
     const pathname = usePathname();
-    const navLinks = [
-        { href: "/", label: "Home", icon: Activity },
-        { href: "/pm-live", label: "PM Live", icon: Radio },
-        { href: "/watchlist", label: "Watchlist", icon: Briefcase },
-        { href: "/research", label: "Research", icon: BookOpen },
-        { href: "/pmbot", label: "PMbot", icon: Bot },
-    ];
 
     return (
         <>
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-pm-black/80 backdrop-blur-xl border-b border-pm-border">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex items-center justify-between h-16">
-                        {/* Logo */}
-                        <Link href="/" className="flex items-center gap-2 group">
-                            <div className="relative">
-                                <Zap className="w-8 h-8 text-pm-green" />
-                                <div className="absolute inset-0 blur-md bg-pm-green/30 group-hover:bg-pm-green/50 transition-colors" />
-                            </div>
-                            <span className="text-xl font-extrabold tracking-tight">
-                                <span className="text-pm-green">PM</span>
-                                <span className="text-pm-text">Research</span>
-                            </span>
-                        </Link>
+            <nav
+                className="fixed top-0 left-0 right-0 z-50 bg-pm-black/90 backdrop-blur-md border-b border-pm-border"
+                aria-label="Main"
+            >
+                <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
+                    <Link href="/" className="flex items-center gap-2.5" aria-label="PM Research home">
+                        <span className="type-display grid place-items-center w-8 h-8 rounded bg-pm-gold text-pm-black text-[15px] font-extrabold leading-none">
+                            PM
+                        </span>
+                        <span className="type-condensed text-lg font-semibold tracking-tight text-pm-text">
+                            Research
+                        </span>
+                    </Link>
 
-                        {/* Desktop Navigation Links */}
-                        <div className="hidden md:flex items-center gap-1">
-                            {navLinks.map((link) => {
-                                const isActive = pathname === link.href || (link.href === "/watchlist" && pathname.startsWith("/watchlist/"));
-                                const Icon = link.icon;
-                                return (
-                                    <Link
-                                        key={link.href}
-                                        href={link.href}
-                                        className={`relative px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-1.5
-                        ${isActive
-                                                ? "text-pm-green"
-                                                : "text-pm-muted hover:text-pm-text"
-                                            }`}
-                                    >
-                                        <Icon className="w-4 h-4" />
-                                        {link.label}
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="navbar-indicator"
-                                                className="absolute inset-0 bg-pm-green/10 rounded-lg border border-pm-green/20"
-                                                transition={{ type: "spring", duration: 0.5 }}
-                                            />
-                                        )}
-                                    </Link>
-                                );
-                            })}
-                        </div>
-
+                    <div className="hidden md:flex items-center gap-1">
+                        {navLinks.map((link) => {
+                            const active = isActivePath(pathname, link.href);
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    aria-current={active ? "page" : undefined}
+                                    className={`relative px-3 py-5 text-sm font-medium transition-colors ${
+                                        active ? "text-pm-text" : "text-pm-muted hover:text-pm-text"
+                                    }`}
+                                >
+                                    {link.label}
+                                    {active && (
+                                        <span className="absolute left-3 right-3 bottom-0 h-0.5 bg-pm-gold" aria-hidden />
+                                    )}
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             </nav>
 
-            {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-pm-black/90 backdrop-blur-xl border-t border-pm-border">
-                <div className="flex items-center justify-around h-16 px-2">
+            {/* Mobile bottom navigation */}
+            <nav
+                className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-pm-black/95 backdrop-blur-md border-t border-pm-border pb-[env(safe-area-inset-bottom)]"
+                aria-label="Main"
+            >
+                <div className="grid grid-cols-4 h-16">
                     {navLinks.map((link) => {
-                        const isActive = pathname === link.href || (link.href === "/watchlist" && pathname.startsWith("/watchlist/"));
+                        const active = isActivePath(pathname, link.href);
                         const Icon = link.icon;
                         return (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors
-                                    ${isActive
-                                        ? "text-pm-green"
-                                        : "text-pm-muted hover:text-pm-text"
-                                    }`}
+                                aria-current={active ? "page" : undefined}
+                                className={`flex flex-col items-center justify-center gap-1 transition-colors ${
+                                    active ? "text-pm-gold" : "text-pm-muted hover:text-pm-text"
+                                }`}
                             >
-                                <Icon className="w-5 h-5" />
-                                <span className="text-[10px] font-medium">{link.label}</span>
+                                <Icon className="w-5 h-5" aria-hidden />
+                                <span className="text-[11px] font-medium">{link.label}</span>
                             </Link>
                         );
                     })}
                 </div>
-            </div>
+            </nav>
         </>
     );
 }

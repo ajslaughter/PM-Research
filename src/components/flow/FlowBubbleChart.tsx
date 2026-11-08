@@ -65,9 +65,9 @@ export function FlowBubbleChart({ trades, keyLevels }: { trades: FlowTrade[]; ke
                     {keyLevels?.max_pain ? (
                         <ReferenceLine
                             x={keyLevels.max_pain}
-                            stroke="#9d4edd"
+                            stroke="#E9B949"
                             strokeDasharray="4 4"
-                            label={{ value: "Max Pain", fill: "#9d4edd", fontSize: 10, position: "top" }}
+                            label={{ value: "Max Pain", fill: "#E9B949", fontSize: 10, position: "top" }}
                         />
                     ) : null}
                     <Tooltip
@@ -93,9 +93,9 @@ export function FlowBubbleChart({ trades, keyLevels }: { trades: FlowTrade[]; ke
                         {chartData.map((entry, i) => (
                             <Cell
                                 key={i}
-                                fill={entry.type === "call" ? "#00ff9d" : "#ff4757"}
+                                fill={entry.type === "call" ? "#3BCF8E" : "#F0616D"}
                                 fillOpacity={0.6}
-                                stroke={entry.type === "call" ? "#00ff9d" : "#ff4757"}
+                                stroke={entry.type === "call" ? "#3BCF8E" : "#F0616D"}
                                 strokeOpacity={0.9}
                                 strokeWidth={1}
                             />

@@ -1,85 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
 import ResearchFeed from "@/components/ResearchFeed";
-import { BookOpen, Info } from "lucide-react";
-
-const TIME_FILTERS = [
-    { label: "All", value: "all" },
-    { label: "Last 30 Days", value: "30" },
-    { label: "Last 90 Days", value: "90" },
-];
 
 export default function ResearchPage() {
-    const [activeFilter, setActiveFilter] = useState("all");
-
     return (
-        <div className="relative min-h-screen pb-20 md:pb-0">
-            {/* Grid Background */}
-            <div className="absolute inset-0 grid-bg opacity-30" />
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-12 sm:py-14">
+            <header className="mb-12">
+                <h1 className="page-title">Research</h1>
+                <p className="page-lede">
+                    Deep dives on the companies and technologies behind each watchlist. Every note carries a PM Score
+                    for how far the thesis has developed.
+                </p>
+            </header>
 
-            {/* Glow Effects */}
-            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-pm-purple/5 rounded-full blur-3xl" />
+            <ResearchFeed />
 
-            <div className="relative max-w-7xl mx-auto px-6 py-12">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-12"
-                >
-                    <div className="flex items-start justify-between flex-wrap gap-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-lg bg-pm-purple/10 flex items-center justify-center">
-                                <BookOpen className="w-6 h-6 text-pm-purple" />
-                            </div>
-                            <div>
-                                <h1 className="text-3xl md:text-4xl font-bold">The Feed</h1>
-                                <p className="text-pm-muted">PM Research Analysis Hub</p>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Time Filter Pills */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="flex flex-wrap gap-2 mb-8"
-                >
-                    {TIME_FILTERS.map((filter) => (
-                        <button
-                            key={filter.value}
-                            onClick={() => setActiveFilter(filter.value)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeFilter === filter.value
-                                    ? "bg-pm-green text-pm-black"
-                                    : "bg-pm-charcoal border border-pm-border text-pm-muted hover:text-pm-text hover:border-pm-green/30"
-                                }`}
-                        >
-                            {filter.label}
-                        </button>
-                    ))}
-                </motion.div>
-
-                {/* Research Feed */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                >
-                    <ResearchFeed daysFilter={activeFilter} />
-                </motion.div>
-
-                {/* Disclaimer */}
-                <div className="mt-16 pt-8 border-t border-pm-border text-center">
-                    <p className="text-xs text-pm-muted flex items-center justify-center gap-2">
-                        <Info className="w-4 h-4" />
-                        DISCLAIMER: Content is for informational and educational purposes only. PM Research does not provide financial advice. PM Scores reflect research depth and thesis development, not return predictions. Always conduct your own research before making investment decisions.
-                    </p>
-                </div>
-            </div>
+            <p className="mt-16 pt-6 border-t border-pm-border text-xs text-pm-subtle leading-relaxed max-w-3xl">
+                Research is published for education and information only. PM Research does not provide financial
+                advice. PM Scores reflect research depth and thesis development, not return predictions. Do your own
+                research before making investment decisions.
+            </p>
         </div>
     );
 }

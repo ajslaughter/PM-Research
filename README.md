@@ -4,7 +4,7 @@
 
 ## Live Demo
 
-Visit the deployed site at [pmresearch.vercel.app](https://pmresearch.vercel.app)
+Visit the deployed site at [pm-research.vercel.app](https://pm-research.vercel.app)
 
 ## Tech Stack
 
@@ -16,7 +16,7 @@ Visit the deployed site at [pmresearch.vercel.app](https://pmresearch.vercel.app
 | **Animation** | Framer Motion 11 |
 | **Icons** | Lucide React |
 | **Database & Auth** | Supabase (PostgreSQL + Row-Level Security) |
-| **AI** | Anthropic Claude (PM Bot & article generation), Google Gemini (fallback) |
+| **AI** | Anthropic Claude (article generation), Google Gemini (fallback) |
 | **Market Data** | Yahoo Finance, CoinGecko, Polygon.io, Alpaca Markets |
 | **Deployment** | Vercel (auto-deploy on push) |
 
@@ -62,22 +62,22 @@ Research-driven watchlists tracking our highest-conviction themes across AI, rob
 - **Quantum Computing**: Tracking quantum hardware, software, and error correction breakthroughs
 - **Defense & Intelligence**: Tracking defense AI, cybersecurity, and autonomous systems reshaping modern warfare
 - **Biotech**: Tracking genomics, gene editing, and precision medicine breakthroughs
+- **Semiconductors**: AI chips, foundry, lithography equipment and memory (NVDA, TSM, AVGO, AMD, ASML, MU, MRVL)
 
 ### PM Score System
 Proprietary ranking system (0-100) combining momentum, fundamentals, and predictive signals. Higher scores indicate stronger conviction.
 
 ### Live Market Data
 - **Real-Time Prices**: Yahoo Finance API for stocks, CoinGecko for crypto (30s polling when market open, 5min when closed)
-- **YTD Returns**: Calculated from previous year's last trading day (TradingView standard)
+- **YTD Returns**: Calculated from the Dec 31, 2025 close (`src/data/baselines.ts`), split-adjusted
+- **Quarterly Returns**: 2026 quarter-end closes in `baselines.ts`; the current quarter is live
+- **Price audit**: `npm run audit:prices` re-checks every baseline against Yahoo Finance and flags splits
 
 ### Research Hub ("The Feed")
 Institutional-grade research notes categorized as:
 - **Sector Analysis**: Deep industry and sector coverage
 - **Risk Assessment**: Risk evaluation and structural analysis
 - **Deep Dive**: Comprehensive thesis reports and in-depth research
-
-### PM Research Bot
-AI-powered conversational research assistant built on Claude Haiku 3.5. Ask questions about stocks, sectors, and market trends and get on-demand analysis.
 
 ### Admin Panel
 Protected admin interface for managing research articles, generating AI content, and running compliance cleanup. Secured behind Supabase auth with email-based admin verification.
@@ -86,10 +86,9 @@ Protected admin interface for managing research articles, generating AI content,
 
 | Page | Route | Description |
 |------|-------|-------------|
-| Landing | `/` | Hero, stats, features, and CTAs |
+| Landing | `/` | Watchlist board (live YTD and day moves) and latest research |
 | Research Watchlists | `/watchlist` | Watchlist selector with position tables and live prices |
 | Research | `/research` | The Feed — research hub with filterable articles |
-| PM Bot | `/pmbot` | Conversational AI research assistant |
 | Pricing | `/pricing` | Subscription tiers and FAQ |
 | Login | `/login` | Supabase authentication |
 | Admin | `/admin` | Protected admin panel (requires auth) |
@@ -98,10 +97,9 @@ Protected admin interface for managing research articles, generating AI content,
 
 | Endpoint | Description |
 |----------|-------------|
-| `/api/prices` | Live price fetching (Yahoo Finance + CoinGecko) |
+| `/api/prices` | Live prices (Alpaca, Yahoo Finance fallback, CoinGecko for BTC) |
 | `/api/stock-info` | Stock metadata lookup |
 | `/api/polygon` | Polygon.io market data integration |
-| `/api/pmbot` | Claude Haiku conversational AI |
 | `/api/generate-article` | Claude-powered article generation |
 | `/api/generate-article-gemini` | Gemini fallback article generation |
 | `/api/auth/session` | Session validation |
@@ -118,7 +116,6 @@ src/
 │   │   ├── prices/                # Live price fetching (Yahoo + CoinGecko)
 │   │   ├── polygon/               # Polygon.io API integration
 │   │   ├── stock-info/            # Stock metadata endpoint
-│   │   ├── pmbot/                 # Claude Haiku conversational AI
 │   │   ├── generate-article/      # Claude article generation
 │   │   ├── generate-article-gemini/ # Gemini fallback generation
 │   │   ├── compliance-cleanup/    # Compliance data sanitization
@@ -128,7 +125,6 @@ src/
 │   ├── middleware.ts              # Auth middleware for protected routes
 │   ├── watchlist/page.tsx         # Research watchlists
 │   ├── research/page.tsx          # The Feed (research hub)
-│   ├── pmbot/page.tsx             # PM Bot conversational AI
 │   ├── pricing/page.tsx           # Subscription tiers
 │   ├── login/page.tsx             # Authentication
 │   └── admin/page.tsx             # Admin panel (protected)

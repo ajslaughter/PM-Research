@@ -136,8 +136,9 @@ export async function verifyAuth(request: NextRequest): Promise<{ user: { id: st
  * Verify authenticated user is an admin.
  *
  * Uses ADMIN_EMAILS env var (comma-separated) when provided.
- * If ADMIN_EMAILS is not set, authentication alone is treated as admin access
- * to avoid accidentally locking existing deployments.
+ * In production ADMIN_EMAILS is required: without it nobody is an admin.
+ * (It used to fall back to "any signed-in user", which made every account an admin.)
+ * Local development still allows any signed-in user when it's unset.
  */
 export async function verifyAdminAuth(request: NextRequest): Promise<{ user: { id: string; email?: string } } | null> {
     const auth = await verifyAuth(request);
@@ -147,6 +148,10 @@ export async function verifyAdminAuth(request: NextRequest): Promise<{ user: { i
 
     const adminEmailsRaw = process.env.ADMIN_EMAILS;
     if (!adminEmailsRaw) {
+        if (process.env.NODE_ENV === 'production') {
+            console.error('ADMIN_EMAILS is not set; admin access is disabled.');
+            return null;
+        }
         return auth;
     }
 
@@ -167,7 +172,7 @@ export async function verifyAdminAuth(request: NextRequest): Promise<{ user: { i
  * Common prompt injection patterns used across sanitization functions.
  * NOTE: Deny-lists are inherently brittle — a determined attacker can bypass
  * them (e.g., unicode homoglyphs, Base64, foreign languages). These patterns
- * provide a reasonable first line of defense for a research bot, but should
+ * provide a reasonable first line of defense for AI inputs, but should
  * NOT be relied upon for high-stakes actions.
  */
 const PROMPT_INJECTION_PATTERNS: RegExp[] = [
@@ -228,36 +233,6 @@ export function sanitizeTopic(topic: string): { valid: boolean; sanitized: strin
 
     return { valid: true, sanitized };
 }
-
-/**
- * Validate and sanitize message input for chat
- */
-export function sanitizeMessage(message: string): { valid: boolean; sanitized: string; error?: string } {
-    if (!message || typeof message !== 'string') {
-        return { valid: false, sanitized: '', error: 'Message is required' };
-    }
-
-    // Trim and limit length
-    let sanitized = message.trim();
-
-    if (sanitized.length > 500) {
-        return { valid: false, sanitized: '', error: 'Message must be 500 characters or less' };
-    }
-
-    if (sanitized.length < 1) {
-        return { valid: false, sanitized: '', error: 'Message cannot be empty' };
-    }
-
-    // Strip HTML tags
-    sanitized = sanitized.replace(/<[^>]*>/g, '');
-
-    if (containsInjection(sanitized)) {
-        return { valid: false, sanitized: '', error: 'Invalid message content' };
-    }
-
-    return { valid: true, sanitized };
-}
-
 /**
  * Verify request origin matches allowed domains
  */

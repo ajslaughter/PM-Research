@@ -1,13 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
 import {
-    Radio,
-    Clock,
     Activity,
     Loader2,
-    Grid3X3,
     MessageCircle,
     Check,
     AlertCircle,
@@ -27,15 +23,18 @@ import {
 import { AgentTabs } from "@/components/agents/AgentTabs";
 import { TickerTape } from "@/components/TickerTape";
 import { MarketCountdown } from "@/components/MarketCountdown";
+import { getSessionNote, isMarketOpen } from "@/lib/marketHours";
+import { formatPct } from "@/lib/format";
 
 // Market indices/assets to chart
+// Line colors avoid the up/down greens and reds so a line's color never reads as a gain or loss
 const CHART_SYMBOLS = [
-    { symbol: "SPY", label: "S&P 500", color: "#00ff9d" },
-    { symbol: "QQQ", label: "Nasdaq", color: "#9d4edd" },
-    { symbol: "DIA", label: "Dow Jones", color: "#3b82f6" },
-    { symbol: "IWM", label: "Russell 2000", color: "#f97316" },
-    { symbol: "GLD", label: "Gold", color: "#eab308" },
-    { symbol: "BTC-USD", label: "Bitcoin", color: "#ef4444" },
+    { symbol: "SPY", label: "S&P 500", color: "#ECEFF3" },
+    { symbol: "QQQ", label: "Nasdaq", color: "#7AA2F7" },
+    { symbol: "DIA", label: "Dow Jones", color: "#B39DDB" },
+    { symbol: "IWM", label: "Russell 2000", color: "#4FC1C6" },
+    { symbol: "GLD", label: "Gold", color: "#E9B949" },
+    { symbol: "BTC-USD", label: "Bitcoin", color: "#F7931A" },
 ];
 
 const TIMEFRAMES = [
@@ -119,8 +118,8 @@ function getHeatColor(change: number): string {
 function ChartTooltip({ active, payload, label }: any) {
     if (!active || !payload?.length) return null;
     return (
-        <div className="bg-pm-charcoal border border-pm-border rounded-lg px-4 py-3 shadow-xl">
-            <p className="text-xs text-pm-muted font-mono mb-2">{label}</p>
+        <div className="bg-pm-black/95 border border-pm-border rounded-md px-3 py-2.5 shadow-xl">
+            <p className="text-xs text-pm-muted mb-1.5">{label}</p>
             {payload.map((entry: any) => {
                 const sym = CHART_SYMBOLS.find((s) => s.symbol === entry.dataKey);
                 const val = entry.value as number;
@@ -132,10 +131,9 @@ function ChartTooltip({ active, payload, label }: any) {
                         />
                         <span className="text-pm-muted">{sym?.label || entry.dataKey}</span>
                         <span
-                            className={`font-mono ml-auto ${val >= 0 ? "text-pm-green" : "text-pm-red"}`}
+                            className={`type-data ml-auto pl-3 ${val > 0 ? "text-pm-up" : val < 0 ? "text-pm-down" : "text-pm-muted"}`}
                         >
-                            {val >= 0 ? "+" : ""}
-                            {val.toFixed(2)}%
+                            {formatPct(val)}
                         </span>
                     </div>
                 );
@@ -144,11 +142,69 @@ function ChartTooltip({ active, payload, label }: any) {
     );
 }
 
+// Intraday bucket size (seconds) for each timeframe; daily+ ranges bucket by date.
+const INTRADAY_BUCKET: Partial<Record<TimeframeKey, number>> = { "1d": 300, "5d": 1800 };
+
+/**
+ * Merge per-symbol series into chart rows keyed by time, so every line is plotted
+ * against the moment it was recorded. (Rows used to be matched by array index,
+ * which put Friday's stock session on the same x position as Sunday's bitcoin.)
+ */
+function mergeSeriesByTime(
+    data: Record<string, Array<{ t: number; value: number }>>,
+    range: TimeframeKey
+): ChartPoint[] {
+    const bucket = INTRADAY_BUCKET[range];
+    const keyOf = (t: number) =>
+        bucket ? String(Math.floor(t / bucket) * bucket) : new Date(t * 1000).toISOString().slice(0, 10);
+
+    const rows = new Map<string, { t: number; values: Record<string, number> }>();
+    for (const sym of CHART_SYMBOLS) {
+        for (const point of data[sym.symbol] ?? []) {
+            const key = keyOf(point.t);
+            const row = rows.get(key) ?? { t: point.t, values: {} };
+            row.t = Math.min(row.t, point.t);
+            row.values[sym.symbol] = point.value;
+            rows.set(key, row);
+        }
+    }
+
+    const sorted = Array.from(rows.values()).sort((a, b) => a.t - b.t);
+    if (sorted.length === 0) return [];
+
+    const etDay = (t: number) =>
+        new Date(t * 1000).toLocaleDateString("en-US", { timeZone: "America/New_York" });
+    const spansDays = etDay(sorted[0].t) !== etDay(sorted[sorted.length - 1].t);
+
+    const label = (t: number): string => {
+        const date = new Date(t * 1000);
+        const tz = "America/New_York";
+        if (range === "1d") {
+            return date.toLocaleString("en-US", {
+                ...(spansDays ? { weekday: "short" as const } : {}),
+                hour: "numeric",
+                minute: "2-digit",
+                timeZone: tz,
+            });
+        }
+        if (range === "5d") {
+            return date.toLocaleString("en-US", { weekday: "short", hour: "numeric", minute: "2-digit", timeZone: tz });
+        }
+        if (range === "5y") {
+            return date.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+        }
+        return date.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+    };
+
+    return sorted.map((row) => ({ time: label(row.t), ...row.values }));
+}
+
 export default function PMLivePage() {
     const [timeframe, setTimeframe] = useState<TimeframeKey>("1d");
     const [chartData, setChartData] = useState<ChartPoint[]>([]);
     const [chartLoading, setChartLoading] = useState(true);
     const [latestValues, setLatestValues] = useState<Record<string, number>>({});
+    const [chartUpdated, setChartUpdated] = useState<Date | null>(null);
     const [mapFilter, setMapFilter] = useState<MapFilterKey>("sp500");
     const [mapData, setMapData] = useState<MapData | null>(null);
     const [mapLoading, setMapLoading] = useState(true);
@@ -207,30 +263,10 @@ export default function PMLivePage() {
             const res = await fetch(`/api/historical?symbols=${symbols}&range=${range}`);
             if (!res.ok) throw new Error("Failed");
             const json = await res.json();
-            const data: Record<string, Array<{ time: string; value: number }>> = json.data;
-
-            let maxPoints = 0;
-            let timeAxis: string[] = [];
-            for (const sym of CHART_SYMBOLS) {
-                const series = data[sym.symbol];
-                if (series && series.length > maxPoints) {
-                    maxPoints = series.length;
-                    timeAxis = series.map((p) => p.time);
-                }
-            }
-
-            const merged: ChartPoint[] = timeAxis.map((time, i) => {
-                const point: ChartPoint = { time };
-                for (const sym of CHART_SYMBOLS) {
-                    const series = data[sym.symbol];
-                    if (series && series[i] !== undefined) {
-                        point[sym.symbol] = series[i].value;
-                    }
-                }
-                return point;
-            });
-
+            const data: Record<string, Array<{ t: number; value: number }>> = json.data;
+            const merged = mergeSeriesByTime(data, range);
             setChartData(merged);
+            setChartUpdated(new Date());
 
             const latest: Record<string, number> = {};
             for (const sym of CHART_SYMBOLS) {
@@ -269,92 +305,67 @@ export default function PMLivePage() {
         fetchMap();
     }, [mapFilter]);
 
-    const marketOpen = useMemo(() => {
-        const now = new Date();
-        const et = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
-        const hours = et.getHours();
-        const mins = et.getMinutes();
-        const day = et.getDay();
-        const time = hours * 60 + mins;
-        return day >= 1 && day <= 5 && time >= 570 && time < 960;
+    // Holiday-aware market status, re-checked every minute
+    const [marketOpen, setMarketOpen] = useState(() => isMarketOpen());
+    const [sessionNote, setSessionNote] = useState<string | null>(() => getSessionNote());
+    useEffect(() => {
+        const id = setInterval(() => {
+            setMarketOpen(isMarketOpen());
+            setSessionNote(getSessionNote());
+        }, 60_000);
+        return () => clearInterval(id);
     }, []);
 
     return (
-        <div className="relative overflow-hidden pb-20 md:pb-0 min-h-screen">
-            <div className="absolute inset-0 grid-bg opacity-50" />
-            <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-pm-green/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-pm-purple/10 rounded-full blur-3xl" />
-
-            <section className="relative pt-24 pb-16 px-6">
-                <div className="max-w-6xl mx-auto">
-                    {/* Header */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center space-y-6"
-                    >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-pm-charcoal border border-pm-border rounded-full">
-                            {marketOpen ? (
-                                <Radio className="w-4 h-4 text-pm-green animate-pulse" />
-                            ) : (
-                                <Clock className="w-4 h-4 text-pm-muted" />
-                            )}
-                            <span className="text-sm font-mono text-pm-muted">
-                                {marketOpen ? "Market Open" : "Market Closed"}
-                                {!chartLoading && (
-                                    <span className="ml-2 text-pm-subtle">
-                                        · Updated {new Date().toLocaleTimeString()}
-                                    </span>
-                                )}
-                            </span>
-                            {!marketOpen && (
-                                <>
-                                    <span className="text-pm-border">·</span>
-                                    <MarketCountdown />
-                                </>
-                            )}
+        <div className="relative overflow-hidden min-h-screen">
+            <section className="relative pt-12 sm:pt-14 pb-16">
+                <div className="max-w-6xl mx-auto px-5 sm:px-6">
+                    <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                        <div>
+                            <h1 className="page-title">PM Live</h1>
+                            <p className="page-lede">Major indices, gold and bitcoin, the S&amp;P 500 heat map and market tools.</p>
                         </div>
-
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight tracking-tight">
-                            <span className="text-pm-green">PM</span>
-                            <span className="text-pm-text"> Live</span>
-                        </h1>
-
-                        <p className="text-lg sm:text-xl text-pm-muted max-w-2xl mx-auto leading-relaxed">
-                            Real-time market performance across major indices and assets.
+                        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-pm-muted md:justify-end md:text-right">
+                            <span className="inline-flex items-center gap-2 text-pm-text">
+                                <span
+                                    className={`w-2 h-2 rounded-full ${marketOpen ? "bg-pm-gold animate-pulse-slow" : "bg-pm-subtle"}`}
+                                    aria-hidden
+                                />
+                                {marketOpen ? "Market open" : "Market closed"}
+                            </span>
+                            {sessionNote && <span>{sessionNote}</span>}
+                            {!marketOpen && <MarketCountdown />}
+                            {chartUpdated && (
+                                <span>
+                                    Updated{" "}
+                                    {chartUpdated.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                                </span>
+                            )}
                         </p>
-                    </motion.div>
+                    </header>
 
                     {/* Ticker Tape */}
                     <TickerTape />
 
                     {/* Market Performance Chart */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="mt-12"
-                    >
-                        <div className="pm-card border-pm-border/50 overflow-hidden">
+                    <div className="mt-12">
+                        <div className="rounded-lg border border-pm-border bg-pm-charcoal overflow-hidden">
                             <div className="px-6 py-4 border-b border-pm-border/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div className="flex items-center gap-2">
-                                    <Activity className="w-5 h-5 text-pm-green" />
-                                    <h2 className="text-lg font-semibold text-pm-text">
-                                        Market Performance
-                                    </h2>
-                                    <span className="text-xs text-pm-muted font-mono">
-                                        (% change)
-                                    </span>
+                                <div>
+                                    <h2 className="section-title">Market performance</h2>
+                                    <p className="text-xs text-pm-subtle mt-0.5">
+                                        % change from the close before the period. YTD is measured from Dec 31.
+                                    </p>
                                 </div>
-                                <div className="flex items-center gap-1 bg-pm-black/50 rounded-lg p-1">
+                                <div className="flex items-center gap-1 bg-pm-black rounded-md p-1 border border-pm-border" role="group" aria-label="Chart period">
                                     {TIMEFRAMES.map((tf) => (
                                         <button
                                             key={tf.key}
                                             onClick={() => setTimeframe(tf.key)}
-                                            className={`px-3 py-1.5 text-xs font-mono rounded-md transition-all ${
+                                            aria-pressed={timeframe === tf.key}
+                                            className={`px-3 py-1.5 text-xs type-data rounded transition-colors ${
                                                 timeframe === tf.key
-                                                    ? "bg-pm-green text-pm-black font-semibold"
+                                                    ? "bg-pm-gold text-pm-black font-semibold"
                                                     : "text-pm-muted hover:text-pm-text"
                                             }`}
                                         >
@@ -370,16 +381,16 @@ export default function PMLivePage() {
                                     return (
                                         <div key={sym.symbol} className="flex items-center gap-2 text-xs">
                                             <span
-                                                className="w-2.5 h-2.5 rounded-full"
+                                                className="w-3 h-0.5 rounded-full"
                                                 style={{ backgroundColor: sym.color }}
+                                                aria-hidden
                                             />
                                             <span className="text-pm-muted">{sym.label}</span>
                                             {val !== undefined && (
                                                 <span
-                                                    className={`font-mono font-semibold ${val >= 0 ? "text-pm-green" : "text-pm-red"}`}
+                                                    className={`type-data font-semibold ${val > 0 ? "text-pm-up" : val < 0 ? "text-pm-down" : "text-pm-muted"}`}
                                                 >
-                                                    {val >= 0 ? "+" : ""}
-                                                    {val.toFixed(2)}%
+                                                    {formatPct(val)}
                                                 </span>
                                             )}
                                         </div>
@@ -391,25 +402,25 @@ export default function PMLivePage() {
                                 {chartLoading ? (
                                     <div className="flex items-center justify-center h-full gap-3 text-pm-muted">
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        <span className="font-mono text-sm">Loading chart...</span>
+                                        <span className="text-sm">Loading chart…</span>
                                     </div>
                                 ) : chartData.length === 0 ? (
-                                    <div className="flex items-center justify-center h-full text-pm-muted font-mono text-sm">
-                                        No data available
+                                    <div className="flex items-center justify-center h-full text-pm-muted text-sm">
+                                        Chart data isn&apos;t available right now. Try another period or check back shortly.
                                     </div>
                                 ) : (
                                     <ResponsiveContainer width="100%" height="100%">
                                         <LineChart data={chartData}>
                                             <XAxis
                                                 dataKey="time"
-                                                tick={{ fill: "#6b7280", fontSize: 10 }}
+                                                tick={{ fill: "#6C7581", fontSize: 11 }}
                                                 tickLine={false}
-                                                axisLine={{ stroke: "#374151" }}
+                                                axisLine={{ stroke: "#262D36" }}
                                                 interval="preserveStartEnd"
                                                 minTickGap={50}
                                             />
                                             <YAxis
-                                                tick={{ fill: "#6b7280", fontSize: 10 }}
+                                                tick={{ fill: "#6C7581", fontSize: 11 }}
                                                 tickLine={false}
                                                 axisLine={false}
                                                 tickFormatter={(v: number) =>
@@ -417,7 +428,7 @@ export default function PMLivePage() {
                                                 }
                                                 width={55}
                                             />
-                                            <ReferenceLine y={0} stroke="#374151" strokeDasharray="3 3" />
+                                            <ReferenceLine y={0} stroke="#3A424D" strokeDasharray="3 3" />
                                             <Tooltip content={<ChartTooltip />} />
                                             {CHART_SYMBOLS.map((sym) => (
                                                 <Line
@@ -425,8 +436,9 @@ export default function PMLivePage() {
                                                     type="monotone"
                                                     dataKey={sym.symbol}
                                                     stroke={sym.color}
-                                                    strokeWidth={2}
+                                                    strokeWidth={1.75}
                                                     dot={false}
+                                                    isAnimationActive={false}
                                                     connectNulls
                                                 />
                                             ))}
@@ -435,27 +447,17 @@ export default function PMLivePage() {
                                 )}
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Market Map */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.4 }}
-                        className="mt-12"
-                    >
-                        <div className="pm-card border-pm-border/50 overflow-hidden">
+                    <div className="mt-12">
+                        <div className="rounded-lg border border-pm-border bg-pm-charcoal overflow-hidden">
                             {/* Map Header with Filter Bar */}
                             <div className="px-6 py-4 border-b border-pm-border/50">
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className="flex items-center gap-2">
-                                        <Grid3X3 className="w-5 h-5 text-pm-green" />
-                                        <h2 className="text-lg font-semibold text-pm-text">
-                                            {mapData?.label || "Market Map"}
-                                        </h2>
-                                    </div>
-                                    <span className="text-xs text-pm-muted font-mono">
-                                        Today&apos;s performance
+                                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-3">
+                                    <h2 className="section-title">{mapData?.label || "Market map"}</h2>
+                                    <span className="text-xs text-pm-subtle">
+                                        Change vs prior close, sized by index weight
                                     </span>
                                 </div>
                                 {/* Filter Pills */}
@@ -464,9 +466,10 @@ export default function PMLivePage() {
                                         <button
                                             key={f.key}
                                             onClick={() => setMapFilter(f.key)}
-                                            className={`px-3 py-1.5 text-xs font-mono rounded-md transition-all border ${
+                                            aria-pressed={mapFilter === f.key}
+                                            className={`px-3 py-1.5 text-xs rounded transition-colors border ${
                                                 mapFilter === f.key
-                                                    ? "bg-pm-green text-pm-black font-semibold border-pm-green"
+                                                    ? "bg-pm-gold text-pm-black font-semibold border-pm-gold"
                                                     : "text-pm-muted hover:text-pm-text border-pm-border/50 hover:border-pm-border"
                                             }`}
                                         >
@@ -480,11 +483,11 @@ export default function PMLivePage() {
                                 {mapLoading ? (
                                     <div className="flex items-center justify-center h-64 gap-3 text-pm-muted">
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        <span className="font-mono text-sm">Loading market map...</span>
+                                        <span className="text-sm">Loading market map…</span>
                                     </div>
                                 ) : !mapData ? (
-                                    <div className="flex items-center justify-center h-64 text-pm-muted font-mono text-sm">
-                                        Failed to load market data
+                                    <div className="flex items-center justify-center h-64 text-pm-muted text-sm">
+                                        Market data couldn&apos;t load. Pick another view or try again shortly.
                                     </div>
                                 ) : (
                                     <div className="flex flex-wrap gap-0.5">
@@ -596,21 +599,15 @@ export default function PMLivePage() {
                                 )}
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Live Market Feed */}
                     {feedEntries.length > 0 && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.5 }}
-                            className="mt-12"
-                        >
-                            <div className="pm-card border-pm-border/50 overflow-hidden">
+                        <div className="mt-12">
+                            <div className="rounded-lg border border-pm-border bg-pm-charcoal overflow-hidden">
                                 <div className="px-4 sm:px-6 py-4 border-b border-pm-border/50 flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2 min-w-0">
-                                        <Radio className="w-5 h-5 text-pm-green flex-shrink-0" />
-                                        <h2 className="text-base sm:text-lg font-semibold text-pm-text">Live Feed</h2>
+                                        <h2 className="section-title">Live feed</h2>
                                         <span className="text-xs text-pm-muted font-mono hidden sm:inline">
                                             Market updates & analyst reports
                                         </span>
@@ -693,41 +690,31 @@ export default function PMLivePage() {
                                     </button>
                                 )}
                             </div>
-                        </motion.div>
+                        </div>
                     )}
 
                     {/* AI Agents */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.6 }}
-                        className="mt-12"
-                    >
+                    <div className="mt-12">
                         <AgentTabs />
-                    </motion.div>
+                    </div>
 
                     {/* Live Alerts Signup */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.6 }}
-                        className="mt-12"
-                    >
-                        <div className="pm-card border-pm-border/50 overflow-hidden">
+                    <div className="mt-12">
+                        <div className="rounded-lg border border-pm-border bg-pm-charcoal overflow-hidden">
                             <div className="px-6 py-6 flex flex-col md:flex-row items-center gap-6">
                                 <div className="flex items-center gap-4 flex-1">
-                                    <div className="w-12 h-12 rounded-xl bg-pm-green/10 border border-pm-green/20 flex items-center justify-center flex-shrink-0">
-                                        <MessageCircle className="w-6 h-6 text-pm-green" />
+                                    <div className="w-12 h-12 rounded-md bg-pm-gold/10 border border-pm-gold/20 flex items-center justify-center flex-shrink-0">
+                                        <MessageCircle className="w-6 h-6 text-pm-gold" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-pm-text">
-                                            Get Live Market Alerts
+                                        <h3 className="type-condensed text-xl font-semibold text-pm-text">
+                                            Get live market alerts
                                         </h3>
                                         <p className="text-sm text-pm-muted mt-0.5">
                                             Receive real-time market updates via iMessage — open, hourly, and close reports with charts.
                                         </p>
                                         <p className="text-xs text-pm-subtle mt-1">
-                                            iPhone only · Manually approved
+                                            iPhone only. Sign-ups are approved manually.
                                         </p>
                                     </div>
                                 </div>
@@ -750,12 +737,12 @@ export default function PMLivePage() {
                                                         if (alertStatus === "error") setAlertStatus("idle");
                                                     }}
                                                     onKeyDown={(e) => e.key === "Enter" && handleAlertSignup()}
-                                                    className="px-4 py-2.5 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text font-mono placeholder:text-pm-subtle focus:outline-none focus:border-pm-green/50 w-full sm:w-48"
+                                                    className="px-4 py-2.5 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text font-mono placeholder:text-pm-subtle focus:outline-none focus:border-pm-gold w-full sm:w-48"
                                                 />
                                                 <button
                                                     onClick={handleAlertSignup}
                                                     disabled={alertStatus === "loading" || !alertPhone.trim()}
-                                                    className="px-5 py-2.5 bg-pm-green text-pm-black text-sm font-semibold rounded-lg hover:bg-pm-green/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                                                    className="btn-primary py-2.5 text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     {alertStatus === "loading" ? (
                                                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -775,7 +762,7 @@ export default function PMLivePage() {
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Hover/Tap Tooltip */}
                     {hoveredStock && mapData && (() => {

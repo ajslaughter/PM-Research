@@ -9,7 +9,7 @@ export interface WatchlistPosition {
 }
 
 // Watchlist category for filtering
-export type WatchlistCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech';
+export type WatchlistCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech' | 'Semiconductors';
 
 // Watchlist structure
 export interface Watchlist {
@@ -34,6 +34,8 @@ export const Defense_Intelligence_Watchlist = ['PLTR', 'CRWD', 'PANW', 'KTOS', '
 
 // Biotech Watchlist Tickers
 export const Biotech_Watchlist = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
+
+export const Semiconductors_Watchlist = ['NVDA', 'TSM', 'AVGO', 'AMD', 'ASML', 'MU', 'MRVL'];
 
 // Default watchlists
 export const defaultWatchlists: Watchlist[] = [
@@ -149,52 +151,22 @@ export const defaultWatchlists: Watchlist[] = [
             { ticker: "TWST", weight: 16.66, thesis: "Synthetic biology infrastructure; silicon-based DNA synthesis platform enables genomics R&D at scale" },
         ],
     },
+    {
+        id: "semiconductors",
+        name: "Semiconductors",
+        description: "AI Chips, Foundry, Equipment & Memory",
+        category: "Semiconductors",
+        positions: [
+            { ticker: "NVDA", weight: 14.29, thesis: "Dominant AI accelerator platform; CUDA software ecosystem is the moat" },
+            { ticker: "TSM", weight: 14.29, thesis: "Builds most leading-edge AI chips; owns the advanced packaging (CoWoS) bottleneck" },
+            { ticker: "AVGO", weight: 14.29, thesis: "Custom AI accelerators for hyperscalers plus Ethernet networking for AI clusters" },
+            { ticker: "AMD", weight: 14.29, thesis: "Second source for AI GPUs (Instinct) and share gains in data center CPUs" },
+            { ticker: "ASML", weight: 14.28, thesis: "Sole supplier of EUV lithography; every leading-edge fab depends on it" },
+            { ticker: "MU", weight: 14.28, thesis: "High-bandwidth memory (HBM) supplier; memory gates AI accelerator output" },
+            { ticker: "MRVL", weight: 14.28, thesis: "Custom silicon and optical interconnect for AI data centers" },
+        ],
+    },
 ];
-
-// Historical quarterly returns by watchlist ID
-// Each watchlist has its own performance history reflecting sector-specific dynamics
-export const watchlistQuarterlyReturns: Record<string, { quarter: string; return: number }[]> = {
-    "pm-research": [
-        { quarter: "Q4 2025", return: 12.8 },
-        { quarter: "Q3 2025", return: 7.4 },
-        { quarter: "Q2 2025", return: 15.2 },
-    ],
-    "robotics": [
-        { quarter: "Q4 2025", return: 16.3 },
-        { quarter: "Q3 2025", return: -3.2 },
-        { quarter: "Q2 2025", return: 11.7 },
-    ],
-    "ai-infrastructure": [
-        { quarter: "Q4 2025", return: 19.7 },
-        { quarter: "Q3 2025", return: 4.1 },
-        { quarter: "Q2 2025", return: 22.4 },
-    ],
-    "energy-renaissance": [
-        { quarter: "Q4 2025", return: 14.5 },
-        { quarter: "Q3 2025", return: 12.7 },
-        { quarter: "Q2 2025", return: 8.3 },
-    ],
-    "orbital-space": [
-        { quarter: "Q4 2025", return: 21.8 },
-        { quarter: "Q3 2025", return: 6.3 },
-        { quarter: "Q2 2025", return: 14.6 },
-    ],
-    "quantum": [
-        { quarter: "Q4 2025", return: 42.6 },
-        { quarter: "Q3 2025", return: -8.4 },
-        { quarter: "Q2 2025", return: 31.5 },
-    ],
-    "defense-intelligence": [
-        { quarter: "Q4 2025", return: 8.9 },
-        { quarter: "Q3 2025", return: 11.2 },
-        { quarter: "Q2 2025", return: 9.8 },
-    ],
-    "biotech": [
-        { quarter: "Q4 2025", return: -5.2 },
-        { quarter: "Q3 2025", return: 8.7 },
-        { quarter: "Q2 2025", return: -12.4 },
-    ],
-};
 
 // Mock research notes
 export interface ResearchNote {

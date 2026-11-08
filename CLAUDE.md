@@ -38,18 +38,32 @@ All YTD calculations use hardcoded Dec 31, 2025 closing prices. Formula: `((curr
 - `src/data/baselines.ts` — Single source of truth for baseline prices (DO NOT modify mid-year)
 - `src/services/stockService.ts` — `calculateYTDFromBaseline()` and `calculateWeightedYTD()`
 - **When adding new tickers**: you must add baseline prices to `baselines.ts` AND metadata to `stockDatabase.ts`
+- **Stock splits**: current prices are post-split, so divide the stored baseline and quarter-end closes by the split ratio (see the CRWD note)
+- `quarterEndCloses` in `baselines.ts` holds 2026 quarter-end closes; `calculateQuarterlyReturns()` compounds them to the YTD figure and computes the current quarter live
+- `npm run audit:prices` checks every stored value against Yahoo Finance and flags splits. Run it at each quarter end and before the year rollover
+
+### Market hours
+
+`src/lib/marketHours.ts` is the single NYSE calendar (holidays and 1 PM early closes for 2026–2027). Use it instead of ad-hoc weekday checks, and add the next year's dates each December.
+
+### Day change and chart returns
+
+- Day % = price vs the prior session's official close (Alpaca `prevDailyBar`, or Yahoo `range=1d` `chartPreviousClose`)
+- `/api/historical` measures each range from the close before the window; YTD starts on the Dec 31 bar
+- PM Live merges chart series by timestamp, not array index
 
 ### Auth & Admin
 
 - Supabase auth with JWT. Session cookies synced via `/api/auth/session`.
 - Admin routes protected by `src/middleware.ts` (checks `sb-access-token` cookie, redirects to `/login`)
 - Admin API endpoints use `verifyAdminAuth()` from `src/lib/security.ts` (checks `ADMIN_EMAILS` env var)
-- If `ADMIN_EMAILS` is unset, any authenticated user gets admin access (dev fallback)
+- `ADMIN_EMAILS` is required in production; if it's unset there, nobody is an admin (local dev still allows any signed-in user)
+- Article generation routes are admin-only. The research and IPO agent routes run local Python scripts and stay off unless `RESEARCH_AGENT_*` / `IPO_AGENT_*` env vars are set
 
 ### AI Endpoints
 
-Two article generators (Claude primary, Gemini fallback) and a chatbot:
-- All AI inputs are sanitized via `sanitizeTopic()` / `sanitizeMessage()` in `src/lib/security.ts`
+Two article generators (Claude primary, Gemini fallback):
+- All AI inputs are sanitized via `sanitizeTopic()` in `src/lib/security.ts`
 - Prompt injection detection via regex deny-list (acknowledged as brittle in the code)
 - Agent system: 4 specialized agents (research, flow, ipo, macro) with UI in `src/components/agents/`
 
@@ -64,14 +78,15 @@ Two article generators (Claude primary, Gemini fallback) and a chatbot:
 
 ## Design System
 
-Dark theme defined in `tailwind.config.ts`:
-- `pm-black` (#0a0a0a) — background
-- `pm-green` (#00ff9d) — positive/CTAs
-- `pm-purple` (#9d4edd) — predictive elements
-- `pm-red` (#ff4757) — negative returns
-- `pm-muted` (#6b7280) — secondary text
+Tokens live in `tailwind.config.ts`; shared component classes in `src/app/globals.css`.
 
-Fonts: Plus Jakarta Sans (body), JetBrains Mono (data/code). Custom animations: `pulse-slow`, `glow`, `scan`.
+- Color is meaning: `pm-up` / `pm-down` (aliased `pm-green` / `pm-red`) only mean price direction. Never use them for buttons or brand accents.
+- `pm-gold` (#E9B949) is PM's own voice: PM Scores, primary buttons, the active page, focus rings.
+- Surfaces: `pm-black` (page, #0E1216), `pm-charcoal` (panels), `pm-dark` (raised rows, inputs), `pm-border` (hairlines). Text: `pm-text`, `pm-muted`, `pm-subtle`.
+- One typeface, Archivo (variable, via `next/font`). Width utilities: `type-display` (condensed headlines), `type-condensed` (section titles, tickers), `type-data` (tabular numbers), `type-text` (reset to normal width).
+- Page header grammar: `page-title` + `page-lede`, left-aligned. Section headings use `section-title`.
+- Number formatting: `formatPct`, `directionClass`, `formatPrice` in `src/lib/format.ts` (true minus sign, neutral color for flat or missing values).
+- No decorative glows, grid backgrounds or entrance animations; motion only where data changes.
 
 ## Database
 

@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { fetchQuotes } from "@/lib/yahoo";
+
+export const dynamic = "force-dynamic";
 
 interface StockEntry {
     ticker: string;
@@ -831,31 +834,11 @@ export async function GET(req: NextRequest) {
         const changes: Record<string, number> = {};
         const prices: Record<string, number> = {};
 
-        const batchSize = 15;
-        const batches = Array.from({ length: Math.ceil(tickers.length / batchSize) }, (_, i) =>
-            tickers.slice(i * batchSize, (i + 1) * batchSize)
-        );
-
-        for (const batch of batches) {
-            await Promise.all(
-                batch.map(async (ticker) => {
-                    try {
-                        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=1d&interval=1d`;
-                        const res = await fetch(url, {
-                            headers: { "User-Agent": "Mozilla/5.0" },
-                            next: { revalidate: 60 },
-                        });
-                        if (!res.ok) return;
-                        const data = await res.json();
-                        const meta = data.chart?.result?.[0]?.meta;
-                        if (meta?.regularMarketPrice && meta?.chartPreviousClose) {
-                            const pct = ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100;
-                            changes[ticker] = Math.round(pct * 100) / 100;
-                            prices[ticker] = Math.round(meta.regularMarketPrice * 100) / 100;
-                        }
-                    } catch {}
-                })
-            );
+        // Fresh quotes on every request (see lib/yahoo.ts for why the data cache isn't used)
+        const quotes = await fetchQuotes(tickers);
+        for (const [ticker, q] of Object.entries(quotes)) {
+            changes[ticker] = Math.round(q.changePercent * 100) / 100;
+            prices[ticker] = Math.round(q.price * 100) / 100;
         }
 
         const sectors: Record<string, Array<{
