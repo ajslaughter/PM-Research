@@ -1,18 +1,19 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAdmin } from "@/context/AdminContext";
-import { calculateYTD, calculateWeightedYTD, calculateWeightedDayChange, calculateAvgPmScore, getPmScoreCategory } from "@/services/stockService";
-import { getYTDBaselineDisplayString, YTD_OPEN_YEAR } from "@/lib/dateUtils";
-import { WatchlistCategory, watchlistQuarterlyReturns } from "@/lib/watchlists";
-import SectorBadge from "@/components/SectorBadge";
 import {
-    TrendingUp,
-    TrendingDown,
-    RefreshCw,
-    AlertCircle,
-    Filter,
-} from "lucide-react";
+    calculateYTD,
+    calculateWeightedYTD,
+    calculateWeightedDayChange,
+    calculateAvgPmScore,
+    calculateQuarterlyReturns,
+    getPmScoreCategory,
+} from "@/services/stockService";
+import { getYTDBaselineDisplayString } from "@/lib/dateUtils";
+import { BASELINE_DATE, TRACKING_YEAR } from "@/data/baselines";
+import { directionClass, formatMarketCap, formatNoteDate, formatPct, formatPrice } from "@/lib/format";
+import { RefreshCw } from "lucide-react";
 
 // API timeout in milliseconds
 const API_TIMEOUT = 10000;
@@ -32,71 +33,17 @@ interface PriceApiResponse {
     timestamp: string;
 }
 
-// Available categories for filtering
-const WATCHLIST_CATEGORIES: WatchlistCategory[] = [
-    'Magnificent 7',
-    'AI Infrastructure',
-    'Energy Renaissance',
-    'Orbital & Space',
-    'Defense & Intelligence',
-];
-
-// Props for the component
 interface WatchlistTableProps {
     watchlistId: string;
     watchlistName: string;
-    category?: WatchlistCategory;
-    onCategoryChange?: (category: WatchlistCategory) => void;
-    showCategoryFilter?: boolean;
 }
 
-const SkeletonCell = ({ width = "w-16" }: { width?: string }) => (
-    <div className={`h-4 ${width} bg-pm-charcoal animate-pulse rounded`} />
+const Skeleton = ({ className = "w-16" }: { className?: string }) => (
+    <span className={`inline-block h-4 rounded bg-pm-dark animate-pulse align-middle ${className}`} />
 );
 
-const LoadingSpinner = ({ size = "w-4 h-4" }: { size?: string }) => (
-    <div className={`${size} border-2 border-pm-green/30 border-t-pm-green rounded-full animate-spin`} />
-);
-
-const SkeletonKPI = () => (
-    <div className="flex flex-col gap-2">
-        <div className="h-8 w-24 bg-pm-charcoal animate-pulse rounded" />
-    </div>
-);
-
-const formatPercent = (value: number): string => {
-    const rounded = Math.round(value * 100) / 100;
-    return rounded.toFixed(2);
-};
-
-const formatMarketCap = (value: number | null): string => {
-    if (!value || value <= 0) return '--';
-    if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
-    if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;
-    if (value >= 1e6) return `$${(value / 1e6).toFixed(0)}M`;
-    return `$${value.toLocaleString()}`;
-};
-
-export default function WatchlistTable({
-    watchlistId,
-    watchlistName,
-    category,
-    onCategoryChange,
-    showCategoryFilter = false
-}: WatchlistTableProps) {
+export default function WatchlistTable({ watchlistId }: WatchlistTableProps) {
     const { watchlists, stockDb } = useAdmin();
-
-    // Internal category state if not controlled externally
-    const [internalCategory, setInternalCategory] = useState<WatchlistCategory>(category || 'Magnificent 7');
-    const activeCategory = category ?? internalCategory;
-
-    const handleCategoryChange = useCallback((newCategory: WatchlistCategory) => {
-        if (onCategoryChange) {
-            onCategoryChange(newCategory);
-        } else {
-            setInternalCategory(newCategory);
-        }
-    }, [onCategoryChange]);
 
     const [prices, setPrices] = useState<Record<string, PriceData>>({});
     const [marketOpen, setMarketOpen] = useState(false);
@@ -111,29 +58,13 @@ export default function WatchlistTable({
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const isMountedRef = useRef(true);
 
-    // Get watchlists filtered by category
-    const filteredWatchlists = useMemo(() => {
-        if (!showCategoryFilter) return watchlists;
-        return watchlists.filter((p) => p.category === activeCategory);
-    }, [watchlists, activeCategory, showCategoryFilter]);
-
-    // Get current watchlist (respecting category filter)
-    const currentWatchlist = useMemo(() => {
-        if (showCategoryFilter && filteredWatchlists.length > 0) {
-            // When filtering, use the first watchlist in the filtered list if current doesn't match
-            const found = filteredWatchlists.find((p) => p.id === watchlistId);
-            return found || filteredWatchlists[0];
-        }
-        return watchlists.find((p) => p.id === watchlistId);
-    }, [watchlists, filteredWatchlists, watchlistId, showCategoryFilter]);
+    const currentWatchlist = watchlists.find((p) => p.id === watchlistId);
 
     // Get positions from current watchlist
     const positions = currentWatchlist?.positions || [];
 
     // Build ticker list dynamically from current watchlist
-    const tickerList = useMemo(() => {
-        return positions.map((p) => p.ticker).join(',');
-    }, [positions]);
+    const tickerList = positions.map((p) => p.ticker).join(',');
 
     // Fetch prices function with AbortController and timeout
     const fetchPrices = useCallback(async (forceRefresh = false) => {
@@ -260,32 +191,23 @@ export default function WatchlistTable({
     const liveWatchlist = positions.map((position) => {
         const stock = stockDb[position.ticker.toUpperCase()];
         const liveData = prices[position.ticker];
-        const isStale = staleTickers.has(position.ticker);
-        const currentPrice = liveData?.price ?? 0;
+        const currentPrice = liveData?.price ?? null;
+        const hasPrice = currentPrice !== null && currentPrice > 0;
         const yearlyClose = stock?.yearlyClose ?? 0;
-
-        // Calculate YTD return using stock database yearlyClose
-        const ytdReturn = yearlyClose > 0 && currentPrice > 0
-            ? calculateYTD(currentPrice, yearlyClose)
-            : 0;
-
-        // Use daily change from API
-        const dayChange = liveData?.changePercent ?? 0;
 
         return {
             ticker: position.ticker,
             name: stock?.name || position.ticker,
-            assetClass: stock?.assetClass || 'Unknown',
+            assetClass: stock?.assetClass || "",
             weight: position.weight,
             thesis: position.thesis,
             yearlyClose,
             currentPrice,
-            returnPercent: ytdReturn,
-            dayChange,
+            returnPercent: hasPrice && yearlyClose > 0 ? calculateYTD(currentPrice, yearlyClose) : null,
+            dayChange: hasPrice ? liveData?.changePercent ?? null : null,
             marketCap: liveData?.marketCap ?? null,
             pmScore: stock?.pmScore || 0,
-            isStale,
-            isLive: liveData?.isLive ?? false,
+            isStale: staleTickers.has(position.ticker) || !hasPrice,
         };
     });
 
@@ -295,332 +217,177 @@ export default function WatchlistTable({
     const avgPmScore = calculateAvgPmScore(positions, stockDb);
     const totalWeight = positions.reduce((acc, p) => acc + p.weight, 0);
 
-    // Quarterly Performance - historical returns are per-watchlist
-    const historicalReturns = currentWatchlist ? watchlistQuarterlyReturns[currentWatchlist.id] : undefined;
-    const quarterlyPerformance = [
-        { quarter: "Q1 2026", return: weightedYTD, isCurrent: true },
-        ...(historicalReturns || []).map((q) => ({
-            quarter: q.quarter,
-            return: q.return,
-            isCurrent: false,
-        })),
-    ];
+    // Quarterly performance for the tracking year (compounds to the YTD figure)
+    const quarterlyPerformance = calculateQuarterlyReturns(positions, prices);
 
-    // Format the last updated time
-    const formatLastUpdated = () => {
-        if (!lastPriceFetch) return "Loading...";
-        return lastPriceFetch.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-    };
+    const updatedLabel = lastPriceFetch
+        ? lastPriceFetch.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+        : null;
+    const loading = isLoadingPrices && !lastPriceFetch;
+    const pricedCount = liveWatchlist.filter((p) => !p.isStale).length;
 
     if (!currentWatchlist) {
-        return (
-            <div className="pm-card p-8 text-center">
-                <p className="text-pm-muted">Watchlist not found</p>
-            </div>
-        );
+        return <p className="py-12 text-pm-muted">This watchlist doesn&apos;t exist. Pick one above.</p>;
     }
 
     if (positions.length === 0) {
-        return (
-            <div className="pm-card p-8 text-center">
-                <p className="text-pm-muted">No positions in this watchlist. Use the admin panel to add positions.</p>
-            </div>
-        );
+        return <p className="py-12 text-pm-muted">No positions yet. Add them from the admin panel.</p>;
     }
+
+    const figures = [
+        {
+            label: `${TRACKING_YEAR} YTD`,
+            value: loading ? null : formatPct(weightedYTD),
+            tone: directionClass(weightedYTD),
+            note: getYTDBaselineDisplayString(),
+        },
+        {
+            label: "Today",
+            value: loading ? null : formatPct(weightedDayChange),
+            tone: directionClass(weightedDayChange),
+            note: marketOpen ? "Weighted, live" : "Weighted, last session",
+        },
+        {
+            label: "Avg PM Score",
+            value: String(Math.round(avgPmScore)),
+            tone: "text-pm-gold",
+            note: getPmScoreCategory(avgPmScore),
+        },
+        {
+            label: "Holdings",
+            value: String(positions.length),
+            tone: "text-pm-text",
+            note: Math.round(totalWeight) === 100 ? "Fully weighted" : `${totalWeight.toFixed(2)}% allocated`,
+        },
+    ];
 
     return (
         <div className="space-y-8">
-            {/* Category Filter */}
-            {showCategoryFilter && (
-                <div className="flex items-center gap-4 flex-wrap">
-                    <div className="flex items-center gap-2 text-pm-muted">
-                        <Filter className="w-4 h-4" />
-                        <span className="text-xs uppercase tracking-wider">Category:</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        {WATCHLIST_CATEGORIES.map((cat) => (
-                            <button
-                                key={cat}
-                                onClick={() => handleCategoryChange(cat)}
-                                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-                                    activeCategory === cat
-                                        ? 'bg-pm-green text-pm-black'
-                                        : 'bg-pm-charcoal text-pm-muted hover:bg-pm-charcoal/80 hover:text-white border border-pm-border'
-                                }`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Watchlist Name (when category filter is active) */}
-            {showCategoryFilter && currentWatchlist && (
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-xl font-bold text-white">{currentWatchlist.name}</h2>
-                        <p className="text-sm text-pm-muted">{currentWatchlist.description}</p>
-                    </div>
-                    {filteredWatchlists.length > 1 && (
-                        <div className="flex gap-2">
-                            {filteredWatchlists.map((p) => (
-                                <span
-                                    key={p.id}
-                                    className={`px-2 py-1 text-xs rounded ${
-                                        p.id === currentWatchlist.id
-                                            ? 'bg-pm-green/20 text-pm-green'
-                                            : 'bg-pm-charcoal text-pm-muted'
-                                    }`}
-                                >
-                                    {p.name.split(' ')[0]}
-                                </span>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* KPI Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="pm-card p-4 border-l-4 border-l-pm-green">
-                    <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
-                        YTD Return
-                    </div>
-                    <div className={`text-2xl font-bold ${weightedYTD >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
-                        {isLoadingPrices ? (
-                            <div className="flex items-center gap-2">
-                                <LoadingSpinner size="w-5 h-5" />
-                                <SkeletonKPI />
-                            </div>
-                        ) : (
-                            <span>{weightedYTD >= 0 ? '+' : ''}{formatPercent(weightedYTD)}%</span>
-                        )}
-                    </div>
-                    <div className="text-[10px] text-pm-muted mt-1">{getYTDBaselineDisplayString()}</div>
-                </div>
-
-                <div className="pm-card p-4 border-l-4 border-l-pm-purple">
-                    <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
-                        Today
-                    </div>
-                    <div className={`text-2xl font-bold ${weightedDayChange >= 0 ? 'text-pm-green' : 'text-pm-red'}`}>
-                        {isLoadingPrices ? (
-                            <div className="flex items-center gap-2">
-                                <LoadingSpinner size="w-5 h-5" />
-                                <SkeletonKPI />
-                            </div>
-                        ) : (
-                            <span>{weightedDayChange >= 0 ? '+' : ''}{formatPercent(weightedDayChange)}%</span>
-                        )}
-                    </div>
-                    <div className="text-[10px] text-pm-muted mt-1">Weighted Daily</div>
-                </div>
-
-                <div className="pm-card p-4 border-l-4 border-l-blue-500">
-                    <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
-                        Avg PM Score
-                    </div>
-                    <div className="text-2xl font-bold text-white">
-                        {Math.round(avgPmScore)}
-                    </div>
-                    <div className="text-[10px] text-pm-muted mt-1">{getPmScoreCategory(avgPmScore)}</div>
-                </div>
-
-                <div className="pm-card p-4 border-l-4 border-l-yellow-500">
-                    <div className="text-xs text-pm-muted uppercase tracking-wider mb-1">
-                        Holdings
-                    </div>
-                    <div className="text-2xl font-bold text-white">
-                        {positions.length}
-                    </div>
-                    <div className="text-[10px] text-pm-muted mt-1">
-                        {totalWeight === 100 ? 'Total' : `${formatPercent(totalWeight)}% Allocated`}
-                    </div>
-                </div>
-            </div>
-
-            {/* Quarterly Breakdown Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs text-pm-muted font-mono border-t border-b border-pm-border py-4 bg-pm-charcoal/30">
-                {quarterlyPerformance.map((q) => (
-                    <div key={q.quarter} className={q.isCurrent ? "text-pm-green font-bold" : ""}>
-                        <div className="mb-1">{q.quarter}</div>
-                        {q.isCurrent && isLoadingPrices ? (
-                            <div className="flex justify-center">
-                                <LoadingSpinner size="w-3 h-3" />
-                            </div>
-                        ) : (
-                            <div>{q.return > 0 ? "+" : ""}{formatPercent(q.return)}%</div>
-                        )}
+            {/* Key figures */}
+            <dl className="grid grid-cols-2 lg:grid-cols-4 border-y border-pm-border">
+                {figures.map((f, i) => (
+                    <div
+                        key={f.label}
+                        className={[
+                            "py-5 pr-4",
+                            i % 2 === 1 ? "pl-4 border-l border-pm-border" : "",
+                            i >= 2 ? "border-t border-pm-border lg:border-t-0" : "",
+                            i > 0 ? "lg:pl-6 lg:border-l lg:border-pm-border" : "",
+                        ].join(" ")}
+                    >
+                        <dt className="text-sm text-pm-muted">{f.label}</dt>
+                        <dd className={`mt-1 type-display font-bold text-4xl ${f.tone}`}>
+                            {f.value ?? <Skeleton className="w-24 h-8" />}
+                        </dd>
+                        <dd className="mt-1 text-xs text-pm-subtle">{f.note}</dd>
                     </div>
                 ))}
-            </div>
+            </dl>
 
-            {/* Data Freshness Indicator */}
-            <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-3 sm:gap-4 text-xs text-pm-muted flex-wrap">
-                    {/* Market Status */}
-                    <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${marketOpen ? 'bg-pm-green animate-pulse' : 'bg-gray-500'}`} />
-                        <span className="text-gray-400">
-                            {marketOpen ? 'Market Open' : 'Market Closed'}
-                        </span>
-                    </div>
-                    {/* Data Status */}
-                    <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${
-                            fetchError ? 'bg-red-500' :
-                            isLoadingPrices || isRefreshing ? 'bg-yellow-500' :
-                            staleTickers.size > 0 ? 'bg-orange-500' : 'bg-pm-green'
-                        } animate-pulse`} />
+            {/* Quarters compound to the YTD figure */}
+            {quarterlyPerformance.length > 0 && (
+                <div>
+                    <ol className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-pm-border rounded-md overflow-hidden border border-pm-border">
+                        {quarterlyPerformance.map((q) => (
+                            <li key={q.label} className="bg-pm-charcoal px-4 py-3">
+                                <div className="text-xs text-pm-muted">
+                                    {q.label}
+                                    {q.inProgress ? " to date" : ""}
+                                </div>
+                                <div className={`mt-0.5 type-data text-lg font-semibold ${loading ? "text-pm-subtle" : directionClass(q.value)}`}>
+                                    {loading ? "…" : formatPct(q.value)}
+                                </div>
+                            </li>
+                        ))}
+                    </ol>
+                    <p className="mt-2 text-xs text-pm-subtle">
+                        Quarter returns compound to the YTD figure. Completed quarters use quarter-end closes;
+                        the current quarter is live.
+                    </p>
+                </div>
+            )}
+
+            {/* Status */}
+            <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-pm-muted">
+                <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <span className="inline-flex items-center gap-2">
+                        <span
+                            className={`w-2 h-2 rounded-full ${marketOpen ? "bg-pm-gold animate-pulse-slow" : "bg-pm-subtle"}`}
+                            aria-hidden
+                        />
+                        {marketOpen ? "Market open" : "Market closed"}
+                    </span>
+                    {fetchError ? (
+                        <span className="text-pm-down">Prices couldn&apos;t load. Retrying automatically.</span>
+                    ) : updatedLabel ? (
+                        <span>Prices updated {updatedLabel}</span>
+                    ) : (
+                        <span>Loading prices</span>
+                    )}
+                    {!loading && pricedCount < liveWatchlist.length && !fetchError && (
                         <span>
-                            {fetchError ? "Data unavailable" :
-                             isLoadingPrices || isRefreshing ? "Syncing..." :
-                             staleTickers.size > 0 ? `${staleTickers.size} stale` : "Live"}
-                        </span>
-                    </div>
-                    {/* Last Update */}
-                    {lastPriceFetch && (
-                        <span className="text-gray-500 hidden sm:inline">
-                            Updated: {formatLastUpdated()}
+                            {liveWatchlist.length - pricedCount} of {liveWatchlist.length} without a live price
                         </span>
                     )}
-                </div>
+                </p>
                 <button
                     onClick={handleRefresh}
                     disabled={isLoadingPrices || isRefreshing}
-                    className="flex items-center gap-1 text-xs text-pm-muted hover:text-pm-green transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Refresh prices"
+                    className="inline-flex items-center gap-1.5 hover:text-pm-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    <RefreshCw className={`w-3 h-3 ${isLoadingPrices || isRefreshing ? 'animate-spin' : ''}`} />
-                    Refresh
+                    <RefreshCw className={`w-3.5 h-3.5 ${isLoadingPrices || isRefreshing ? "animate-spin" : ""}`} aria-hidden />
+                    Refresh prices
                 </button>
             </div>
 
-            {/* Table View */}
-            <div className="overflow-x-auto rounded-xl border border-pm-border bg-pm-charcoal/50">
-                <table className="w-full text-left border-collapse min-w-[800px]">
+            {/* Holdings */}
+            <div className="rounded-lg border border-pm-border bg-pm-charcoal overflow-hidden">
+                <table className="w-full text-left border-collapse">
+                    <caption className="sr-only">
+                        {currentWatchlist.name} holdings with live prices, day change and {TRACKING_YEAR} year-to-date return
+                    </caption>
                     <thead>
-                        <tr className="text-xs font-mono text-pm-muted uppercase border-b border-pm-border bg-pm-black/50">
-                            <th className="p-4 sticky left-0 bg-pm-black/90 z-10">Ticker</th>
-                            <th className="p-4">Asset Class</th>
-                            <th className="p-4 text-right">Weight</th>
-                            <th className="p-4 text-right">{YTD_OPEN_YEAR} Open</th>
-                            <th className="p-4 text-right">
-                                Current
-                                {isLoadingPrices && (
-                                    <span className="ml-2 text-yellow-500 animate-pulse">
-                                        (Syncing...)
-                                    </span>
-                                )}
-                                {!isLoadingPrices && (
-                                    <span className="ml-2 text-pm-green text-[10px]">
-                                        (Live)
-                                    </span>
-                                )}
+                        <tr className="text-xs text-pm-muted border-b border-pm-border">
+                            <th scope="col" className="font-medium px-4 py-3">Holding</th>
+                            <th scope="col" className="font-medium px-4 py-3 hidden lg:table-cell">Asset class</th>
+                            <th scope="col" className="font-medium px-4 py-3 text-right hidden md:table-cell">Weight</th>
+                            <th scope="col" className="font-medium px-4 py-3 text-right hidden md:table-cell">
+                                {formatNoteDate(BASELINE_DATE, false)} close
                             </th>
-                            <th className="p-4 text-right">Day %</th>
-                            <th className="p-4 text-right">YTD Return</th>
+                            <th scope="col" className="font-medium px-4 py-3 text-right">Price</th>
+                            <th scope="col" className="font-medium px-4 py-3 text-right">Day</th>
+                            <th scope="col" className="font-medium px-4 py-3 text-right">YTD</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-pm-border">
                         {liveWatchlist.map((position) => (
-                            <tr
-                                key={position.ticker}
-                                className="hover:bg-pm-charcoal/80 transition-colors group"
-                            >
-                                <td className="p-4 sticky left-0 bg-pm-dark/95 z-10">
-                                    <div className="flex flex-col">
-                                        <span className="font-bold text-white group-hover:text-pm-green transition-colors">
-                                            {position.ticker}
-                                        </span>
-                                        <span className="text-xs text-pm-muted">
-                                            {position.name}
-                                        </span>
-                                        <span className="text-[10px] font-mono text-pm-muted/70 mt-0.5">
-                                            {isLoadingPrices ? (
-                                                <SkeletonCell width="w-14" />
-                                            ) : (
-                                                <>Mkt Cap: {formatMarketCap(position.marketCap)}</>
-                                            )}
-                                        </span>
-                                    </div>
+                            <tr key={position.ticker} className="hover:bg-pm-dark transition-colors">
+                                <th scope="row" className="px-4 py-3.5 font-normal">
+                                    <span className="block type-condensed font-bold text-base text-pm-text">
+                                        {position.ticker}
+                                    </span>
+                                    <span className="block text-xs text-pm-muted max-w-[9rem] sm:max-w-none truncate">{position.name}</span>
+                                    <span className="hidden sm:block text-xs text-pm-subtle">
+                                        {loading ? <Skeleton className="w-14 h-3" /> : `Mkt cap ${formatMarketCap(position.marketCap)}`}
+                                    </span>
+                                </th>
+                                <td className="px-4 py-3.5 text-sm text-pm-muted hidden lg:table-cell">
+                                    {position.assetClass}
                                 </td>
-                                <td className="p-4">
-                                    <SectorBadge
-                                        sector={position.assetClass}
-                                        size="sm"
-                                        interactive={false}
-                                    />
+                                <td className="px-4 py-3.5 text-right type-data text-sm text-pm-muted hidden md:table-cell">
+                                    {position.weight.toFixed(2)}%
                                 </td>
-                                <td className="p-4 text-right font-mono text-pm-muted">
-                                    {formatPercent(position.weight)}%
+                                <td className="px-4 py-3.5 text-right type-data text-sm text-pm-muted hidden md:table-cell">
+                                    {formatPrice(position.yearlyClose)}
                                 </td>
-                                <td className="p-4 text-right font-mono text-pm-muted">
-                                    ${position.yearlyClose.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                <td className="px-4 py-3.5 text-right type-data text-sm text-pm-text">
+                                    {loading ? <Skeleton className="w-16" /> : formatPrice(position.currentPrice)}
                                 </td>
-                                <td className="p-4 text-right font-mono font-medium">
-                                    {isLoadingPrices ? (
-                                        <div className="flex items-center justify-end gap-2">
-                                            <LoadingSpinner size="w-3 h-3" />
-                                            <SkeletonCell width="w-20" />
-                                        </div>
-                                    ) : (
-                                        <span className={`inline-flex items-center gap-1 ${position.isLive ? 'text-white' : 'text-gray-400'}`}>
-                                            ${position.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                            {position.isStale && (
-                                                <span title="Price unavailable - using cached data" className="text-orange-400">
-                                                    <AlertCircle className="w-3 h-3" />
-                                                </span>
-                                            )}
-                                            {!position.isLive && !position.isStale && (
-                                                <span className="text-xs text-yellow-500" title="Cached price">●</span>
-                                            )}
-                                        </span>
-                                    )}
+                                <td className={`px-4 py-3.5 text-right type-data text-sm ${directionClass(position.dayChange)}`}>
+                                    {loading ? <Skeleton className="w-12" /> : formatPct(position.dayChange)}
                                 </td>
-                                <td className={`p-4 text-right font-mono text-sm ${position.isStale ? "text-pm-muted" : position.dayChange >= 0 ? "text-pm-green" : "text-pm-red"
-                                    }`}>
-                                    {isLoadingPrices ? (
-                                        <div className="flex items-center justify-end gap-2">
-                                            <LoadingSpinner size="w-3 h-3" />
-                                            <SkeletonCell width="w-12" />
-                                        </div>
-                                    ) : position.isStale ? (
-                                        <span className="text-pm-muted">--</span>
-                                    ) : (
-                                        <span>
-                                            {position.dayChange >= 0 ? "+" : ""}
-                                            {formatPercent(position.dayChange)}%
-                                        </span>
-                                    )}
-                                </td>
-                                <td
-                                    className={`p-4 text-right font-mono font-bold ${position.returnPercent >= 0
-                                        ? "text-pm-green"
-                                        : "text-pm-red"
-                                        }`}
-                                >
-                                    {isLoadingPrices ? (
-                                        <div className="flex items-center justify-end gap-2">
-                                            <LoadingSpinner size="w-3 h-3" />
-                                            <SkeletonCell width="w-16" />
-                                        </div>
-                                    ) : (
-                                        <>
-                                            {position.returnPercent >= 0 ? (
-                                                <TrendingUp className="w-3 h-3 inline mr-1" />
-                                            ) : (
-                                                <TrendingDown className="w-3 h-3 inline mr-1" />
-                                            )}
-                                            {position.returnPercent > 0 ? "+" : ""}
-                                            {formatPercent(position.returnPercent)}%
-                                        </>
-                                    )}
+                                <td className={`px-4 py-3.5 text-right type-data text-sm font-semibold ${directionClass(position.returnPercent)}`}>
+                                    {loading ? <Skeleton className="w-14" /> : formatPct(position.returnPercent)}
                                 </td>
                             </tr>
                         ))}

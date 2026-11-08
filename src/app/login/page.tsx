@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Mail, Loader2, AlertCircle, LogIn } from "lucide-react";
+import { Lock, Mail, Loader2, AlertCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 function LoginForm() {
@@ -21,7 +21,7 @@ function LoginForm() {
         router.push(redirectTo);
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-pm-green" />
+                <Loader2 className="w-8 h-8 animate-spin text-pm-gold" />
             </div>
         );
     }
@@ -48,14 +48,13 @@ function LoginForm() {
     if (authLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-pm-green" />
+                <Loader2 className="w-8 h-8 animate-spin text-pm-gold" />
             </div>
         );
     }
 
     return (
         <div className="relative min-h-screen flex items-center justify-center">
-            <div className="absolute inset-0 grid-bg opacity-30" />
 
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -64,14 +63,9 @@ function LoginForm() {
             >
                 <div className="pm-card">
                     {/* Header */}
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="w-12 h-12 rounded-lg bg-pm-green/10 flex items-center justify-center">
-                            <LogIn className="w-6 h-6 text-pm-green" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-bold">Sign In</h1>
-                            <p className="text-pm-muted text-sm">Sign in to access your watchlist</p>
-                        </div>
+                    <div className="mb-8">
+                        <h1 className="type-display font-bold text-4xl text-pm-text">Sign in</h1>
+                        <p className="mt-1 text-pm-muted text-sm">For PM Research administrators.</p>
                     </div>
 
                     {/* Error Message */}
@@ -79,7 +73,7 @@ function LoginForm() {
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 text-red-400"
+                            className="mb-6 p-4 bg-pm-down/10 border border-pm-down/30 rounded-md flex items-center gap-3 text-pm-down"
                         >
                             <AlertCircle className="w-5 h-5 flex-shrink-0" />
                             <span className="text-sm">{error}</span>
@@ -101,7 +95,7 @@ function LoginForm() {
                                     placeholder="you@example.com"
                                     required
                                     disabled={isLoading}
-                                    className="w-full pl-11 pr-4 py-3 bg-pm-black border border-pm-border rounded-lg text-pm-text placeholder:text-pm-muted focus:outline-none focus:border-pm-green transition-colors"
+                                    className="w-full pl-11 pr-4 py-3 bg-pm-black border border-pm-border rounded-md text-pm-text placeholder:text-pm-subtle focus:outline-none focus:border-pm-gold transition-colors"
                                 />
                             </div>
                         </div>
@@ -119,7 +113,7 @@ function LoginForm() {
                                     placeholder="Enter password"
                                     required
                                     disabled={isLoading}
-                                    className="w-full pl-11 pr-4 py-3 bg-pm-black border border-pm-border rounded-lg text-pm-text placeholder:text-pm-muted focus:outline-none focus:border-pm-green transition-colors"
+                                    className="w-full pl-11 pr-4 py-3 bg-pm-black border border-pm-border rounded-md text-pm-text placeholder:text-pm-subtle focus:outline-none focus:border-pm-gold transition-colors"
                                 />
                             </div>
                         </div>
@@ -132,20 +126,17 @@ function LoginForm() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    Signing In...
+                                    Signing in…
                                 </>
                             ) : (
-                                <>
-                                    <LogIn className="w-5 h-5" />
-                                    Sign In
-                                </>
+                                "Sign in"
                             )}
                         </button>
                     </form>
 
                     {/* Footer Note */}
-                    <p className="mt-6 text-center text-sm text-pm-muted">
-                        Sign in with your existing account to access your watchlist.
+                    <p className="mt-6 text-sm text-pm-subtle">
+                        Research and watchlists are open to everyone without an account.
                     </p>
                 </div>
             </motion.div>
@@ -156,7 +147,7 @@ function LoginForm() {
 function LoginLoading() {
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-pm-green" />
+            <Loader2 className="w-8 h-8 animate-spin text-pm-gold" />
         </div>
     );
 }

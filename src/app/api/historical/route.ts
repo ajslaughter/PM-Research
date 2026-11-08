@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Yahoo Finance chart API — returns historical OHLC data
+export const dynamic = "force-dynamic";
+
+// Yahoo Finance chart API — returns historical closes as % change over the range.
 // Symbols: SPY (S&P 500), QQQ (Nasdaq), DIA (Dow), IWM (Russell 2000), GLD (Gold), BTC-USD (Bitcoin)
 
 interface YahooChartResult {
+    meta?: { chartPreviousClose?: number; previousClose?: number };
     timestamp: number[];
     indicators: {
         quote: Array<{
@@ -21,6 +24,27 @@ const RANGE_MAP: Record<string, { range: string; interval: string }> = {
     "5y": { range: "5y", interval: "1wk" },
 };
 
+/**
+ * Build the Yahoo URL for a range.
+ *
+ * YTD is requested from Dec 31 of last year so the first bar is the Dec 31 close,
+ * the same anchor the watchlists use. (Yahoo's own range=ytd starts on the first
+ * trading day of January, which shifted every YTD figure by that day's move.)
+ */
+function chartUrl(symbol: string, range: string): string {
+    const base = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}`;
+    const { interval } = RANGE_MAP[range];
+    if (range === "ytd") {
+        const year = Number(
+            new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric" }).format(new Date())
+        );
+        const period1 = Math.floor(Date.UTC(year - 1, 11, 31) / 1000);
+        const period2 = Math.floor(Date.now() / 1000);
+        return `${base}?period1=${period1}&period2=${period2}&interval=${interval}&includePrePost=false`;
+    }
+    return `${base}?range=${RANGE_MAP[range].range}&interval=${interval}&includePrePost=false`;
+}
+
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const symbols = searchParams.get("symbols")?.split(",") || [];
@@ -30,21 +54,19 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "No symbols provided" }, { status: 400 });
     }
 
-    const config = RANGE_MAP[range];
-    if (!config) {
+    if (!RANGE_MAP[range]) {
         return NextResponse.json({ error: "Invalid range" }, { status: 400 });
     }
 
     try {
-        const results: Record<string, Array<{ time: string; value: number }>> = {};
+        const results: Record<string, Array<{ t: number; value: number }>> = {};
 
         await Promise.all(
             symbols.map(async (symbol) => {
                 try {
-                    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${config.range}&interval=${config.interval}&includePrePost=false`;
-                    const res = await fetch(url, {
+                    const res = await fetch(chartUrl(symbol, range), {
                         headers: { "User-Agent": "Mozilla/5.0" },
-                        next: { revalidate: range === "1d" ? 60 : 300 },
+                        cache: "no-store",
                     });
 
                     if (!res.ok) return;
@@ -55,57 +77,25 @@ export async function GET(req: NextRequest) {
 
                     const timestamps = chart.timestamp;
                     const closes = chart.indicators.quote[0].close;
+                    const firstClose = closes.find((c): c is number => c !== null && c > 0) ?? 0;
 
-                    // Find first valid close price as baseline for % calculation
-                    let baseline = 0;
-                    for (const c of closes) {
-                        if (c !== null && c > 0) {
-                            baseline = c;
-                            break;
-                        }
-                    }
+                    // % change is measured from the close *before* the window
+                    // (prior session close for 1D, close 5 sessions back for 5D, ...),
+                    // matching how brokers and Yahoo quote period returns.
+                    // YTD starts on the Dec 31 bar, so its first close is the anchor.
+                    const baseline =
+                        range === "ytd"
+                            ? firstClose
+                            : chart.meta?.chartPreviousClose || chart.meta?.previousClose || firstClose;
 
-                    if (baseline === 0) return;
+                    if (!baseline) return;
 
-                    const points: Array<{ time: string; value: number }> = [];
+                    const points: Array<{ t: number; value: number }> = [];
                     for (let i = 0; i < timestamps.length; i++) {
                         const close = closes[i];
                         if (close === null || close === undefined) continue;
-
                         const pctChange = ((close - baseline) / baseline) * 100;
-                        const date = new Date(timestamps[i] * 1000);
-
-                        let timeLabel: string;
-                        if (range === "1d") {
-                            timeLabel = date.toLocaleTimeString("en-US", {
-                                hour: "numeric",
-                                minute: "2-digit",
-                                hour12: true,
-                                timeZone: "America/New_York",
-                            });
-                        } else if (range === "5d") {
-                            timeLabel = date.toLocaleDateString("en-US", {
-                                weekday: "short",
-                                hour: "numeric",
-                                minute: "2-digit",
-                                hour12: true,
-                                timeZone: "America/New_York",
-                            });
-                        } else if (range === "5y") {
-                            timeLabel = date.toLocaleDateString("en-US", {
-                                month: "short",
-                                year: "numeric",
-                                timeZone: "America/New_York",
-                            });
-                        } else {
-                            timeLabel = date.toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                timeZone: "America/New_York",
-                            });
-                        }
-
-                        points.push({ time: timeLabel, value: Math.round(pctChange * 100) / 100 });
+                        points.push({ t: timestamps[i], value: Math.round(pctChange * 100) / 100 });
                     }
 
                     results[symbol] = points;
@@ -116,7 +106,7 @@ export async function GET(req: NextRequest) {
         );
 
         return NextResponse.json({ data: results, range });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });
     }
 }

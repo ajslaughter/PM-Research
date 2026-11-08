@@ -1,5 +1,5 @@
 import { StockData, stockDatabase } from '@/data/stockDatabase';
-import { getBaselinePrice, hasBaseline, BASELINE_DATE } from '@/data/baselines';
+import { getBaselinePrice, hasBaseline, getQuarterEndClose, QUARTER_END_DATES, TRACKING_YEAR } from '@/data/baselines';
 
 /**
  * YTD Calculation Standards
@@ -184,4 +184,68 @@ export function calculateAvgPmScore(
   }
 
   return count > 0 ? totalScore / count : 0;
+}
+
+export interface QuarterPerformance {
+  label: string; // e.g. "Q1 2026"
+  value: number; // percent
+  inProgress: boolean;
+}
+
+/**
+ * Quarter-by-quarter returns for the watchlist, measured on the same basis as
+ * the YTD figure (each position held from its Dec 31 weight), so the quarters
+ * compound exactly to the YTD number shown above them.
+ *
+ * Completed quarters use recorded quarter-end closes; the current quarter is
+ * live prices against the last quarter-end close.
+ */
+export function calculateQuarterlyReturns(
+  positions: Array<{ ticker: string; weight: number }>,
+  livePrices: Record<string, { price: number | null; changePercent: number }>,
+  now: Date = new Date()
+): QuarterPerformance[] {
+  const todayET = now.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }); // YYYY-MM-DD
+  const completedEnds = QUARTER_END_DATES.filter(
+    (date) => date <= todayET && positions.some((p) => getQuarterEndClose(p.ticker, date) !== undefined)
+  );
+
+  const eligible = positions.filter((p) => {
+    const live = livePrices[p.ticker]?.price;
+    return (
+      hasBaseline(p.ticker) &&
+      !!live &&
+      live > 0 &&
+      completedEnds.every((date) => getQuarterEndClose(p.ticker, date) !== undefined)
+    );
+  });
+  const totalWeight = eligible.reduce((sum, p) => sum + p.weight, 0);
+  if (totalWeight === 0) return [];
+
+  // Value of $1 invested on Dec 31 at the watchlist weights
+  const indexAt = (priceOf: (ticker: string) => number) =>
+    eligible.reduce((sum, p) => sum + p.weight * (priceOf(p.ticker) / getBaselinePrice(p.ticker)), 0) / totalWeight;
+
+  const checkpoints = [
+    1,
+    ...completedEnds.map((date) => indexAt((t) => getQuarterEndClose(t, date) as number)),
+  ];
+  const live = indexAt((t) => livePrices[t]?.price as number);
+
+  const pct = (end: number, start: number) => Math.round((end / start - 1) * 10000) / 100;
+  const quarters: QuarterPerformance[] = completedEnds.map((_, i) => ({
+    label: `Q${i + 1} ${TRACKING_YEAR}`,
+    value: pct(checkpoints[i + 1], checkpoints[i]),
+    inProgress: false,
+  }));
+
+  if (completedEnds.length < 4) {
+    quarters.push({
+      label: `Q${completedEnds.length + 1} ${TRACKING_YEAR}`,
+      value: pct(live, checkpoints[checkpoints.length - 1]),
+      inProgress: true,
+    });
+  }
+
+  return quarters;
 }

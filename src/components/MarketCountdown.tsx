@@ -1,53 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-/**
- * Calculates the next NYSE market open in ET.
- * Market hours: Mon–Fri 9:30 AM – 4:00 PM ET.
- * Returns null if the market is currently open.
- */
-function getNextMarketOpen(): Date | null {
-    const now = new Date();
-    const et = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
-    const day = et.getDay(); // 0=Sun, 6=Sat
-    const time = et.getHours() * 60 + et.getMinutes();
-
-    const OPEN = 570;  // 9:30 AM
-    const CLOSE = 960;  // 4:00 PM
-
-    // Market is currently open
-    if (day >= 1 && day <= 5 && time >= OPEN && time < CLOSE) {
-        return null;
-    }
-
-    // Build the next open date in ET
-    const next = new Date(et);
-    next.setSeconds(0, 0);
-    next.setHours(9, 30, 0, 0);
-
-    if (day >= 1 && day <= 5 && time < OPEN) {
-        // Weekday before open — opens today
-    } else if (day === 5 && time >= CLOSE) {
-        // Friday after close — opens Monday
-        next.setDate(next.getDate() + 3);
-    } else if (day === 6) {
-        // Saturday — opens Monday
-        next.setDate(next.getDate() + 2);
-    } else if (day === 0) {
-        // Sunday — opens Monday
-        next.setDate(next.getDate() + 1);
-    } else {
-        // Weekday after close — opens next day
-        next.setDate(next.getDate() + 1);
-    }
-
-    // Convert the ET target back to a UTC-based Date for diff calculation.
-    const utcMs = now.getTime();
-    const etMs = et.getTime();
-    const offsetMs = etMs - utcMs;
-    return new Date(next.getTime() - offsetMs);
-}
+import { getNextMarketOpen } from "@/lib/marketHours";
 
 function pad(n: number): string {
     return n.toString().padStart(2, "0");
@@ -93,7 +47,7 @@ export function MarketCountdown() {
     parts.push(`${pad(diff.s)}s`);
 
     return (
-        <span className="text-sm font-mono text-pm-green tabular-nums">
+        <span className="type-data">
             Opens in {parts.join(" ")}
         </span>
     );

@@ -99,12 +99,12 @@ export function FlowAgent() {
                         value={ticker}
                         onChange={(e) => setTicker(e.target.value.toUpperCase())}
                         onKeyDown={(e) => e.key === "Enter" && runFlow()}
-                        className="flex-1 px-4 py-2.5 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text font-mono placeholder:text-pm-subtle focus:outline-none focus:border-pm-green/50"
+                        className="flex-1 px-4 py-2.5 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text font-mono placeholder:text-pm-subtle focus:outline-none focus:border-pm-gold"
                     />
                     <button
                         onClick={() => runFlow()}
                         disabled={loading || !ticker.trim()}
-                        className="px-5 py-2.5 bg-pm-green text-pm-black text-sm font-semibold rounded-lg hover:bg-pm-green/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-5 py-2.5 bg-pm-gold text-pm-black text-sm font-semibold rounded-md hover:bg-[#F3C863] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                         Scan
@@ -128,7 +128,7 @@ export function FlowAgent() {
             {/* Loading */}
             {loading && (
                 <div className="flex items-center justify-center py-12 gap-3">
-                    <Loader2 className="w-5 h-5 animate-spin text-pm-green" />
+                    <Loader2 className="w-5 h-5 animate-spin text-pm-gold" />
                     <span className="text-sm text-pm-muted font-mono">Fetching options chain...</span>
                 </div>
             )}
@@ -165,7 +165,7 @@ export function FlowAgent() {
                                         runFlow(flowData.ticker, ts);
                                     }}
                                     disabled={loading}
-                                    className="pl-3 pr-8 py-2 bg-pm-black/80 border border-pm-border rounded-lg text-sm text-pm-text font-mono focus:outline-none focus:border-pm-green/50 cursor-pointer appearance-none"
+                                    className="pl-3 pr-8 py-2 bg-pm-black/80 border border-pm-border rounded-lg text-sm text-pm-text font-mono focus:outline-none focus:border-pm-gold cursor-pointer appearance-none"
                                 >
                                     {flowData.expirations.map((exp) => (
                                         <option key={exp.ts} value={exp.ts}>
@@ -206,7 +206,7 @@ export function FlowAgent() {
                             <div className="px-4 py-3 border-b border-pm-border/30">
                                 <h3 className="text-sm font-semibold text-pm-text">Premium Distribution</h3>
                                 <p className="text-[10px] text-pm-muted font-mono mt-0.5">
-                                    <span className="text-pm-green">Green</span> = Calls · <span className="text-pm-red">Red</span> = Puts · Size = Premium · <span className="text-pm-purple">Purple</span> = Max Pain
+                                    <span className="text-pm-green">Green</span> = Calls · <span className="text-pm-red">Red</span> = Puts · Size = Premium · <span className="text-pm-gold">Gold</span> = Max Pain
                                 </p>
                             </div>
                             <div className="p-2">

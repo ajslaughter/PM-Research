@@ -125,7 +125,6 @@ export default function AdminPage() {
 
     return (
         <div className="relative min-h-screen">
-            <div className="absolute inset-0 grid-bg opacity-30" />
 
             <div className="relative max-w-4xl mx-auto px-6 py-12">
                 <motion.div

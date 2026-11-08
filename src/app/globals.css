@@ -1,21 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --pm-black: #0a0a0a;
-  --pm-charcoal: #141414;
-  --pm-green: #00ff9d;
-  --pm-purple: #9d4edd;
-  --pm-red: #ff4757;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  --pm-black: #0e1216;
+  --pm-charcoal: #151a20;
+  --pm-border: #262d36;
+  --pm-text: #eceff3;
+  --pm-gold: #e9b949;
+  --pm-up: #3bcf8e;
+  --pm-down: #f0616d;
 }
 
 html,
@@ -23,103 +17,138 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   background-color: var(--pm-black);
-  color: #ffffff;
-  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  color: var(--pm-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Archivo's figures are tabular by default; make it explicit for data */
+  font-variant-numeric: tabular-nums;
 }
 
-/* Custom Scrollbar - Cyberpunk Style */
+::selection {
+  background-color: rgba(233, 185, 73, 0.3);
+  color: #ffffff;
+}
+
+/* Keyboard focus is always visible */
+:focus-visible {
+  outline: 2px solid var(--pm-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--pm-charcoal);
+  background: var(--pm-black);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: #343c47;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--pm-green);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-/* Selection styling */
-::selection {
-  background-color: rgba(0, 255, 157, 0.3);
-  color: #ffffff;
+@layer utilities {
+  /* Archivo width axis: condensed for display type and tickers */
+  .type-display {
+    font-variation-settings: "wdth" 70;
+    letter-spacing: -0.01em;
+  }
+
+  .type-condensed {
+    font-variation-settings: "wdth" 80;
+  }
+
+  .type-text {
+    font-variation-settings: "wdth" 100;
+    letter-spacing: normal;
+  }
+
+  .type-data {
+    font-variation-settings: "wdth" 88;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Data set in the old monospace now uses Archivo's tabular figures */
+  .font-mono {
+    font-variation-settings: "wdth" 88;
+    font-variant-numeric: tabular-nums;
+  }
 }
 
-/* Data Table Utilities */
 @layer components {
   .data-cell {
-    @apply font-mono text-sm px-4 py-3 border-b border-pm-border;
+    @apply type-data text-sm px-4 py-3 border-b border-pm-border;
   }
 
   .data-header {
-    @apply font-mono text-xs uppercase tracking-wider text-pm-muted px-4 py-3 border-b border-pm-border bg-pm-charcoal;
+    @apply text-xs font-medium text-pm-muted px-4 py-3 border-b border-pm-border bg-pm-charcoal;
   }
 
   .status-open {
-    @apply text-pm-green bg-pm-green/10 px-2 py-1 rounded text-xs font-medium tracking-wide;
+    @apply text-pm-up bg-pm-up/10 px-2 py-1 rounded text-xs font-medium;
   }
 
   .status-closed {
-    @apply text-pm-muted bg-pm-subtle/30 px-2 py-1 rounded text-xs font-medium tracking-wide;
+    @apply text-pm-muted bg-pm-border/60 px-2 py-1 rounded text-xs font-medium;
   }
 
   .return-positive {
-    @apply text-pm-green font-mono font-medium;
+    @apply text-pm-up type-data font-medium;
   }
 
   .return-negative {
-    @apply text-pm-red font-mono font-medium;
+    @apply text-pm-down type-data font-medium;
   }
 
-  /* Card Component */
+  /* Panels: one surface, one hairline, small radius */
   .pm-card {
     @apply bg-pm-charcoal border border-pm-border rounded-lg p-6;
   }
 
   .pm-card-hover {
-    @apply pm-card transition-all duration-300 hover:border-pm-green/30 hover:shadow-neon-green;
+    @apply pm-card transition-colors duration-200 hover:border-pm-subtle;
   }
 
-  /* Button Styles */
   .btn-primary {
-    @apply bg-pm-green text-pm-black font-semibold px-6 py-3 rounded-lg 
-           transition-all duration-300 hover:shadow-neon-green hover:scale-105;
+    @apply inline-flex items-center justify-center gap-2 bg-pm-gold text-pm-black font-semibold
+           px-5 py-2.5 rounded-md transition-colors duration-150 hover:bg-[#F3C863];
   }
 
   .btn-secondary {
-    @apply border border-pm-green text-pm-green font-semibold px-6 py-3 rounded-lg 
-           transition-all duration-300 hover:bg-pm-green/10;
+    @apply inline-flex items-center justify-center gap-2 border border-pm-border text-pm-text font-medium
+           px-5 py-2.5 rounded-md transition-colors duration-150 hover:border-pm-subtle hover:bg-pm-charcoal;
   }
 
   .btn-ghost {
-    @apply text-pm-muted hover:text-pm-text transition-colors duration-200;
+    @apply text-pm-muted hover:text-pm-text transition-colors duration-150;
   }
 
-  /* Grid Background */
-  .grid-bg {
-    background-image: 
-      linear-gradient(to right, rgba(31, 31, 31, 0.5) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(31, 31, 31, 0.5) 1px, transparent 1px);
-    background-size: 40px 40px;
+  /* Shared page header grammar */
+  .page-title {
+    @apply type-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[0.95] text-pm-text;
   }
 
-  /* Glow Effects */
-  .glow-green {
-    box-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
+  .page-lede {
+    @apply mt-3 text-base sm:text-lg text-pm-muted max-w-2xl leading-relaxed;
   }
 
-  .glow-purple {
-    box-shadow: 0 0 30px rgba(157, 78, 221, 0.3);
+  .section-title {
+    @apply type-condensed font-semibold text-xl sm:text-2xl text-pm-text;
   }
 
   /* Blur Effect for Guest View */
@@ -128,108 +157,22 @@ body {
     user-select: none;
   }
 
-  /* PM Score Badge */
+  /* PM Score: PM's own rating, always in the gold accent */
   .pm-score {
-    @apply inline-flex items-center gap-1 bg-pm-purple/20 text-pm-purple
-           px-2 py-1 rounded text-xs font-semibold tabular-nums;
+    @apply inline-flex items-center gap-1 bg-pm-gold/15 text-pm-gold
+           px-2 py-0.5 rounded text-xs font-semibold tabular-nums;
   }
-
-  /* PM Bot Message Prose - clean, readable bot responses */
-  .bot-prose {
-    @apply text-[15px] leading-relaxed text-pm-text/90;
-  }
-
-  .bot-prose p {
-    @apply mb-3 last:mb-0;
-  }
-
-  .bot-prose strong {
-    @apply text-pm-green font-semibold;
-  }
-
-  .bot-prose em {
-    @apply text-pm-text italic;
-  }
-
-  .bot-prose code {
-    @apply bg-pm-black/60 text-pm-green px-1.5 py-0.5 rounded text-sm font-mono;
-  }
-
-  .bot-prose ul,
-  .bot-prose ol {
-    @apply mb-3 last:mb-0 space-y-1.5;
-  }
-
-  .bot-prose li {
-    @apply pl-1;
-  }
-
-  .bot-prose h1,
-  .bot-prose h2,
-  .bot-prose h3 {
-    @apply font-bold text-white mt-4 mb-2 first:mt-0;
-  }
-
-  .bot-prose h1 { @apply text-lg; }
-  .bot-prose h2 { @apply text-base; }
-  .bot-prose h3 { @apply text-sm text-pm-green; }
-
-  .bot-prose hr {
-    @apply border-pm-border my-3;
-  }
-}
-
-/* Animations */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes pulse-border {
-  0%, 100% {
-    border-color: rgba(0, 255, 157, 0.3);
-  }
-  50% {
-    border-color: rgba(0, 255, 157, 0.8);
-  }
-}
-
-.animate-pulse-border {
-  animation: pulse-border 2s ease-in-out infinite;
 }
 
 @keyframes ticker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-ticker {
   animation: ticker 30s linear infinite;
-}
-
-.animate-ticker-wide {
-  /* not used — ticker uses inline JS animation */
-}
-
-
-/* Scanline Effect */
-.scanlines::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    transparent 50%,
-    rgba(0, 0, 0, 0.05) 50%
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 10;
 }

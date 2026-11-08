@@ -92,14 +92,14 @@ export function TickerTape() {
     const separator = (label: string) => (
         <span key={label} className="inline-flex items-center mx-4 whitespace-nowrap">
             <span className="text-pm-border mx-2">│</span>
-            <span className="text-[10px] font-semibold text-pm-muted uppercase tracking-widest">{label}</span>
+            <span className="text-[11px] font-semibold text-pm-muted">{label}</span>
             <span className="text-pm-border mx-2">│</span>
         </span>
     );
 
     const movers = [
-        ...gainers.length ? [separator("TOP GAINERS"), ...gainers.map((t, i) => <TickerItem key={`g${i}`} t={t} />)] : [],
-        ...losers.length ? [separator("TOP LOSERS"), ...losers.map((t, i) => <TickerItem key={`l${i}`} t={t} />)] : [],
+        ...gainers.length ? [separator("Top gainers"), ...gainers.map((t, i) => <TickerItem key={`g${i}`} t={t} />)] : [],
+        ...losers.length ? [separator("Top losers"), ...losers.map((t, i) => <TickerItem key={`l${i}`} t={t} />)] : [],
     ];
 
     const all = [...content, ...movers];

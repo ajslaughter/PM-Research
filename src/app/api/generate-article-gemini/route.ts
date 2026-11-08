@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAuth, checkRateLimit, getClientIP, sanitizeTopic } from '@/lib/security';
+import { verifyAdminAuth, checkRateLimit, getClientIP, sanitizeTopic } from '@/lib/security';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = 'gemini-2.5-pro-preview-06-05';
@@ -51,10 +51,11 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    const auth = await verifyAuth(request);
+    // Security: article generation is an admin tool
+    const auth = await verifyAdminAuth(request);
     if (!auth) {
         return NextResponse.json(
-            { error: 'Authentication required. Please log in to access this resource.' },
+            { error: 'Admin sign-in required to generate articles.' },
             { status: 401 }
         );
     }

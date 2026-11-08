@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { fetchQuotes } from "@/lib/yahoo";
 
-const YF_CHART = "https://query1.finance.yahoo.com/v8/finance/chart";
+export const dynamic = "force-dynamic";
+
 
 const TICKERS = [
     // Major Indices
@@ -64,41 +66,13 @@ const TICKERS = [
     { symbol: "^TNX", name: "10Y YIELD", tag: "macro" },
 ];
 
-async function fetchTicker({ symbol, name, tag }: { symbol: string; name: string; tag: string }) {
-    try {
-        const res = await fetch(
-            `${YF_CHART}/${encodeURIComponent(symbol)}?range=1d&interval=1d`,
-            { headers: { "User-Agent": "Mozilla/5.0" }, next: { revalidate: 60 } }
-        );
-        if (!res.ok) return null;
-        const raw = await res.json();
-        const meta = raw.chart?.result?.[0]?.meta;
-        if (!meta) return null;
-        const price = meta.regularMarketPrice || 0;
-        const prev = meta.chartPreviousClose || meta.previousClose || price;
-        const change = price - prev;
-        const changePct = prev > 0 ? (change / prev) * 100 : 0;
-        return { symbol, name, tag, price, change, changePct };
-    } catch {
-        return null;
-    }
-}
-
 export async function GET() {
     try {
-        // Fetch in batches of 15 to avoid overwhelming Yahoo
-        const batches = [];
-        for (let i = 0; i < TICKERS.length; i += 15) {
-            batches.push(TICKERS.slice(i, i + 15));
-        }
-
-        const allResults = [];
-        for (const batch of batches) {
-            const results = await Promise.all(batch.map(fetchTicker));
-            allResults.push(...results);
-        }
-
-        const tickers = allResults.filter(Boolean);
+        const quotes = await fetchQuotes(TICKERS.map((t) => t.symbol));
+        const tickers = TICKERS.flatMap(({ symbol, name, tag }) => {
+            const q = quotes[symbol];
+            return q ? [{ symbol, name, tag, price: q.price, change: q.change, changePct: q.changePercent }] : [];
+        });
 
         // Find top gainers and losers from all results
         const sorted = [...tickers].sort((a: any, b: any) => b.changePct - a.changePct);

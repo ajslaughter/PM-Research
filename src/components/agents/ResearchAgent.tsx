@@ -52,7 +52,7 @@ export function ResearchAgent() {
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && runResearch()}
-                    className="w-full px-4 py-3 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text placeholder:text-pm-subtle focus:outline-none focus:border-pm-green/50"
+                    className="w-full px-4 py-3 bg-pm-black/50 border border-pm-border/50 rounded-lg text-sm text-pm-text placeholder:text-pm-subtle focus:outline-none focus:border-pm-gold"
                 />
 
                 <div className="flex gap-2">
@@ -62,7 +62,7 @@ export function ResearchAgent() {
                             onClick={() => setDepth(d.key)}
                             className={`flex-1 px-3 py-2.5 text-xs font-mono rounded-lg transition-all border ${
                                 depth === d.key
-                                    ? "bg-pm-green/10 text-pm-green font-semibold border-pm-green/30"
+                                    ? "bg-pm-gold/10 text-pm-gold font-semibold border-pm-gold/30"
                                     : "text-pm-muted hover:text-pm-text border-pm-border/50"
                             }`}
                         >
@@ -75,7 +75,7 @@ export function ResearchAgent() {
                 <button
                     onClick={runResearch}
                     disabled={loading || !topic.trim()}
-                    className="w-full px-5 py-3 bg-pm-green text-pm-black text-sm font-semibold rounded-lg hover:bg-pm-green/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full px-5 py-3 bg-pm-gold text-pm-black text-sm font-semibold rounded-md hover:bg-[#F3C863] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                     {loading ? (
                         <>
@@ -100,7 +100,7 @@ export function ResearchAgent() {
             {report && (
                 <div className="bg-pm-black/30 border border-pm-border/30 rounded-lg overflow-hidden">
                     <div className="px-4 py-3 border-b border-pm-border/30 flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-pm-green" />
+                        <FileText className="w-4 h-4 text-pm-gold" />
                         <h3 className="text-sm font-semibold text-pm-text">Research Report</h3>
                     </div>
                     <div className="p-4">

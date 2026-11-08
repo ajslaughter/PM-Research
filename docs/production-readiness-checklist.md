@@ -25,7 +25,6 @@ Each item includes:
 
 **Mapped files/routes:**
 - `src/lib/security.ts` (shared API rate-limit helper)
-- `src/app/api/pmbot/route.ts` (custom PM Bot limits)
 - Any API route consuming `checkRateLimit` from `src/lib/security.ts`
 
 **Success criteria:**
@@ -126,7 +125,7 @@ Each item includes:
 **Mapped files/routes:**
 - `.env.example`
 - `src/lib/supabase.ts`
-- API routes using external providers (`/api/prices`, `/api/pmbot`, `/api/generate-article`, `/api/generate-article-gemini`)
+- API routes using external providers (`/api/prices`, `/api/generate-article`, `/api/generate-article-gemini`)
 
 **Success criteria:**
 - Required envs validated once at startup/build.
@@ -141,7 +140,6 @@ Each item includes:
 
 **Mapped files/routes:**
 - `src/app/api/prices/route.ts`
-- `src/app/api/pmbot/route.ts`
 - `src/app/api/generate-article/route.ts`
 - `src/app/api/generate-article-gemini/route.ts`
 - `src/app/api/polygon/route.ts`
@@ -173,8 +171,8 @@ Each item includes:
 **Why:** Build output shows large pages and many dynamic APIs; define measurable targets.
 
 **Mapped files/routes:**
-- High-load pages (`/watchlist`, `/research`, `/pm-live`, `/pmbot`)
-- API endpoints (`/api/prices`, `/api/pmbot`, `/api/market-map`, `/api/live-feed`)
+- High-load pages (`/watchlist`, `/research`, `/pm-live`)
+- API endpoints (`/api/prices`, `/api/market-map`, `/api/live-feed`)
 
 **Success criteria:**
 - P95 latency targets documented and monitored.
@@ -219,7 +217,6 @@ Each item includes:
 **Why:** External API costs can spike with growth.
 
 **Mapped files/routes:**
-- `/api/pmbot`
 - `/api/generate-article`
 - `/api/generate-article-gemini`
 - `/api/prices`

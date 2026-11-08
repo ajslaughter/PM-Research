@@ -32,6 +32,7 @@ const WATCHLIST_NAMES = [
     "Quantum Computing",
     "Defense & Intelligence",
     "Biotech",
+    "Semiconductors",
 ] as const;
 
 interface ResearchFormData {
