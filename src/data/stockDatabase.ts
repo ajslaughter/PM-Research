@@ -138,6 +138,13 @@ export const stockDatabase: Record<string, StockData> = {
   "GEV": createStock("GEV", "GE Vernova Inc.", "Grid Infrastructure", "Industrials", 89, "2026-11-26"),
   // Defense & Intelligence
   "AVAV": createStock("AVAV", "AeroVironment Inc.", "Defense/AI", "Industrials", 82, "2026-11-26"),
+  // Cybersecurity (CRWD and PANW are listed above)
+  "FTNT": createStock("FTNT", "Fortinet Inc.", "Cybersecurity", "Technology", 86, "2026-11-26"),
+  "NET": createStock("NET", "Cloudflare Inc.", "Cybersecurity", "Technology", 89, "2026-11-26"),
+  "OKTA": createStock("OKTA", "Okta Inc.", "Cybersecurity", "Technology", 85, "2026-11-26"),
+  "RBRK": createStock("RBRK", "Rubrik Inc.", "Cybersecurity", "Technology", 84, "2026-11-26"),
+  "NTSK": createStock("NTSK", "Netskope Inc.", "Cybersecurity", "Technology", 80, "2026-11-26"),
+  "S": createStock("S", "SentinelOne Inc.", "Cybersecurity", "Technology", 78, "2026-11-26"),
 };
 
 // Asset class color mapping for UI

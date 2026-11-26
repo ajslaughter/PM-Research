@@ -32,6 +32,7 @@ const WATCHLIST_NAMES = [
     "Orbital & Space",
     "Quantum Computing",
     "Defense & Intelligence",
+    "Cybersecurity",
     "Biotech",
     "Semiconductors",
 ] as const;

@@ -143,6 +143,20 @@ export const defenseBaselines: Record<string, BaselinePrice> = {
 };
 
 /**
+ * Cybersecurity Watchlist (CRWD and PANW baselines are in defenseBaselines)
+ * Verified closing prices from December 31, 2025
+ * Source: Yahoo Finance daily closes (split-adjusted), verified 2026-11-26
+ */
+export const cyberBaselines: Record<string, BaselinePrice> = {
+  'FTNT': { ticker: 'FTNT', price: 79.41, date: BASELINE_DATE },
+  'NET': { ticker: 'NET', price: 197.15, date: BASELINE_DATE },
+  'OKTA': { ticker: 'OKTA', price: 86.47, date: BASELINE_DATE },
+  'RBRK': { ticker: 'RBRK', price: 76.48, date: BASELINE_DATE },
+  'NTSK': { ticker: 'NTSK', price: 17.54, date: BASELINE_DATE },
+  'S': { ticker: 'S', price: 15.00, date: BASELINE_DATE },
+};
+
+/**
  * Biotech Watchlist
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Yahoo Finance daily closes (split-adjusted), re-verified 2026-11-08
@@ -246,6 +260,13 @@ export const quarterEndCloses: Record<string, Record<string, number>> = {
     'CCJ': 108.61,
     'GEV': 872.90,
     'AVAV': 183.05,
+    // Cybersecurity, added 2026-11-26
+    'FTNT': 81.72,
+    'NET': 206.34,
+    'OKTA': 78.71,
+    'RBRK': 48.97,
+    'NTSK': 8.49,
+    'S': 12.88,
   },
   '2026-06-30': {
     'AAPL': 289.36,
@@ -314,6 +335,13 @@ export const quarterEndCloses: Record<string, Record<string, number>> = {
     'CCJ': 101.86,
     'GEV': 1174.86,
     'AVAV': 165.07,
+    // Cybersecurity, added 2026-11-26
+    'FTNT': 153.62,
+    'NET': 245.28,
+    'OKTA': 136.45,
+    'RBRK': 80.28,
+    'NTSK': 10.94,
+    'S': 16.97,
   },
   '2026-09-30': {
     'AAPL': 333.02,
@@ -382,6 +410,13 @@ export const quarterEndCloses: Record<string, Record<string, number>> = {
     'CCJ': 86.67,
     'GEV': 950.49,
     'AVAV': 142.22,
+    // Cybersecurity, added 2026-11-26
+    'FTNT': 178.76,
+    'NET': 347.28,
+    'OKTA': 209.11,
+    'RBRK': 114.47,
+    'NTSK': 17.44,
+    'S': 23.76,
   },
 };
 
@@ -398,6 +433,7 @@ export const baselines: Record<string, BaselinePrice> = {
   ...spaceBaselines,
   ...quantumBaselines,
   ...defenseBaselines,
+  ...cyberBaselines,
   ...biotechBaselines,
   ...semiconductorBaselines,
 };

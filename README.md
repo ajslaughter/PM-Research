@@ -62,6 +62,7 @@ Research-driven watchlists tracking our highest-conviction themes across AI, rob
 - **Orbital & Space**: Launch, satellites and space infrastructure (RKLB, ASTS, LUNR, RDW, PL, TSLA)
 - **Quantum Computing**: Quantum hardware and software (IONQ, RGTI, QBTS, QUBT)
 - **Defense & Intelligence**: Defense AI, cybersecurity and autonomous systems (PLTR, CRWD, PANW, KTOS, BAH, LDOS, AVAV)
+- **Cybersecurity**: Endpoint, network, identity, cloud edge and data security (CRWD, PANW, FTNT, NET, OKTA, RBRK, NTSK, S)
 - **Biotech**: Genomics, gene editing and precision medicine (STOK, CRSP, NTLA, BEAM, EDIT, TWST)
 - **Semiconductors**: AI chips, foundry, lithography equipment and memory (NVDA, TSM, AVGO, AMD, ASML, MU, MRVL)
 

@@ -9,7 +9,7 @@ export interface WatchlistPosition {
 }
 
 // Watchlist category for filtering
-export type WatchlistCategory = 'Magnificent 7' | 'Bitcoin' | 'Robotics' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech' | 'Semiconductors';
+export type WatchlistCategory = 'Magnificent 7' | 'Bitcoin' | 'Robotics' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Cybersecurity' | 'Biotech' | 'Semiconductors';
 
 // Watchlist structure
 export interface Watchlist {
@@ -31,6 +31,10 @@ export const Quantum_Watchlist = ['IONQ', 'RGTI', 'QBTS', 'QUBT'];
 
 // Defense & Intelligence Watchlist Tickers
 export const Defense_Intelligence_Watchlist = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS', 'AVAV'];
+
+// Biotech Watchlist Tickers
+// Cybersecurity Watchlist Tickers
+export const Cybersecurity_Watchlist = ['CRWD', 'PANW', 'FTNT', 'NET', 'OKTA', 'RBRK', 'NTSK', 'S'];
 
 // Biotech Watchlist Tickers
 export const Biotech_Watchlist = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
@@ -156,6 +160,25 @@ export const defaultWatchlists: Watchlist[] = [
             { ticker: "BAH", weight: 14.28, thesis: "Defense AI/ML consulting; bridges cutting-edge tech to government adoption at scale" },
             { ticker: "LDOS", weight: 14.28, thesis: "Largest defense IT contractor; $37B+ backlog; digital transformation & cyber operations" },
             { ticker: "AVAV", weight: 14.28, thesis: "Switchblade loitering munitions and Puma drones; BlueHalo adds counter-UAS and space" },
+        ],
+    },
+    {
+        id: "cybersecurity",
+        name: "Cybersecurity",
+        description: "Endpoint, Network, Identity, Cloud Edge & Data Security",
+        category: "Cybersecurity",
+        // Researched 2026-11-26. Left off on purpose: ZS (CrowdStrike all-stock deal pending,
+        // 1.135 CRWD per share, so it trades as CRWD), VRNS (Proofpoint $49.75 cash deal pending)
+        // and CYBR (absorbed into PANW Feb 2026).
+        positions: [
+            { ticker: "CRWD", weight: 12.5, thesis: "Endpoint and XDR leader on one Falcon platform; Zscaler deal adds the SASE network edge" },
+            { ticker: "PANW", weight: 12.5, thesis: "Largest pure-play security platform; CyberArk adds privileged identity to network, cloud and SOC" },
+            { ticker: "FTNT", weight: 12.5, thesis: "Firewall unit leader on custom ASICs; most profitable model in the group and a firewall refresh cycle" },
+            { ticker: "NET", weight: 12.5, thesis: "Global edge network for zero trust, DDoS and app security; ~39% growth with AI inference at the edge" },
+            { ticker: "OKTA", weight: 12.5, thesis: "Independent identity leader; securing AI agents as identities drives a re-rating" },
+            { ticker: "RBRK", weight: 12.5, thesis: "Cyber resilience and recovery for data under ransomware attack; ~33% subscription ARR growth" },
+            { ticker: "NTSK", weight: 12.5, thesis: "Pure-play SASE and data protection; the independent alternative as Zscaler joins CrowdStrike" },
+            { ticker: "S", weight: 12.5, thesis: "AI-native endpoint and SIEM challenger at a discount to peers; frequently cited takeover candidate" },
         ],
     },
     {
