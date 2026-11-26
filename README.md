@@ -88,6 +88,7 @@ Protected admin interface for managing research articles, generating AI content,
 |------|-------|-------------|
 | Landing | `/` | Watchlist board (live YTD and day moves) and latest research |
 | Research Watchlists | `/watchlist` | Watchlist selector with position tables and live prices |
+| Charts | `/charts`, `/charts/[symbol]` | Candlestick charts with drawing tools, indicators and compare |
 | Research | `/research` | The Feed — research hub with filterable articles |
 | Pricing | `/pricing` | Subscription tiers and FAQ |
 | Login | `/login` | Supabase authentication |
@@ -98,6 +99,7 @@ Protected admin interface for managing research articles, generating AI content,
 | Endpoint | Description |
 |----------|-------------|
 | `/api/prices` | Live prices (Alpaca, Yahoo Finance fallback, CoinGecko for BTC) |
+| `/api/candles` | OHLCV candles for the Charts section (Yahoo Finance) |
 | `/api/stock-info` | Stock metadata lookup |
 | `/api/polygon` | Polygon.io market data integration |
 | `/api/generate-article` | Claude-powered article generation |

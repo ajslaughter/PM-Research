@@ -52,6 +52,13 @@ All YTD calculations use hardcoded Dec 31, 2025 closing prices. Formula: `((curr
 - `/api/historical` measures each range from the close before the window; YTD starts on the Dec 31 bar
 - PM Live merges chart series by timestamp, not array index
 
+### Charts (`/charts`, `/charts/[symbol]`)
+
+- `ChartWithTools` (`src/components/charts/`) renders candles with `lightweight-charts` and drawing tools with `lightweight-charts-drawing`. Both versions are pinned exactly in package.json, because the drawing library is young and still changing fast
+- Candles come from `/api/candles` (Yahoo v8 chart, with warm-up history so SMA 200 and RSI are valid at the left edge). Daily and weekly bars are snapped to 00:00 UTC of the exchange date so compare overlays line up
+- Indicators are computed client-side in `src/lib/charts/indicators.ts`. Drawings and settings persist in localStorage (`src/lib/charts/storage.ts`), with drawings stored per symbol
+- The search list is every watchlist ticker plus the ETFs and crypto in `src/lib/charts/symbols.ts`. Any other ticker-shaped symbol also works
+
 ### Auth & Admin
 
 - Supabase auth with JWT. Session cookies synced via `/api/auth/session`.
@@ -71,7 +78,7 @@ Two article generators (Claude primary, Gemini fallback):
 
 - Path alias: `@/*` maps to `./src/*`
 - App Router: server components by default, `"use client"` only when needed
-- API routes at `src/app/api/[endpoint]/route.ts` (19 total endpoints)
+- API routes at `src/app/api/[endpoint]/route.ts` (20 total endpoints)
 - Rate limiting is in-memory (`src/lib/security.ts`) — unreliable on Vercel serverless
 - In-memory price cache has the same serverless caveat
 - External API responses (Alpaca, CoinGecko, Yahoo Finance) are not schema-validated
