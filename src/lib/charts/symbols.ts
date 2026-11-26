@@ -28,7 +28,7 @@ const INDEX_ETFS: SymbolInfo[] = [
     { symbol: "IBIT", name: "iShares Bitcoin Trust", group: "Index ETF" },
 ];
 
-/** Large-cap crypto, as Yahoo's USD pairs (BTC-USD already appears via 9 MAGS). */
+/** Large-cap crypto, as Yahoo's USD pairs. */
 const CRYPTO: SymbolInfo[] = [
     { symbol: "BTC-USD", name: "Bitcoin", group: "Crypto" },
     { symbol: "ETH-USD", name: "Ethereum", group: "Crypto" },
@@ -44,7 +44,7 @@ const CRYPTO: SymbolInfo[] = [
 /**
  * Build the list once at module load. A ticker that sits on several
  * watchlists (TSLA is on three) is listed once, under the first watchlist.
- * Crypto is added first so BTC-USD is grouped as "Crypto", not "9 MAGS".
+ * BTC-USD is skipped in the watchlist pass so it is grouped as "Crypto".
  */
 function buildUniverse(): SymbolInfo[] {
     const seen = new Set<string>();
