@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, BookOpen, LayoutList, Radio } from "lucide-react";
+import { Activity, BookOpen, CandlestickChart, LayoutList, Radio } from "lucide-react";
 
 const navLinks = [
     { href: "/", label: "Home", icon: Activity },
     { href: "/pm-live", label: "PM Live", icon: Radio },
     { href: "/watchlist", label: "Watchlists", icon: LayoutList },
+    { href: "/charts", label: "Charts", icon: CandlestickChart },
     { href: "/research", label: "Research", icon: BookOpen },
 ];
 
@@ -63,7 +64,7 @@ export default function Navbar() {
                 className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-pm-black/95 backdrop-blur-md border-t border-pm-border pb-[env(safe-area-inset-bottom)]"
                 aria-label="Main"
             >
-                <div className="grid grid-cols-4 h-16">
+                <div className="grid grid-cols-5 h-16">
                     {navLinks.map((link) => {
                         const active = isActivePath(pathname, link.href);
                         const Icon = link.icon;

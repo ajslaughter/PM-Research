@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
 import { useAdmin } from "@/context/AdminContext";
 import {
     calculateYTD,
@@ -363,9 +364,14 @@ export default function WatchlistTable({ watchlistId }: WatchlistTableProps) {
                         {liveWatchlist.map((position) => (
                             <tr key={position.ticker} className="hover:bg-pm-dark transition-colors">
                                 <th scope="row" className="px-4 py-3.5 font-normal">
-                                    <span className="block type-condensed font-bold text-base text-pm-text">
+                                    {/* Ticker links to its chart (/charts/[symbol]) */}
+                                    <Link
+                                        href={`/charts/${encodeURIComponent(position.ticker)}`}
+                                        className="block type-condensed font-bold text-base text-pm-text hover:text-pm-gold transition-colors"
+                                        title={`Chart ${position.ticker}`}
+                                    >
                                         {position.ticker}
-                                    </span>
+                                    </Link>
                                     <span className="block text-xs text-pm-muted max-w-[9rem] sm:max-w-none truncate">{position.name}</span>
                                     <span className="hidden sm:block text-xs text-pm-subtle">
                                         {loading ? <Skeleton className="w-14 h-3" /> : `Mkt cap ${formatMarketCap(position.marketCap)}`}
