@@ -54,14 +54,16 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ### Research Watchlists
 Research-driven watchlists tracking our highest-conviction themes across AI, robotics, energy, and infrastructure:
-- **9 MAGS**: Core coverage of mega-cap tech and Bitcoin — the gravitational center of the innovation economy
-- **Robotics**: Tracking leaders in automation, surgical robotics, and industrial AI
-- **AI Infrastructure**: Research coverage of data center operators and GPU-accelerated compute buildout
-- **Energy Renaissance**: Tracking the nuclear revival and power infrastructure required to fuel the AI era
-- **Orbital & Space**: Tracking orbital data centers, launch providers, and space infrastructure pioneers
-- **Quantum Computing**: Tracking quantum hardware, software, and error correction breakthroughs
-- **Defense & Intelligence**: Tracking defense AI, cybersecurity, and autonomous systems reshaping modern warfare
-- **Biotech**: Tracking genomics, gene editing, and precision medicine breakthroughs
+- **Magnificent 7**: AAPL, MSFT, GOOGL, AMZN, META, NVDA, TSLA
+- **Bitcoin Economy**: Bitcoin plus the spot ETF, treasury, exchange and mining names (BTC-USD, IBIT, MSTR, COIN, MARA, RIOT, CLSK, HUT)
+- **Robotics**: Surgical, industrial and warehouse automation (ISRG, FANUY, TER, TSLA, SYM, ROK)
+- **AI Infrastructure**: Neoclouds, data centers and AI compute hosting (IREN, CORZ, CRWV, APLD, NBIS, WULF, EQIX, DLR)
+- **Energy Renaissance**: Nuclear, power generation and grid (CEG, OKLO, VRT, BWXT, SMR, PWR, VST, CCJ, GEV)
+- **Orbital & Space**: Launch, satellites and space infrastructure (RKLB, ASTS, LUNR, RDW, PL, TSLA)
+- **Quantum Computing**: Quantum hardware and software (IONQ, RGTI, QBTS, QUBT)
+- **Defense & Intelligence**: Defense AI, cybersecurity and autonomous systems (PLTR, CRWD, PANW, KTOS, BAH, LDOS, AVAV)
+- **Cybersecurity**: Endpoint, network, identity, cloud edge and data security (CRWD, PANW, FTNT, NET, OKTA, RBRK, NTSK, S)
+- **Biotech**: Genomics, gene editing and precision medicine (STOK, CRSP, NTLA, BEAM, EDIT, TWST)
 - **Semiconductors**: AI chips, foundry, lithography equipment and memory (NVDA, TSM, AVGO, AMD, ASML, MU, MRVL)
 
 ### PM Score System

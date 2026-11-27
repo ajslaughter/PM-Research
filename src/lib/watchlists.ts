@@ -9,7 +9,7 @@ export interface WatchlistPosition {
 }
 
 // Watchlist category for filtering
-export type WatchlistCategory = 'Magnificent 7' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Biotech' | 'Semiconductors';
+export type WatchlistCategory = 'Magnificent 7' | 'Bitcoin' | 'Robotics' | 'AI Infrastructure' | 'Energy Renaissance' | 'Orbital & Space' | 'Quantum' | 'Defense & Intelligence' | 'Cybersecurity' | 'Biotech' | 'Semiconductors';
 
 // Watchlist structure
 export interface Watchlist {
@@ -21,16 +21,20 @@ export interface Watchlist {
 }
 
 // AI Infrastructure Watchlist Tickers
-export const AI_Infrastructure_Watchlist = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS', 'WULF'];
+export const AI_Infrastructure_Watchlist = ['IREN', 'CORZ', 'CRWV', 'APLD', 'NBIS', 'WULF', 'EQIX', 'DLR'];
 
 // Energy Renaissance Watchlist Tickers
-export const Energy_Renaissance_Watchlist = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR'];
+export const Energy_Renaissance_Watchlist = ['CEG', 'OKLO', 'VRT', 'BWXT', 'SMR', 'PWR', 'VST', 'CCJ', 'GEV'];
 
 // Quantum Computing Watchlist Tickers
 export const Quantum_Watchlist = ['IONQ', 'RGTI', 'QBTS', 'QUBT'];
 
 // Defense & Intelligence Watchlist Tickers
-export const Defense_Intelligence_Watchlist = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS'];
+export const Defense_Intelligence_Watchlist = ['PLTR', 'CRWD', 'PANW', 'KTOS', 'BAH', 'LDOS', 'AVAV'];
+
+// Biotech Watchlist Tickers
+// Cybersecurity Watchlist Tickers
+export const Cybersecurity_Watchlist = ['CRWD', 'PANW', 'FTNT', 'NET', 'OKTA', 'RBRK', 'NTSK', 'S'];
 
 // Biotech Watchlist Tickers
 export const Biotech_Watchlist = ['STOK', 'CRSP', 'NTLA', 'BEAM', 'EDIT', 'TWST'];
@@ -40,61 +44,81 @@ export const Semiconductors_Watchlist = ['NVDA', 'TSM', 'AVGO', 'AMD', 'ASML', '
 // Default watchlists
 export const defaultWatchlists: Watchlist[] = [
     {
-        id: "pm-research",
-        name: "9 MAGS",
-        description: "Mag 7 + Bitcoin + Broadcom",
+        id: "mag-7",
+        name: "Magnificent 7",
+        description: "The seven mega-cap platforms driving index returns",
         category: "Magnificent 7",
         positions: [
-            { ticker: "NVDA", weight: 11.11 },
-            { ticker: "MSFT", weight: 11.11 },
-            { ticker: "AAPL", weight: 11.11 },
-            { ticker: "GOOGL", weight: 11.11 },
-            { ticker: "AMZN", weight: 11.11 },
-            { ticker: "META", weight: 11.11 },
-            { ticker: "TSLA", weight: 11.11 },
-            { ticker: "BTC-USD", weight: 11.11 },
-            { ticker: "AVGO", weight: 11.12 },
+            { ticker: "AAPL", weight: 14.29, thesis: "Largest installed device base; Apple Intelligence and services margin expansion" },
+            { ticker: "MSFT", weight: 14.29, thesis: "Azure + OpenAI partnership; Copilot monetizes AI across the enterprise stack" },
+            { ticker: "GOOGL", weight: 14.29, thesis: "Search, YouTube and Cloud cash engines fund Gemini and in-house TPUs" },
+            { ticker: "AMZN", weight: 14.29, thesis: "AWS is the largest cloud; Trainium custom silicon and retail margin leverage" },
+            { ticker: "META", weight: 14.28, thesis: "3B+ daily users; AI-driven ad ranking lifts returns on massive capex" },
+            { ticker: "NVDA", weight: 14.28, thesis: "Dominant AI accelerator platform; CUDA software ecosystem is the moat" },
+            { ticker: "TSLA", weight: 14.28, thesis: "EVs plus FSD, robotaxi and Optimus optionality" },
+        ],
+    },
+    {
+        id: "bitcoin-economy",
+        name: "Bitcoin Economy",
+        description: "Bitcoin, Spot ETFs, Treasury Companies, Exchanges & Miners",
+        category: "Bitcoin",
+        positions: [
+            { ticker: "BTC-USD", weight: 12.5, thesis: "The underlying asset: fixed 21M supply, the reserve asset of the sector" },
+            { ticker: "IBIT", weight: 12.5, thesis: "Largest spot bitcoin ETF; the institutional on-ramp and flow gauge" },
+            { ticker: "MSTR", weight: 12.5, thesis: "Largest corporate bitcoin treasury; levered BTC exposure via capital markets" },
+            { ticker: "COIN", weight: 12.5, thesis: "Largest U.S. exchange and ETF custodian; earns on volume, custody and staking" },
+            { ticker: "MARA", weight: 12.5, thesis: "Largest public miner by hashrate; holds a large self-mined BTC treasury" },
+            { ticker: "RIOT", weight: 12.5, thesis: "Low-cost Texas miner with owned power capacity and HPC optionality" },
+            { ticker: "CLSK", weight: 12.5, thesis: "Pure-play U.S. miner with one of the most efficient fleets" },
+            { ticker: "HUT", weight: 12.5, thesis: "Miner plus power and data center platform; American Bitcoin stake" },
         ],
     },
     {
         id: "robotics",
         name: "Robotics",
-        description: "Automation & Robotics",
-        category: "Magnificent 7",
+        description: "Surgical, Industrial & Warehouse Automation",
+        category: "Robotics",
         positions: [
-            { ticker: "ISRG", weight: 20, thesis: "da Vinci monopoly in surgical robotics; expanding procedures" },
-            { ticker: "FANUY", weight: 20, thesis: "Global leader in factory automation; CNC and servo moat" },
-            { ticker: "TER", weight: 20, thesis: "Universal Robots dominant in cobots; test automation moat" },
-            { ticker: "TSLA", weight: 20, thesis: "Optimus humanoid + FSD; robotics optionality underpriced" },
-            { ticker: "SYM", weight: 20, thesis: "AI-powered warehouse robotics; end-to-end automation for supply chain logistics" },
+            { ticker: "ISRG", weight: 16.67, thesis: "da Vinci monopoly in surgical robotics; expanding procedures" },
+            { ticker: "FANUY", weight: 16.67, thesis: "Global leader in factory automation; CNC and servo moat" },
+            { ticker: "TER", weight: 16.67, thesis: "Universal Robots dominant in cobots; test automation moat" },
+            { ticker: "TSLA", weight: 16.67, thesis: "Optimus humanoid + FSD; robotics optionality underpriced" },
+            { ticker: "SYM", weight: 16.66, thesis: "AI-powered warehouse robotics; end-to-end automation for supply chain logistics" },
+            { ticker: "ROK", weight: 16.66, thesis: "Largest U.S. pure-play industrial automation; controls every reshored factory needs" },
         ],
     },
     {
         id: "ai-infrastructure",
         name: "AI Infrastructure",
-        description: "Data Centers, Mining & Compute Infrastructure",
+        description: "Neoclouds, Data Centers & AI Compute Hosting",
         category: "AI Infrastructure",
         positions: [
-            { ticker: "IREN", weight: 16.67 },
-            { ticker: "CORZ", weight: 16.67 },
-            { ticker: "CRWV", weight: 16.67 },
-            { ticker: "APLD", weight: 16.67 },
-            { ticker: "NBIS", weight: 16.66 },
-            { ticker: "WULF", weight: 16.66 },
+            { ticker: "IREN", weight: 12.5 },
+            { ticker: "CORZ", weight: 12.5 },
+            { ticker: "CRWV", weight: 12.5 },
+            { ticker: "APLD", weight: 12.5 },
+            { ticker: "NBIS", weight: 12.5 },
+            { ticker: "WULF", weight: 12.5 },
+            { ticker: "EQIX", weight: 12.5, thesis: "Largest interconnection data center network; AI inference needs to sit near users" },
+            { ticker: "DLR", weight: 12.5, thesis: "Hyperscale data center landlord with powered land for AI campuses" },
         ],
     },
     {
         id: "energy-renaissance",
         name: "Energy Renaissance",
-        description: "Nuclear, Grid & Power Infrastructure",
+        description: "Nuclear, Power Generation & Grid Infrastructure",
         category: "Energy Renaissance",
         positions: [
-            { ticker: "CEG", weight: 16.67 },
-            { ticker: "OKLO", weight: 16.67 },
-            { ticker: "VRT", weight: 16.67 },
-            { ticker: "BWXT", weight: 16.67 },
-            { ticker: "SMR", weight: 16.66, thesis: "Only NRC-certified SMR design; Entra1 $25B partnership and TVA 6-GW program de-risk commercialization" },
-            { ticker: "PWR", weight: 16.66, thesis: "Largest U.S. electrical grid contractor; $2.5T grid modernization tailwind through 2035" },
+            { ticker: "CEG", weight: 11.11 },
+            { ticker: "OKLO", weight: 11.11 },
+            { ticker: "VRT", weight: 11.11 },
+            { ticker: "BWXT", weight: 11.11 },
+            { ticker: "SMR", weight: 11.11, thesis: "Only NRC-certified SMR design; Entra1 $25B partnership and TVA 6-GW program de-risk commercialization" },
+            { ticker: "PWR", weight: 11.11, thesis: "Largest U.S. electrical grid contractor; $2.5T grid modernization tailwind through 2035" },
+            { ticker: "VST", weight: 11.11, thesis: "Nuclear and gas fleet in Texas and PJM; signs long-term power deals with hyperscalers" },
+            { ticker: "CCJ", weight: 11.11, thesis: "Largest Western uranium producer and Westinghouse co-owner; fuel for the reactor buildout" },
+            { ticker: "GEV", weight: 11.12, thesis: "Gas turbines, grid equipment and SMRs; multi-year sold-out turbine backlog" },
         ],
     },
     {
@@ -129,12 +153,32 @@ export const defaultWatchlists: Watchlist[] = [
         description: "Defense AI, Cybersecurity & Autonomous Systems",
         category: "Defense & Intelligence",
         positions: [
-            { ticker: "PLTR", weight: 16.67, thesis: "Defense AI operating system; Gotham/AIP embedded across DoD, IC, NATO; TITAN Army contract" },
-            { ticker: "CRWD", weight: 16.67, thesis: "Endpoint cybersecurity standard for federal agencies; FedRAMP High; Zero Trust mandate" },
-            { ticker: "PANW", weight: 16.67, thesis: "Network/cloud security & SASE for government; platformization consolidates defense cyber spend" },
-            { ticker: "KTOS", weight: 16.67, thesis: "Autonomous drones (Valkyrie/XQ-58A); hypersonic targets; C5ISR defense tech disruptor" },
-            { ticker: "BAH", weight: 16.66, thesis: "Defense AI/ML consulting; bridges cutting-edge tech to government adoption at scale" },
-            { ticker: "LDOS", weight: 16.66, thesis: "Largest defense IT contractor; $37B+ backlog; digital transformation & cyber operations" },
+            { ticker: "PLTR", weight: 14.29, thesis: "Defense AI operating system; Gotham/AIP embedded across DoD, IC, NATO; TITAN Army contract" },
+            { ticker: "CRWD", weight: 14.29, thesis: "Endpoint cybersecurity standard for federal agencies; FedRAMP High; Zero Trust mandate" },
+            { ticker: "PANW", weight: 14.29, thesis: "Network/cloud security & SASE for government; platformization consolidates defense cyber spend" },
+            { ticker: "KTOS", weight: 14.29, thesis: "Autonomous drones (Valkyrie/XQ-58A); hypersonic targets; C5ISR defense tech disruptor" },
+            { ticker: "BAH", weight: 14.28, thesis: "Defense AI/ML consulting; bridges cutting-edge tech to government adoption at scale" },
+            { ticker: "LDOS", weight: 14.28, thesis: "Largest defense IT contractor; $37B+ backlog; digital transformation & cyber operations" },
+            { ticker: "AVAV", weight: 14.28, thesis: "Switchblade loitering munitions and Puma drones; BlueHalo adds counter-UAS and space" },
+        ],
+    },
+    {
+        id: "cybersecurity",
+        name: "Cybersecurity",
+        description: "Endpoint, Network, Identity, Cloud Edge & Data Security",
+        category: "Cybersecurity",
+        // Researched 2026-11-26. Left off on purpose: ZS (CrowdStrike all-stock deal pending,
+        // 1.135 CRWD per share, so it trades as CRWD), VRNS (Proofpoint $49.75 cash deal pending)
+        // and CYBR (absorbed into PANW Feb 2026).
+        positions: [
+            { ticker: "CRWD", weight: 12.5, thesis: "Endpoint and XDR leader on one Falcon platform; Zscaler deal adds the SASE network edge" },
+            { ticker: "PANW", weight: 12.5, thesis: "Largest pure-play security platform; CyberArk adds privileged identity to network, cloud and SOC" },
+            { ticker: "FTNT", weight: 12.5, thesis: "Firewall unit leader on custom ASICs; most profitable model in the group and a firewall refresh cycle" },
+            { ticker: "NET", weight: 12.5, thesis: "Global edge network for zero trust, DDoS and app security; ~39% growth with AI inference at the edge" },
+            { ticker: "OKTA", weight: 12.5, thesis: "Independent identity leader; securing AI agents as identities drives a re-rating" },
+            { ticker: "RBRK", weight: 12.5, thesis: "Cyber resilience and recovery for data under ransomware attack; ~33% subscription ARR growth" },
+            { ticker: "NTSK", weight: 12.5, thesis: "Pure-play SASE and data protection; the independent alternative as Zscaler joins CrowdStrike" },
+            { ticker: "S", weight: 12.5, thesis: "AI-native endpoint and SIEM challenger at a discount to peers; frequently cited takeover candidate" },
         ],
     },
     {

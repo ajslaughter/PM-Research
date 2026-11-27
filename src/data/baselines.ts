@@ -24,7 +24,7 @@ export const BASELINE_YEAR = 2025;
 export const TRACKING_YEAR = 2026;
 
 /**
- * Core Watchlist - Mag 7 + Bitcoin
+ * Magnificent 7 + Bitcoin (BTC-USD) + Broadcom (also on Semiconductors)
  * Verified closing prices from December 31, 2025 (TradingView standard)
  * Source: Yahoo Finance daily closes (split-adjusted), re-verified 2026-11-08
  */
@@ -51,6 +51,22 @@ export const roboticsBaselines: Record<string, BaselinePrice> = {
   'TER': { ticker: 'TER', price: 193.56, date: BASELINE_DATE },
   'TSLA': { ticker: 'TSLA', price: 449.72, date: BASELINE_DATE },
   'SYM': { ticker: 'SYM', price: 59.50, date: BASELINE_DATE },
+  'ROK': { ticker: 'ROK', price: 389.07, date: BASELINE_DATE }, // added 2026-11-26
+};
+
+/**
+ * Bitcoin Economy Watchlist (BTC-USD's baseline is in coreBaselines)
+ * Verified closing prices from December 31, 2025
+ * Source: Yahoo Finance daily closes (split-adjusted), verified 2026-11-26
+ */
+export const bitcoinBaselines: Record<string, BaselinePrice> = {
+  'IBIT': { ticker: 'IBIT', price: 49.65, date: BASELINE_DATE },
+  'MSTR': { ticker: 'MSTR', price: 151.95, date: BASELINE_DATE },
+  'COIN': { ticker: 'COIN', price: 226.14, date: BASELINE_DATE },
+  'MARA': { ticker: 'MARA', price: 8.98, date: BASELINE_DATE },
+  'RIOT': { ticker: 'RIOT', price: 12.67, date: BASELINE_DATE },
+  'CLSK': { ticker: 'CLSK', price: 10.12, date: BASELINE_DATE },
+  'HUT': { ticker: 'HUT', price: 45.94, date: BASELINE_DATE },
 };
 
 /**
@@ -65,6 +81,8 @@ export const aiInfraBaselines: Record<string, BaselinePrice> = {
   'APLD': { ticker: 'APLD', price: 24.52, date: BASELINE_DATE },
   'NBIS': { ticker: 'NBIS', price: 83.71, date: BASELINE_DATE },
   'WULF': { ticker: 'WULF', price: 11.49, date: BASELINE_DATE },
+  'EQIX': { ticker: 'EQIX', price: 766.16, date: BASELINE_DATE }, // added 2026-11-26
+  'DLR': { ticker: 'DLR', price: 154.71, date: BASELINE_DATE }, // added 2026-11-26
 };
 
 /**
@@ -79,6 +97,9 @@ export const energyBaselines: Record<string, BaselinePrice> = {
   'BWXT': { ticker: 'BWXT', price: 172.84, date: BASELINE_DATE },
   'SMR': { ticker: 'SMR', price: 14.17, date: BASELINE_DATE },
   'PWR': { ticker: 'PWR', price: 422.06, date: BASELINE_DATE },
+  'VST': { ticker: 'VST', price: 161.33, date: BASELINE_DATE }, // added 2026-11-26
+  'CCJ': { ticker: 'CCJ', price: 91.49, date: BASELINE_DATE }, // added 2026-11-26
+  'GEV': { ticker: 'GEV', price: 653.57, date: BASELINE_DATE }, // added 2026-11-26
 };
 
 /**
@@ -118,6 +139,21 @@ export const defenseBaselines: Record<string, BaselinePrice> = {
   'KTOS': { ticker: 'KTOS', price: 75.91, date: BASELINE_DATE },
   'BAH': { ticker: 'BAH', price: 84.36, date: BASELINE_DATE },
   'LDOS': { ticker: 'LDOS', price: 180.40, date: BASELINE_DATE },
+  'AVAV': { ticker: 'AVAV', price: 241.89, date: BASELINE_DATE }, // added 2026-11-26
+};
+
+/**
+ * Cybersecurity Watchlist (CRWD and PANW baselines are in defenseBaselines)
+ * Verified closing prices from December 31, 2025
+ * Source: Yahoo Finance daily closes (split-adjusted), verified 2026-11-26
+ */
+export const cyberBaselines: Record<string, BaselinePrice> = {
+  'FTNT': { ticker: 'FTNT', price: 79.41, date: BASELINE_DATE },
+  'NET': { ticker: 'NET', price: 197.15, date: BASELINE_DATE },
+  'OKTA': { ticker: 'OKTA', price: 86.47, date: BASELINE_DATE },
+  'RBRK': { ticker: 'RBRK', price: 76.48, date: BASELINE_DATE },
+  'NTSK': { ticker: 'NTSK', price: 17.54, date: BASELINE_DATE },
+  'S': { ticker: 'S', price: 15.00, date: BASELINE_DATE },
 };
 
 /**
@@ -209,6 +245,28 @@ export const quarterEndCloses: Record<string, Record<string, number>> = {
     'ASML': 1320.83,
     'MU': 337.84,
     'MRVL': 99.05,
+    // Added 2026-11-26
+    'IBIT': 38.42,
+    'MSTR': 124.80,
+    'COIN': 174.61,
+    'MARA': 8.16,
+    'RIOT': 12.36,
+    'CLSK': 8.51,
+    'HUT': 46.91,
+    'ROK': 358.88,
+    'EQIX': 980.24,
+    'DLR': 180.21,
+    'VST': 150.33,
+    'CCJ': 108.61,
+    'GEV': 872.90,
+    'AVAV': 183.05,
+    // Cybersecurity, added 2026-11-26
+    'FTNT': 81.72,
+    'NET': 206.34,
+    'OKTA': 78.71,
+    'RBRK': 48.97,
+    'NTSK': 8.49,
+    'S': 12.88,
   },
   '2026-06-30': {
     'AAPL': 289.36,
@@ -262,6 +320,28 @@ export const quarterEndCloses: Record<string, Record<string, number>> = {
     'ASML': 1989.44,
     'MU': 1154.29,
     'MRVL': 297.89,
+    // Added 2026-11-26
+    'IBIT': 33.29,
+    'MSTR': 86.93,
+    'COIN': 146.19,
+    'MARA': 13.89,
+    'RIOT': 27.38,
+    'CLSK': 14.55,
+    'HUT': 115.44,
+    'ROK': 495.08,
+    'EQIX': 1042.39,
+    'DLR': 179.58,
+    'VST': 158.63,
+    'CCJ': 101.86,
+    'GEV': 1174.86,
+    'AVAV': 165.07,
+    // Cybersecurity, added 2026-11-26
+    'FTNT': 153.62,
+    'NET': 245.28,
+    'OKTA': 136.45,
+    'RBRK': 80.28,
+    'NTSK': 10.94,
+    'S': 16.97,
   },
   '2026-09-30': {
     'AAPL': 333.02,
@@ -315,6 +395,28 @@ export const quarterEndCloses: Record<string, Record<string, number>> = {
     'ASML': 1811.67,
     'MU': 1065.11,
     'MRVL': 264.21,
+    // Added 2026-11-26
+    'IBIT': 47.34,
+    'MSTR': 153.09,
+    'COIN': 186.41,
+    'MARA': 11.33,
+    'RIOT': 20.15,
+    'CLSK': 12.88,
+    'HUT': 86.10,
+    'ROK': 435.33,
+    'EQIX': 1011.58,
+    'DLR': 175.53,
+    'VST': 138.35,
+    'CCJ': 86.67,
+    'GEV': 950.49,
+    'AVAV': 142.22,
+    // Cybersecurity, added 2026-11-26
+    'FTNT': 178.76,
+    'NET': 347.28,
+    'OKTA': 209.11,
+    'RBRK': 114.47,
+    'NTSK': 17.44,
+    'S': 23.76,
   },
 };
 
@@ -325,11 +427,13 @@ export const quarterEndCloses: Record<string, Record<string, number>> = {
 export const baselines: Record<string, BaselinePrice> = {
   ...coreBaselines,
   ...roboticsBaselines,
+  ...bitcoinBaselines,
   ...aiInfraBaselines,
   ...energyBaselines,
   ...spaceBaselines,
   ...quantumBaselines,
   ...defenseBaselines,
+  ...cyberBaselines,
   ...biotechBaselines,
   ...semiconductorBaselines,
 };

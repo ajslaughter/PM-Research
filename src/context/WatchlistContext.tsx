@@ -24,7 +24,7 @@ const WatchlistContext = createContext<WatchlistContextType | undefined>(undefin
 
 export function WatchlistProvider({ children }: { children: ReactNode }) {
     const [watchlists, setWatchlists] = useState<Watchlist[]>(defaultWatchlists);
-    const [activeWatchlistId, setActiveWatchlistId] = useState<string>("pm-research");
+    const [activeWatchlistId, setActiveWatchlistId] = useState<string>("mag-7");
 
     // Watchlist CRUD operations
     const addWatchlist = useCallback((name: string, description: string, category: WatchlistCategory = 'Magnificent 7') => {

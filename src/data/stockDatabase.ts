@@ -116,6 +116,35 @@ export const stockDatabase: Record<string, StockData> = {
   "ASML": createStock("ASML", "ASML Holding (ADR)", "Semiconductor Equipment", "Technology", 88, "2026-11-08"),
   "MU": createStock("MU", "Micron Technology", "Memory", "Technology", 84, "2026-11-08"),
   "MRVL": createStock("MRVL", "Marvell Technology", "Custom Silicon", "Technology", 82, "2026-11-08"),
+
+  // Added 2026-11-26 with the watchlist restructure.
+  // PM Scores below are provisional starting values; set them after review.
+  // Bitcoin Economy
+  "IBIT": createStock("IBIT", "iShares Bitcoin Trust ETF", "Digital Assets", "Cryptocurrency", 85, "2026-11-26"),
+  "MSTR": createStock("MSTR", "Strategy Inc", "Digital Assets", "Technology", 80, "2026-11-26"),
+  "COIN": createStock("COIN", "Coinbase Global", "Digital Assets", "Financials", 84, "2026-11-26"),
+  "MARA": createStock("MARA", "MARA Holdings", "Bitcoin Mining", "Technology", 76, "2026-11-26"),
+  "RIOT": createStock("RIOT", "Riot Platforms", "Bitcoin Mining", "Technology", 78, "2026-11-26"),
+  "CLSK": createStock("CLSK", "CleanSpark Inc.", "Bitcoin Mining", "Technology", 75, "2026-11-26"),
+  "HUT": createStock("HUT", "Hut 8 Corp.", "Bitcoin Mining", "Technology", 79, "2026-11-26"),
+  // Robotics
+  "ROK": createStock("ROK", "Rockwell Automation", "Auto/Robotics", "Industrials", 83, "2026-11-26"),
+  // AI Infrastructure
+  "EQIX": createStock("EQIX", "Equinix Inc.", "Data Center", "Real Estate", 84, "2026-11-26"),
+  "DLR": createStock("DLR", "Digital Realty Trust", "Data Center", "Real Estate", 82, "2026-11-26"),
+  // Energy Renaissance
+  "VST": createStock("VST", "Vistra Corp.", "Power Generation", "Utilities", 86, "2026-11-26"),
+  "CCJ": createStock("CCJ", "Cameco Corporation", "Nuclear", "Energy", 85, "2026-11-26"),
+  "GEV": createStock("GEV", "GE Vernova Inc.", "Grid Infrastructure", "Industrials", 89, "2026-11-26"),
+  // Defense & Intelligence
+  "AVAV": createStock("AVAV", "AeroVironment Inc.", "Defense/AI", "Industrials", 82, "2026-11-26"),
+  // Cybersecurity (CRWD and PANW are listed above)
+  "FTNT": createStock("FTNT", "Fortinet Inc.", "Cybersecurity", "Technology", 86, "2026-11-26"),
+  "NET": createStock("NET", "Cloudflare Inc.", "Cybersecurity", "Technology", 89, "2026-11-26"),
+  "OKTA": createStock("OKTA", "Okta Inc.", "Cybersecurity", "Technology", 85, "2026-11-26"),
+  "RBRK": createStock("RBRK", "Rubrik Inc.", "Cybersecurity", "Technology", 84, "2026-11-26"),
+  "NTSK": createStock("NTSK", "Netskope Inc.", "Cybersecurity", "Technology", 80, "2026-11-26"),
+  "S": createStock("S", "SentinelOne Inc.", "Cybersecurity", "Technology", 78, "2026-11-26"),
 };
 
 // Asset class color mapping for UI

@@ -24,13 +24,15 @@ import {
 type ResearchCategory = "Deep Dive";
 
 const WATCHLIST_NAMES = [
-    "9 MAGS",
+    "Magnificent 7",
+    "Bitcoin Economy",
     "Robotics",
     "AI Infrastructure",
     "Energy Renaissance",
     "Orbital & Space",
     "Quantum Computing",
     "Defense & Intelligence",
+    "Cybersecurity",
     "Biotech",
     "Semiconductors",
 ] as const;
